@@ -7,6 +7,8 @@
 
 #include "../OpGLLib/LoadShaders.h"
 
+using namespace gl;
+
 std::map<GLint, std::vector<GLuint> > LoadShaders::shaders;
 std::map<GLint, GLuint> LoadShaders::programs;
 
@@ -38,7 +40,7 @@ GLuint LoadShaders::LoadShader(GLenum type, const std::string shader, GLint id) 
 
 	glGetShaderiv(shaderObj, GL_COMPILE_STATUS, &status);
 
-	if (status == GL_FALSE) {
+	if (status == false) {
 		std::cerr << std::endl << "Failed to compile shader:" << std::endl;
 
 		GLint infoLogLength = 0;
@@ -77,7 +79,7 @@ GLuint LoadShaders::CreateProgram(GLint id) {
 	GLint status;
 	glGetProgramiv(program, GL_COMPILE_STATUS, &status);
 
-	if (status == GL_FALSE) {
+	if (status == false) {
 		std::cerr << std::endl << "Failed to link program:" << std::endl;
 
 		GLint infoLogLength;

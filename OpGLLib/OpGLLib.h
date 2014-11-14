@@ -9,13 +9,12 @@
 #define OPGLLIB_OPGLLIB_H_
 
 #include <OpGLLib/internal.h>
-
 #include <OpGLLib/LoadShaders.h>
 
 class OpGLLib {
 public:
 	OpGLLib();
-	void enableCulling(GLenum CullFace = GL_BACK, GLenum FrontFace = GL_CCW);
+	void enableCulling(gl::GLenum CullFace = gl::GL_BACK, gl::GLenum FrontFace = gl::GL_CCW);
 	void disableCulling();
 	LoadShaders loadShaders;
 private:

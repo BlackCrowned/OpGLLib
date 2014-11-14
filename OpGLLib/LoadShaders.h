@@ -13,12 +13,12 @@
 class LoadShaders {
 public:
 	LoadShaders();
-	GLuint LoadShader(GLenum type, const std::string shader, GLint id);
-	GLuint CreateProgram(GLint id);
-	GLuint GetProgram(GLint id);
+	gl::GLuint LoadShader(gl::GLenum type, const std::string shader, gl::GLint id);
+	gl::GLuint CreateProgram(gl::GLint id);
+	gl::GLuint GetProgram(gl::GLint id);
 private:
-	static std::map<GLint, std::vector<GLuint> > shaders;
-	static std::map<GLint, GLuint> programs;
+	static std::map<gl::GLint, std::vector<gl::GLuint> > shaders;
+	static std::map<gl::GLint, gl::GLuint> programs;
 };
 
 #endif /* OPGLLIB_LOADSHADERS_H_ */

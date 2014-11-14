@@ -3,7 +3,7 @@
 	<name>OpGLLib</name>
 	<comment></comment>
 	<projects>
-		<project>glew-1.11.0</project>
+		<project>glbinding-1.0.3</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

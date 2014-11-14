@@ -1,13 +1,9 @@
 #include <OpGLLib/OpGLLib.h>
 
-#include <iostream>
+using namespace gl;
 
 OpGLLib::OpGLLib() {
-	glewExperimental = GL_TRUE;
-
-	if (glewInit() != GLEW_OK) {
-		std::cerr << "Failed to init GLEW" << std::endl;
-	}
+	glbinding::Binding::initialize();
 }
 
 void OpGLLib::enableCulling(GLenum CullFace, GLenum FrontFace) {

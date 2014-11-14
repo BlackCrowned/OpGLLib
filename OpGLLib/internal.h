@@ -1,4 +1,5 @@
-#include <GL/glew.h>
+#include <glbinding/gl/gl.h>
+#include <glbinding/Binding.h>
 #include <glm/glm.hpp>
 
 #include <iostream>
