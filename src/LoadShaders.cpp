@@ -20,7 +20,7 @@ GLuint LoadShaders::LoadShader(GLenum type, const std::string shader, GLint id) 
 	std::fstream file;
 	char *fileData;
 
-	file.open(shader.c_str(), std::ios::in);
+	file.open(shader.c_str(), std::ios::in | std::ios::binary);
 
 	if (!file) {
 		std::cerr << "Failed to open file: " << shader << std::endl;
@@ -29,12 +29,20 @@ GLuint LoadShaders::LoadShader(GLenum type, const std::string shader, GLint id) 
 		std::cout << "Compiling shader: '" << shader << "'...";
 	}
 
-	fileData = new char[sizeof(file)];
-	file.read(fileData, sizeof(file));
+	file.seekg(0, std::ios::end);
+	int fileSize = file.tellg();
+	file.seekg(0, std::ios::beg);
+
+	fileData = new char[fileSize + 1];
+	file.read(fileData, fileSize);
+	file.close();
+	fileData[fileSize] = '\0';
 
 	GLuint shaderObj = glCreateShader(type);
 	glShaderSource(shaderObj, 1, &fileData, NULL);
 	glCompileShader(shaderObj);
+
+	delete[] fileData;
 
 	GLint status;
 
@@ -45,7 +53,7 @@ GLuint LoadShaders::LoadShader(GLenum type, const std::string shader, GLint id) 
 
 		GLint infoLogLength = 0;
 		glGetShaderiv(shaderObj, GL_INFO_LOG_LENGTH, &infoLogLength);
-		char *infoLog = new char[infoLogLength + 1];
+		char *infoLog = new char[infoLogLength];
 
 		glGetShaderInfoLog(shaderObj, infoLogLength, NULL, infoLog);
 		std::cerr << infoLog << std::endl;
@@ -77,7 +85,7 @@ GLuint LoadShaders::CreateProgram(GLint id) {
 	glLinkProgram(program);
 
 	GLint status;
-	glGetProgramiv(program, GL_COMPILE_STATUS, &status);
+	glGetProgramiv(program, GL_LINK_STATUS, &status);
 
 	if (status == false) {
 		std::cerr << std::endl << "Failed to link program:" << std::endl;
@@ -85,7 +93,7 @@ GLuint LoadShaders::CreateProgram(GLint id) {
 		GLint infoLogLength;
 		char *infoLog;
 		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLogLength);
-		infoLog = new char[infoLogLength + 1];
+		infoLog = new char[infoLogLength];
 		glGetProgramInfoLog(program, infoLogLength, NULL, infoLog);
 		std::cout << infoLog << std::endl;
 		delete[] infoLog;
