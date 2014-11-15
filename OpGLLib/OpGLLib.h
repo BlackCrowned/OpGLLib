@@ -13,7 +13,7 @@
 
 class OpGLLib {
 public:
-	OpGLLib();
+	OpGLLib(glbinding::ContextHandle context);
 	void enableCulling(gl::GLenum CullFace = gl::GL_BACK, gl::GLenum FrontFace = gl::GL_CCW);
 	void disableCulling();
 	LoadShaders loadShaders;

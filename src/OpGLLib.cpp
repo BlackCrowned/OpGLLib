@@ -2,8 +2,9 @@
 
 using namespace gl;
 
-OpGLLib::OpGLLib() {
-	glbinding::Binding::initialize();
+OpGLLib::OpGLLib(glbinding::ContextHandle context) {
+	glbinding::Binding::useContext(context);
+	//glbinding::Binding::initialize(false);
 }
 
 void OpGLLib::enableCulling(GLenum CullFace, GLenum FrontFace) {
