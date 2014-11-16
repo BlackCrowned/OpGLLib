@@ -9,8 +9,9 @@
 #define OPGLLIB_LOADSHADERS_H_
 
 #include <OpGLLib/internal.h>
+#include <OpGLLib/FileLoader.h>
 
-class LoadShaders {
+class LoadShaders : public FileLoader{
 public:
 	LoadShaders();
 	gl::GLuint LoadShader(gl::GLenum type, const std::string shader, gl::GLint id);

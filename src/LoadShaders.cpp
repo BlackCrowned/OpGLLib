@@ -7,61 +7,49 @@
 
 #include "../OpGLLib/LoadShaders.h"
 
+using namespace std;
 using namespace gl;
 
-std::map<GLint, std::vector<GLuint> > LoadShaders::shaders;
-std::map<GLint, GLuint> LoadShaders::programs;
+map<GLint, vector<GLuint> > LoadShaders::shaders;
+map<GLint, GLuint> LoadShaders::programs;
 
-LoadShaders::LoadShaders() {
+LoadShaders::LoadShaders() : FileLoader() {
 
 }
 
-GLuint LoadShaders::LoadShader(GLenum type, const std::string shader, GLint id) {
-	std::fstream file;
-	char *fileData;
-
-	file.open(shader.c_str(), std::ios::in | std::ios::binary);
-
-	if (!file) {
-		std::cerr << "Failed to open file: " << shader << std::endl;
+GLuint LoadShaders::LoadShader(GLenum type, const string shader, GLint id) {
+	const char *fileData;
+	if (open(shader) == NULL) {
 		return -1;
-	} else {
-		std::cout << "Compiling shader: '" << shader << "'...";
 	}
-
-	file.seekg(0, std::ios::end);
-	int fileSize = file.tellg();
-	file.seekg(0, std::ios::beg);
-
-	fileData = new char[fileSize + 1];
-	file.read(fileData, fileSize);
-	file.close();
-	fileData[fileSize] = '\0';
+	fileData = toString().c_str();
+	close();
 
 	GLuint shaderObj = glCreateShader(type);
+
+	cout << "Compiling shader: '" << shader << "'(" << shaderObj << ")...";
+
 	glShaderSource(shaderObj, 1, &fileData, NULL);
 	glCompileShader(shaderObj);
-
-	delete[] fileData;
 
 	GLint status;
 
 	glGetShaderiv(shaderObj, GL_COMPILE_STATUS, &status);
 
 	if (status == false) {
-		std::cerr << std::endl << "Failed to compile shader:" << std::endl;
+		cerr << endl << "Failed to compile shader:" << endl;
 
 		GLint infoLogLength = 0;
 		glGetShaderiv(shaderObj, GL_INFO_LOG_LENGTH, &infoLogLength);
 		char *infoLog = new char[infoLogLength];
 
 		glGetShaderInfoLog(shaderObj, infoLogLength, NULL, infoLog);
-		std::cerr << infoLog << std::endl;
+		cerr << infoLog << endl;
 
 		delete[] infoLog;
 		return -2;
 	} else {
-		std::cout << "Done" << std::endl;
+		cout << "Done" << endl;
 	}
 
 	shaders[id].push_back(shaderObj);
@@ -72,34 +60,34 @@ GLuint LoadShaders::LoadShader(GLenum type, const std::string shader, GLint id) 
 GLuint LoadShaders::CreateProgram(GLint id) {
 	GLuint program = glCreateProgram();
 
-	std::cout << "Creating program: '" << program << "':" << std::endl;
+	cout << "Creating program: '" << program << "':" << endl;
 
 	for (auto i : shaders[id]) {
 		i--;
-		std::cout << "Attaching shader: '" << shaders[id][i] << "'...";
+		cout << "Attaching shader: '" << shaders[id][i] << "'...";
 		glAttachShader(program, shaders[id][i]);
-		std::cout << "Done" << std::endl;
+		cout << "Done" << endl;
 	};
 
-	std::cout << "Linking program: '" << program << "'...";
+	cout << "Linking program: '" << program << "'...";
 	glLinkProgram(program);
 
 	GLint status;
 	glGetProgramiv(program, GL_LINK_STATUS, &status);
 
 	if (status == false) {
-		std::cerr << std::endl << "Failed to link program:" << std::endl;
+		cerr << endl << "Failed to link program:" << endl;
 
 		GLint infoLogLength;
 		char *infoLog;
 		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLogLength);
 		infoLog = new char[infoLogLength];
 		glGetProgramInfoLog(program, infoLogLength, NULL, infoLog);
-		std::cout << infoLog << std::endl;
+		cout << infoLog << endl;
 		delete[] infoLog;
 		return -2;
 	} else {
-		std::cout << "Done" << std::endl;
+		cout << "Done" << endl;
 	}
 
 	for (auto i : shaders[id]) {
