@@ -49,3 +49,7 @@ string FileLoader::toString() {
 
 	return datastream.str();
 }
+
+fstream *FileLoader::getFile() {
+	return &file;
+}

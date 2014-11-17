@@ -21,6 +21,8 @@ public:
 
 	std::string toString();
 
+	std::fstream *getFile();
+
 private:
 	std::fstream file;
 };
