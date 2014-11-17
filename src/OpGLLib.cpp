@@ -16,3 +16,13 @@ void OpGLLib::enableCulling(GLenum CullFace, GLenum FrontFace) {
 void OpGLLib::disableCulling() {
 	glDisable(GL_CULL_FACE);
 }
+
+void OpGLLib::enableDepthTest(GLboolean DepthMasc, GLenum DepthFunc) {
+	glEnable(GL_DEPTH_TEST);
+	glDepthMask(DepthMasc);
+	glDepthFunc(DepthFunc);
+}
+
+void OpGLLib::disableDepthTest() {
+	glDisable(GL_DEPTH_TEST);
+}

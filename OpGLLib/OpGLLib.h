@@ -16,6 +16,8 @@ public:
 	OpGLLib(glbinding::ContextHandle context);
 	void enableCulling(gl::GLenum CullFace = gl::GL_BACK, gl::GLenum FrontFace = gl::GL_CCW);
 	void disableCulling();
+	void enableDepthTest(gl::GLboolean DepthMasc = gl::GL_TRUE, gl::GLenum DepthFunc = gl::GL_LEQUAL);
+	void disableDepthTest();
 	LoadShaders loadShaders;
 private:
 };
