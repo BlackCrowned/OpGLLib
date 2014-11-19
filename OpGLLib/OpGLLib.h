@@ -10,15 +10,22 @@
 
 #include <OpGLLib/internal.h>
 #include <OpGLLib/LoadShaders.h>
+#include <OpGLLib/Matrices.h>
 
 class OpGLLib {
 public:
+	OpGLLib();
 	OpGLLib(glbinding::ContextHandle context);
+
+	void setContext(glbinding::ContextHandle context);
+
 	void enableCulling(gl::GLenum CullFace = gl::GL_BACK, gl::GLenum FrontFace = gl::GL_CCW);
 	void disableCulling();
 	void enableDepthTest(gl::GLboolean DepthMasc = gl::GL_TRUE, gl::GLenum DepthFunc = gl::GL_LEQUAL);
 	void disableDepthTest();
+
 	LoadShaders loadShaders;
+	Matrices matrices;
 private:
 };
 
