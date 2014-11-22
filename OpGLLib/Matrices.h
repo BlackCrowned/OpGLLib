@@ -41,12 +41,12 @@ public:
 	void setScalingMatrixY(gl::GLfloat y);
 	void setScalingMatrixZ(gl::GLfloat z);
 
-	void setRotationMatrix();
 	void setRotationMatrix(glm::mat4 rotationMatrix);
 	void setRotationMatrix(glm::vec3 rotation);
 	void setRotationMatrixX(gl::GLfloat x);
 	void setRotationMatrixY(gl::GLfloat y);
 	void setRotationMatrixZ(gl::GLfloat z);
+	void updateRotationMatrix();
 
 	void setRotationXMatrix(gl::GLfloat x);
 	void setRotationYMatrix(gl::GLfloat y);

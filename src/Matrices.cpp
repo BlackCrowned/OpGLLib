@@ -143,10 +143,6 @@ void Matrices::setScalingMatrixZ(GLfloat z) {
 	scalingMatrix[2].z = z;
 }
 
-void Matrices::setRotationMatrix() {
-	rotationMatrix = rotationXMatrix * rotationYMatrix * rotationZMatrix;
-}
-
 void Matrices::setRotationMatrix(glm::mat4 rotationMatrix) {
 	Matrices::rotationMatrix = rotationMatrix;
 }
@@ -174,6 +170,10 @@ void Matrices::setRotationMatrixY(GLfloat y) {
 void Matrices::setRotationMatrixZ(GLfloat z) {
 	rotation.z = z;
 	setRotationZMatrix(z);
+	rotationMatrix = rotationXMatrix * rotationYMatrix * rotationZMatrix;
+}
+
+void Matrices::updateRotationMatrix() {
 	rotationMatrix = rotationXMatrix * rotationYMatrix * rotationZMatrix;
 }
 
