@@ -25,11 +25,23 @@ public:
 
 	void setTranslationMatrix(glm::mat4 translationMatrix);
 	void setTranslationMatrix(glm::vec3 offset);
+	void setTranslationMatrixX(gl::GLfloat x);
+	void setTranslationMatrixY(gl::GLfloat y);
+	void setTranslationMatrixZ(gl::GLfloat z);
 
 	void setScalingMatrix(glm::mat4 scalingMatrix);
 	void setScalingMatrix(glm::vec3 scale);
+	void setScalingMatrixX(gl::GLfloat x);
+	void setScalingMatrixY(gl::GLfloat y);
+	void setScalingMatrixZ(gl::GLfloat z);
+
+	void setRotationMatrix();
 	void setRotationMatrix(glm::mat4 rotationMatrix);
 	void setRotationMatrix(glm::vec3 rotation);
+	void setRotationMatrixX(gl::GLfloat x);
+	void setRotationMatrixY(gl::GLfloat y);
+	void setRotationMatrixZ(gl::GLfloat z);
+
 	void setRotationXMatrix(gl::GLfloat x);
 	void setRotationYMatrix(gl::GLfloat y);
 	void setRotationZMatrix(gl::GLfloat z);
@@ -41,6 +53,7 @@ public:
 	glm::mat4 *getScalingMatrix();
 
 	glm::mat4 *getRotationMatrix();
+
 private:
 	glm::mat4 perspectiveMatrix;
 	glm::mat4 translationMatrix;
@@ -49,6 +62,8 @@ private:
 	glm::mat4 rotationXMatrix;
 	glm::mat4 rotationYMatrix;
 	glm::mat4 rotationZMatrix;
+
+	glm::vec3 offset, scale, rotation;
 };
 
 #endif /* OPGLLIB_MATRICES_H_ */

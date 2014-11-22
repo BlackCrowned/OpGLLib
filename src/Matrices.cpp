@@ -13,6 +13,14 @@ Matrices::Matrices() {
 	perspectiveMatrix = glm::mat4(0);
 	translationMatrix = glm::mat4(1.0f);
 	scalingMatrix = glm::mat4(1.0f);
+	rotationMatrix = glm::mat4(1.0f);
+	rotationXMatrix = glm::mat4(1.0f);
+	rotationYMatrix = glm::mat4(1.0f);
+	rotationZMatrix = glm::mat4(1.0f);
+
+	offset = glm::vec3(0.0f, 0.0f, 0.0f);
+	scale = glm::vec3 (1.0f, 1.0f, 1.0f);
+	rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
 Matrices::~Matrices() {
@@ -42,7 +50,6 @@ void Matrices::setPerspectiveMatrix(GLfloat foV, GLfloat aspectRatio, GLfloat zN
 }
 
 void Matrices::setPerspectiveMatrix(glm::vec2 frustumScale, GLfloat zNear, GLfloat zFar) {
-	perspectiveMatrix = glm::mat4(0.0f);
 	perspectiveMatrix[0].x = frustumScale.x;
 	perspectiveMatrix[1].y = frustumScale.y;
 	perspectiveMatrix[2].z = (zFar + zNear) / (zNear - zFar);
@@ -55,10 +62,25 @@ void Matrices::setTranslationMatrix(glm::mat4 translationMatrix) {
 }
 
 void Matrices::setTranslationMatrix(glm::vec3 offset) {
-	translationMatrix = glm::mat4(1.0f);
+	Matrices::offset = offset;
 	translationMatrix[3].x = offset.x;
 	translationMatrix[3].y = offset.y;
 	translationMatrix[3].z = offset.z;
+}
+
+void Matrices::setTranslationMatrixX(GLfloat x) {
+	offset.x = x;
+	translationMatrix[3].x = x;
+}
+
+void Matrices::setTranslationMatrixY(GLfloat y) {
+	offset.y = y;
+	translationMatrix[3].y = y;
+}
+
+void Matrices::setTranslationMatrixZ(GLfloat z) {
+	offset.z = z;
+	translationMatrix[3].z = z;
 }
 
 void Matrices::setScalingMatrix(glm::mat4 scalingMatrix) {
@@ -66,10 +88,29 @@ void Matrices::setScalingMatrix(glm::mat4 scalingMatrix) {
 }
 
 void Matrices::setScalingMatrix(glm::vec3 scale) {
-	scalingMatrix = glm::mat4(1.0f);
+	Matrices::scale = scale;
 	scalingMatrix[0].x = scale.x;
 	scalingMatrix[1].y = scale.y;
 	scalingMatrix[2].z = scale.z;
+}
+
+void Matrices::setScalingMatrixX(GLfloat x) {
+	scale.x = x;
+	scalingMatrix[0].x = x;
+}
+
+void Matrices::setScalingMatrixY(GLfloat y) {
+	scale.y = y;
+	scalingMatrix[1].y = y;
+}
+
+void Matrices::setScalingMatrixZ(GLfloat z) {
+	scale.z = z;
+	scalingMatrix[2].z = z;
+}
+
+void Matrices::setRotationMatrix() {
+	rotationMatrix = rotationXMatrix * rotationYMatrix * rotationZMatrix;
 }
 
 void Matrices::setRotationMatrix(glm::mat4 rotationMatrix) {
@@ -83,6 +124,25 @@ void Matrices::setRotationMatrix(glm::vec3 rotation) {
 	setRotationZMatrix(rotation.z);
 	rotationMatrix = rotationXMatrix * rotationYMatrix * rotationZMatrix;
 }
+
+void Matrices::setRotationMatrixX(GLfloat x) {
+	rotation.x = x;
+	setRotationXMatrix(x);
+	rotationMatrix = rotationXMatrix * rotationYMatrix * rotationZMatrix;
+}
+
+void Matrices::setRotationMatrixY(GLfloat y) {
+	rotation.y = y;
+	setRotationYMatrix(y);
+	rotationMatrix = rotationXMatrix * rotationYMatrix * rotationZMatrix;
+}
+
+void Matrices::setRotationMatrixZ(GLfloat z) {
+	rotation.z = z;
+	setRotationZMatrix(z);
+	rotationMatrix = rotationXMatrix * rotationYMatrix * rotationZMatrix;
+}
+
 void Matrices::setRotationXMatrix(GLfloat x) {
 	rotationXMatrix = glm::mat4(1.0f);
 	rotation.x = x;
