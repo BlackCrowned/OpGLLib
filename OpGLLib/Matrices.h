@@ -22,6 +22,12 @@ public:
 	void setPerspectiveMatrix(gl::GLfloat foV, gl::GLfloat zNear, gl::GLfloat zFar);
 	void setPerspectiveMatrix(gl::GLfloat foV, gl::GLfloat aspectRatio, gl::GLfloat zNear, gl::GLfloat zFar);
 	void setPerspectiveMatrix(glm::vec2 frustumScale, gl::GLfloat zNear, gl::GLfloat zFar);
+	void updatePerspectiveMatrix();
+
+	void setFoV(gl::GLfloat foV);
+	void setAspectRatio(gl::GLfloat aspectRatio);
+	void setZNear(gl::GLfloat zNear);
+	void setZFar(gl::GLfloat zFar);
 
 	void setTranslationMatrix(glm::mat4 translationMatrix);
 	void setTranslationMatrix(glm::vec3 offset);
@@ -63,6 +69,10 @@ private:
 	glm::mat4 rotationYMatrix;
 	glm::mat4 rotationZMatrix;
 
+	gl::GLfloat foV;
+	gl::GLfloat aspectRatio;
+	gl::GLfloat zNear;
+	gl::GLfloat zFar;
 	glm::vec3 offset, scale, rotation;
 };
 
