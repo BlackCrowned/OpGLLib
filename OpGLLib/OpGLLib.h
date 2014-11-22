@@ -11,6 +11,7 @@
 #include <OpGLLib/internal.h>
 #include <OpGLLib/LoadShaders.h>
 #include <OpGLLib/Matrices.h>
+#include <OpGLLib/Transformation.h>
 
 class OpGLLib {
 public:
@@ -26,6 +27,7 @@ public:
 
 	LoadShaders loadShaders;
 	Matrices matrices;
+	Transformation transformation;
 private:
 };
 
