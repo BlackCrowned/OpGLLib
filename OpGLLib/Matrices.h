@@ -46,13 +46,13 @@ public:
 	void setRotationYMatrix(gl::GLfloat y);
 	void setRotationZMatrix(gl::GLfloat z);
 
-	glm::mat4 *getPerspectiveMatrix();
+	glm::mat4 getPerspectiveMatrix();
 
-	glm::mat4 *getTranslationMatrix();
+	glm::mat4 getTranslationMatrix();
 
-	glm::mat4 *getScalingMatrix();
+	glm::mat4 getScalingMatrix();
 
-	glm::mat4 *getRotationMatrix();
+	glm::mat4 getRotationMatrix();
 
 private:
 	glm::mat4 perspectiveMatrix;

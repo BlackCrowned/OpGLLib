@@ -170,18 +170,18 @@ void Matrices::setRotationZMatrix(GLfloat z) {
 	rotationZMatrix[1].y = cos(z);
 }
 
-glm::mat4 *Matrices::getPerspectiveMatrix() {
-	return &perspectiveMatrix;
+glm::mat4 Matrices::getPerspectiveMatrix() {
+	return perspectiveMatrix;
 }
 
-glm::mat4 *Matrices::getTranslationMatrix() {
-	return &translationMatrix;
+glm::mat4 Matrices::getTranslationMatrix() {
+	return translationMatrix;
 }
 
-glm::mat4 *Matrices::getScalingMatrix() {
-	return &scalingMatrix;
+glm::mat4 Matrices::getScalingMatrix() {
+	return scalingMatrix;
 }
 
-glm::mat4 *Matrices::getRotationMatrix() {
-	return &rotationMatrix;
+glm::mat4 Matrices::getRotationMatrix() {
+	return rotationMatrix;
 }
