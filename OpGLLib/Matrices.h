@@ -28,6 +28,11 @@ public:
 
 	void setScalingMatrix(glm::mat4 scalingMatrix);
 	void setScalingMatrix(glm::vec3 scale);
+	void setRotationMatrix(glm::mat4 rotationMatrix);
+	void setRotationMatrix(glm::vec3 rotation);
+	void setRotationXMatrix(gl::GLfloat x);
+	void setRotationYMatrix(gl::GLfloat y);
+	void setRotationZMatrix(gl::GLfloat z);
 
 	glm::mat4 *getPerspectiveMatrix();
 
@@ -35,10 +40,15 @@ public:
 
 	glm::mat4 *getScalingMatrix();
 
+	glm::mat4 *getRotationMatrix();
 private:
 	glm::mat4 perspectiveMatrix;
 	glm::mat4 translationMatrix;
 	glm::mat4 scalingMatrix;
+	glm::mat4 rotationMatrix;
+	glm::mat4 rotationXMatrix;
+	glm::mat4 rotationYMatrix;
+	glm::mat4 rotationZMatrix;
 };
 
 #endif /* OPGLLIB_MATRICES_H_ */
