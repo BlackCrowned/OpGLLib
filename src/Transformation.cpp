@@ -85,6 +85,23 @@ glm::mat4 Transformation::getTransformationMatrix(bool noPerspectiveTransform) {
 	return matrices->getPerspectiveMatrix() * transformationMatrix;
 }
 
+void Transformation::pushMatrix() {
+	matrixStack.push(transformationMatrix);
+	matricesStack.push(*matrices);
+}
+
+void Transformation::popMatrix() {
+	transformationMatrix = matrixStack.top();
+	matrixStack.pop();
+	*matrices = matricesStack.top();
+	matricesStack.pop();
+}
+
+void Transformation::seekMatrix() {
+	transformationMatrix = matrixStack.top();
+	*matrices = matricesStack.top();
+}
+
 void Transformation::translate(glm::vec3 offset) {
 	matrices->setTranslationMatrix(offset);
 	transformationMatrix = matrices->getTranslationMatrix() * transformationMatrix;

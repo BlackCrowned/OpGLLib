@@ -35,6 +35,10 @@ public:
 	void updateTransformationMatrix(MultiplicationOrder = SRT);
 	glm::mat4 getTransformationMatrix(bool noPerspectiveTransform = false);
 
+	void pushMatrix();
+	void popMatrix();
+	void seekMatrix();
+
 	void translate(glm::vec3 offset);
 	void translateX(gl::GLfloat x);
 	void translateY(gl::GLfloat y);
@@ -54,6 +58,8 @@ private:
 	bool handleInitialized;
 	Matrices *matrices;
 	glm::mat4 transformationMatrix;
+	std::stack<glm::mat4> matrixStack;
+	std::stack<Matrices> matricesStack;
 };
 
 #endif /* OPGLLIB_TRANSFORMATION_H_ */
