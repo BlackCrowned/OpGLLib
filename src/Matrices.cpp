@@ -139,14 +139,14 @@ void Matrices::setRotationZMatrix(GLfloat z) {
 	rotationZMatrix[1].y = cos(z);
 }
 
-glm::mat4 Matrices::getTranslationMatrix() {
+const glm::mat4& Matrices::getTranslationMatrix() {
 	return translationMatrix;
 }
 
-glm::mat4 Matrices::getScalingMatrix() {
+const glm::mat4& Matrices::getScalingMatrix() {
 	return scalingMatrix;
 }
 
-glm::mat4 Matrices::getRotationMatrix() {
+const glm::mat4& Matrices::getRotationMatrix() {
 	return rotationMatrix;
 }
