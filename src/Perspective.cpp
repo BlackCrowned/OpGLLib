@@ -23,6 +23,34 @@ Perspective::Perspective() {
 	updatePerspectiveMatrix();
 }
 
+Perspective::Perspective(GLfloat foV, GLfloat aspectRatio, GLfloat zNear, GLfloat zFar) {
+	perspectiveMatrix = glm::mat4(0);
+
+	Perspective::foV = foV;
+	Perspective::aspectRatio = aspectRatio;
+	Perspective::frustumScale = glm::vec2(1.0f, 1.0f);
+	Perspective::zNear = zNear;
+	Perspective::zFar = zFar;
+
+	useFoV = true;
+
+	updatePerspectiveMatrix();
+}
+
+Perspective::Perspective(glm::vec2 frustumScale, GLfloat aspectRatio, GLfloat zNear, GLfloat zFar) {
+	perspectiveMatrix = glm::mat4(0);
+
+	Perspective::foV = 45.0f;
+	Perspective::aspectRatio = aspectRatio;
+	Perspective::frustumScale = frustumScale;
+	Perspective::zNear = zNear;
+	Perspective::zFar = zFar;
+
+	useFoV = false;
+
+	updatePerspectiveMatrix();
+}
+
 Perspective::~Perspective() {
 
 }

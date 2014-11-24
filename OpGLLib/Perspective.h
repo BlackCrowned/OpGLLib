@@ -13,6 +13,8 @@
 class Perspective {
 public:
 	Perspective();
+	Perspective(gl::GLfloat foV, gl::GLfloat aspectRatio = 1.0f, gl::GLfloat zNear = 1.0f, gl::GLfloat zFar = 500.0f);
+	Perspective(glm::vec2 frustumScale, gl::GLfloat aspectRatio = 1.0f, gl::GLfloat zNear = 1.0f, gl::GLfloat zFar = 500.0f);
 	~Perspective();
 
 	glm::vec2 calcFrustumScale(gl::GLfloat foV);
