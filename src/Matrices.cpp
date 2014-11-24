@@ -20,11 +20,14 @@ Matrices::Matrices() {
 
 	foV = 45.0f;
 	aspectRatio = 1.0f;
+	frustumScale = glm::vec2(1.0f, 1.0f);
 	zNear = 1.0f;
 	zFar = 500.0f;
 	offset = glm::vec3(0.0f, 0.0f, 0.0f);
 	scale = glm::vec3 (1.0f, 1.0f, 1.0f);
 	rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+
+	useFoV = true;
 
 	updatePerspectiveMatrix();
 }
@@ -59,6 +62,7 @@ void Matrices::setPerspectiveMatrix(GLfloat foV, GLfloat aspectRatio, GLfloat zN
 }
 
 void Matrices::setPerspectiveMatrix(glm::vec2 frustumScale, GLfloat zNear, GLfloat zFar) {
+	Matrices::frustumScale = frustumScale;
 	Matrices::zNear = zNear;
 	Matrices::zFar = zFar;
 	perspectiveMatrix[0].x = frustumScale.x;
@@ -69,7 +73,14 @@ void Matrices::setPerspectiveMatrix(glm::vec2 frustumScale, GLfloat zNear, GLflo
 }
 
 void Matrices::updatePerspectiveMatrix() {
-	glm::vec2 frustumScale = calcFrustumScale(foV, aspectRatio);
+	glm::vec2 frustumScale;
+	if (useFoV) {
+		frustumScale = calcFrustumScale(foV, aspectRatio);
+	}
+	else {
+		frustumScale = Matrices::frustumScale;
+		frustumScale.x /= aspectRatio;
+	}
 	perspectiveMatrix[0].x = frustumScale.x;
 	perspectiveMatrix[1].y = frustumScale.y;
 	perspectiveMatrix[2].z = (zFar + zNear) / (zNear - zFar);
@@ -83,6 +94,12 @@ void Matrices::setAspectRatio(GLfloat aspectRatio) {
 
 void Matrices::setFoV(GLfloat foV) {
 	Matrices::foV = foV;
+	useFoV = true;
+}
+
+void Matrices::setFrustumScale(glm::vec2 frustumScale) {
+	Matrices::frustumScale = frustumScale;
+	useFoV = false;
 }
 
 void Matrices::setZNear(GLfloat zNear) {

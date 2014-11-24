@@ -26,6 +26,7 @@ public:
 
 	void setFoV(gl::GLfloat foV);
 	void setAspectRatio(gl::GLfloat aspectRatio);
+	void setFrustumScale(glm::vec2 frustumScale);
 	void setZNear(gl::GLfloat zNear);
 	void setZFar(gl::GLfloat zFar);
 
@@ -71,9 +72,12 @@ private:
 
 	gl::GLfloat foV;
 	gl::GLfloat aspectRatio;
+	glm::vec2 frustumScale;
 	gl::GLfloat zNear;
 	gl::GLfloat zFar;
 	glm::vec3 offset, scale, rotation;
+
+	bool useFoV;
 };
 
 #endif /* OPGLLIB_MATRICES_H_ */
