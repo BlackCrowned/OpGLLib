@@ -67,8 +67,7 @@ void Perspective::updatePerspectiveMatrix() {
 	glm::vec2 frustumScale;
 	if (useFoV) {
 		frustumScale = calcFrustumScale(foV, aspectRatio);
-	}
-	else {
+	} else {
 		frustumScale = Perspective::frustumScale;
 		frustumScale.x /= aspectRatio;
 	}

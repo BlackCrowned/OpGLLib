@@ -10,7 +10,7 @@
 
 #include <OpGLLib/internal.h>
 
-class  Matrices {
+class Matrices {
 public:
 	Matrices();
 	~Matrices();

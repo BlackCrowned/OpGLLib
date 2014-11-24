@@ -14,18 +14,11 @@
 #include <OpGLLib/Camera.h>
 
 enum MultiplicationOrder {
-	SRT = 0x1,
-	RST = 0x2,
-	RTS = 0x4,
-	STR = 0x8,
-	TSR = 0x10,
-	TRS = 0x20,
+	SRT = 0x1, RST = 0x2, RTS = 0x4, STR = 0x8, TSR = 0x10, TRS = 0x20,
 };
 
 enum HandleType {
-	MATRICES,
-	PERSPECTIVE,
-	CAMERA
+	MATRICES, PERSPECTIVE, CAMERA
 };
 
 class Transformation {

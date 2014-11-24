@@ -7,9 +7,10 @@
 
 #include <OpGLLib/Camera.h>
 
-Camera::Camera() : Matrices(){
+Camera::Camera() :
+		Matrices() {
 
-};
+}
 
 Camera::~Camera() {
 

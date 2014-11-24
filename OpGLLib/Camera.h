@@ -11,7 +11,7 @@
 #include <OpGLLib/internal.h>
 #include <OpGLLib/Matrices.h>
 
-class Camera : private Matrices{
+class Camera: private Matrices {
 public:
 	Camera();
 	~Camera();
@@ -19,7 +19,5 @@ public:
 private:
 
 };
-
-
 
 #endif /* OPGLLIB_CAMERA_H_ */

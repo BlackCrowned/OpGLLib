@@ -60,7 +60,7 @@ void Transformation::setHandle(Camera *newHandle) {
 }
 
 void *Transformation::getHandle(HandleType handleType) {
-	switch(handleType) {
+	switch (handleType) {
 	case MATRICES:
 		return matrices;
 	case PERSPECTIVE:
@@ -74,7 +74,7 @@ void *Transformation::getHandle(HandleType handleType) {
 }
 
 void Transformation::deleteHandle(HandleType handleType) {
-	switch(handleType) {
+	switch (handleType) {
 	case MATRICES:
 		handleInitialized[MATRICES] = false;
 		delete matrices;
