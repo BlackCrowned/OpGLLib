@@ -15,21 +15,6 @@ public:
 	Matrices();
 	~Matrices();
 
-	glm::vec2 calcFrustumScale(gl::GLfloat foV);
-	glm::vec2 calcFrustumScale(gl::GLfloat foV, gl::GLfloat aspectRatio);
-
-	void setPerspectiveMatrix(glm::mat4 perspectiveMatrix);
-	void setPerspectiveMatrix(gl::GLfloat foV, gl::GLfloat zNear, gl::GLfloat zFar);
-	void setPerspectiveMatrix(gl::GLfloat foV, gl::GLfloat aspectRatio, gl::GLfloat zNear, gl::GLfloat zFar);
-	void setPerspectiveMatrix(glm::vec2 frustumScale, gl::GLfloat zNear, gl::GLfloat zFar);
-	void updatePerspectiveMatrix();
-
-	void setFoV(gl::GLfloat foV);
-	void setAspectRatio(gl::GLfloat aspectRatio);
-	void setFrustumScale(glm::vec2 frustumScale);
-	void setZNear(gl::GLfloat zNear);
-	void setZFar(gl::GLfloat zFar);
-
 	void setTranslationMatrix(glm::mat4 translationMatrix);
 	void setTranslationMatrix(glm::vec3 offset);
 	void setTranslationMatrixX(gl::GLfloat x);
@@ -53,8 +38,6 @@ public:
 	void setRotationYMatrix(gl::GLfloat y);
 	void setRotationZMatrix(gl::GLfloat z);
 
-	glm::mat4 getPerspectiveMatrix();
-
 	glm::mat4 getTranslationMatrix();
 
 	glm::mat4 getScalingMatrix();
@@ -62,7 +45,6 @@ public:
 	glm::mat4 getRotationMatrix();
 
 private:
-	glm::mat4 perspectiveMatrix;
 	glm::mat4 translationMatrix;
 	glm::mat4 scalingMatrix;
 	glm::mat4 rotationMatrix;
@@ -70,14 +52,7 @@ private:
 	glm::mat4 rotationYMatrix;
 	glm::mat4 rotationZMatrix;
 
-	gl::GLfloat foV;
-	gl::GLfloat aspectRatio;
-	glm::vec2 frustumScale;
-	gl::GLfloat zNear;
-	gl::GLfloat zFar;
 	glm::vec3 offset, scale, rotation;
-
-	bool useFoV;
 };
 
 #endif /* OPGLLIB_MATRICES_H_ */

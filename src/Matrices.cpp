@@ -10,7 +10,6 @@
 using namespace gl;
 
 Matrices::Matrices() {
-	perspectiveMatrix = glm::mat4(0);
 	translationMatrix = glm::mat4(1.0f);
 	scalingMatrix = glm::mat4(1.0f);
 	rotationMatrix = glm::mat4(1.0f);
@@ -18,96 +17,13 @@ Matrices::Matrices() {
 	rotationYMatrix = glm::mat4(1.0f);
 	rotationZMatrix = glm::mat4(1.0f);
 
-	foV = 45.0f;
-	aspectRatio = 1.0f;
-	frustumScale = glm::vec2(1.0f, 1.0f);
-	zNear = 1.0f;
-	zFar = 500.0f;
 	offset = glm::vec3(0.0f, 0.0f, 0.0f);
 	scale = glm::vec3 (1.0f, 1.0f, 1.0f);
 	rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-
-	useFoV = true;
-
-	updatePerspectiveMatrix();
 }
 
 Matrices::~Matrices() {
 
-}
-
-glm::vec2 Matrices::calcFrustumScale(GLfloat foV) {
-	Matrices::foV = foV;
-	GLfloat foVRad = glm::radians(foV);
-	return glm::vec2(1.0f / glm::tan(foVRad / 2.0f), 1.0f / glm::tan(foVRad / 2.0f));
-}
-
-glm::vec2 Matrices::calcFrustumScale(GLfloat foV, GLfloat aspectRatio) {
-	Matrices::foV = foV;
-	Matrices::aspectRatio = aspectRatio;
-	GLfloat foVRad = glm::radians(foV);
-	return glm::vec2(1.0f / glm::tan(foVRad / 2.0f) / aspectRatio, 1.0f / glm::tan(foVRad / 2.0f));
-}
-
-void Matrices::setPerspectiveMatrix(glm::mat4 perspectiveMatrix) {
-	Matrices::perspectiveMatrix = perspectiveMatrix;
-}
-
-void Matrices::setPerspectiveMatrix(GLfloat foV, GLfloat zNear, GLfloat zFar) {
-	setPerspectiveMatrix(calcFrustumScale(foV), zNear, zFar);
-}
-
-void Matrices::setPerspectiveMatrix(GLfloat foV, GLfloat aspectRatio, GLfloat zNear, GLfloat zFar) {
-	setPerspectiveMatrix(calcFrustumScale(foV, aspectRatio), zNear, zFar);
-}
-
-void Matrices::setPerspectiveMatrix(glm::vec2 frustumScale, GLfloat zNear, GLfloat zFar) {
-	Matrices::frustumScale = frustumScale;
-	Matrices::zNear = zNear;
-	Matrices::zFar = zFar;
-	perspectiveMatrix[0].x = frustumScale.x;
-	perspectiveMatrix[1].y = frustumScale.y;
-	perspectiveMatrix[2].z = (zFar + zNear) / (zNear - zFar);
-	perspectiveMatrix[3].z = (2 * zFar * zNear) / (zNear - zFar);
-	perspectiveMatrix[2].w = -1.0f;
-}
-
-void Matrices::updatePerspectiveMatrix() {
-	glm::vec2 frustumScale;
-	if (useFoV) {
-		frustumScale = calcFrustumScale(foV, aspectRatio);
-	}
-	else {
-		frustumScale = Matrices::frustumScale;
-		frustumScale.x /= aspectRatio;
-	}
-	perspectiveMatrix[0].x = frustumScale.x;
-	perspectiveMatrix[1].y = frustumScale.y;
-	perspectiveMatrix[2].z = (zFar + zNear) / (zNear - zFar);
-	perspectiveMatrix[3].z = (2 * zFar * zNear) / (zNear - zFar);
-	perspectiveMatrix[2].w = -1.0f;
-}
-
-void Matrices::setAspectRatio(GLfloat aspectRatio) {
-	Matrices::aspectRatio = aspectRatio;
-}
-
-void Matrices::setFoV(GLfloat foV) {
-	Matrices::foV = foV;
-	useFoV = true;
-}
-
-void Matrices::setFrustumScale(glm::vec2 frustumScale) {
-	Matrices::frustumScale = frustumScale;
-	useFoV = false;
-}
-
-void Matrices::setZNear(GLfloat zNear) {
-	Matrices::zNear = zNear;
-}
-
-void Matrices::setZFar(GLfloat zFar) {
-	Matrices::zFar = zFar;
 }
 
 void Matrices::setTranslationMatrix(glm::mat4 translationMatrix) {
@@ -221,10 +137,6 @@ void Matrices::setRotationZMatrix(GLfloat z) {
 	rotationZMatrix[1].x = -sin(z);
 	rotationZMatrix[0].y = sin(z);
 	rotationZMatrix[1].y = cos(z);
-}
-
-glm::mat4 Matrices::getPerspectiveMatrix() {
-	return perspectiveMatrix;
 }
 
 glm::mat4 Matrices::getTranslationMatrix() {

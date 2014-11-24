@@ -12,36 +12,84 @@ using namespace std;
 
 Transformation::Transformation() {
 	transformationMatrix = glm::mat4(1.0f);
-	handleInitialized = true;
-	Transformation::matrices = new Matrices();
+	handleInitialized[MATRICES] = handleInitialized[PERSPECTIVE] = handleInitialized[CAMERA] = true;
+	matrices = new Matrices();
+	perspective = new Perspective();
+	camera = new Camera();
 }
 
-Transformation::Transformation(Matrices *matrices) {
+Transformation::Transformation(Matrices *matrices, Perspective *perspective, Camera *camera) {
 	transformationMatrix = glm::mat4(1.0f);
-	handleInitialized = false;
+	handleInitialized[MATRICES] = handleInitialized[PERSPECTIVE] = handleInitialized[CAMERA] = false;
 	Transformation::matrices = matrices;
+	Transformation::perspective = perspective;
+	Transformation::camera = camera;
 }
 
 Transformation::~Transformation() {
-	if (handleInitialized) {
-		deleteMatricesHandle();
+	if (handleInitialized[MATRICES]) {
+		deleteHandle(MATRICES);
+	}
+	if (handleInitialized[PERSPECTIVE]) {
+		deleteHandle(PERSPECTIVE);
+	}
+	if (handleInitialized[CAMERA]) {
+		deleteHandle(CAMERA);
 	}
 }
 
-void Transformation::setMatricesHandle(Matrices *newHandle) {
-	if (handleInitialized) {
-		deleteMatricesHandle();
+void Transformation::setHandle(Matrices *newHandle) {
+	if (handleInitialized[MATRICES]) {
+		deleteHandle(MATRICES);
 	}
 	matrices = newHandle;
 }
 
-Matrices *Transformation::getMatricesHandle() {
-	return matrices;
+void Transformation::setHandle(Perspective *newHandle) {
+	if (handleInitialized[PERSPECTIVE]) {
+		deleteHandle(PERSPECTIVE);
+	}
+	perspective = newHandle;
 }
 
-void Transformation::deleteMatricesHandle() {
-	handleInitialized = false;
-	delete matrices;
+void Transformation::setHandle(Camera *newHandle) {
+	if (handleInitialized[CAMERA]) {
+		deleteHandle(CAMERA);
+	}
+	camera = newHandle;
+}
+
+void *Transformation::getHandle(HandleType handleType) {
+	switch(handleType) {
+	case MATRICES:
+		return matrices;
+	case PERSPECTIVE:
+		return perspective;
+	case CAMERA:
+		return camera;
+	default:
+		cerr << "HandleType: " << handleType << " not defined!" << endl;
+		return NULL;
+	}
+}
+
+void Transformation::deleteHandle(HandleType handleType) {
+	switch(handleType) {
+	case MATRICES:
+		handleInitialized[MATRICES] = false;
+		delete matrices;
+		break;
+	case PERSPECTIVE:
+		handleInitialized[PERSPECTIVE] = false;
+		delete perspective;
+		break;
+	case CAMERA:
+		handleInitialized[CAMERA] = false;
+		delete camera;
+		break;
+	default:
+		cerr << "HandleType: " << handleType << " not defined!";
+	}
 }
 
 void Transformation::setTransformationMatrix(glm::mat4 transformationMatrix) {
@@ -53,7 +101,7 @@ void Transformation::resetTransformationMatrix() {
 }
 
 void Transformation::updateTransformationMatrix(MultiplicationOrder multiplicationOrder) {
-	switch(multiplicationOrder) {
+	switch (multiplicationOrder) {
 	case TRS:
 		transformationMatrix = matrices->getScalingMatrix() * matrices->getRotationMatrix() * matrices->getTranslationMatrix();
 		break;
@@ -82,7 +130,7 @@ glm::mat4 Transformation::getTransformationMatrix(bool noPerspectiveTransform) {
 	if (noPerspectiveTransform) {
 		return transformationMatrix;
 	}
-	return matrices->getPerspectiveMatrix() * transformationMatrix;
+	return perspective->getPerspectiveMatrix() * transformationMatrix;
 }
 
 void Transformation::pushMatrix() {

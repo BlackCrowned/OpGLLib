@@ -11,6 +11,8 @@
 #include <OpGLLib/internal.h>
 #include <OpGLLib/LoadShaders.h>
 #include <OpGLLib/Matrices.h>
+#include <OpGLLib/Perspective.h>
+#include <OpGLLib/Camera.h>
 #include <OpGLLib/Transformation.h>
 
 class OpGLLib {
@@ -27,6 +29,8 @@ public:
 
 	LoadShaders loadShaders;
 	Matrices matrices;
+	Perspective perspective;
+	Camera camera;
 	Transformation transformation;
 private:
 };

@@ -10,6 +10,8 @@
 
 #include <OpGLLib/internal.h>
 #include <OpGLLib/Matrices.h>
+#include <OpGLLib/Perspective.h>
+#include <OpGLLib/Camera.h>
 
 enum MultiplicationOrder {
 	SRT = 0x1,
@@ -20,15 +22,23 @@ enum MultiplicationOrder {
 	TRS = 0x20,
 };
 
+enum HandleType {
+	MATRICES,
+	PERSPECTIVE,
+	CAMERA
+};
+
 class Transformation {
 public:
 	Transformation();
-	Transformation(Matrices *matrices);
+	Transformation(Matrices *matrices, Perspective *perspective, Camera *camera);
 	~Transformation();
 
-	void setMatricesHandle(Matrices *newHandle);
-	Matrices *getMatricesHandle();
-	void deleteMatricesHandle();
+	void setHandle(Matrices *newHandle);
+	void setHandle(Perspective *newHandle);
+	void setHandle(Camera *newHandle);
+	void *getHandle(HandleType handleType);
+	void deleteHandle(HandleType handleType);
 
 	void setTransformationMatrix(glm::mat4 transformationMatrix);
 	void resetTransformationMatrix();
@@ -55,8 +65,11 @@ public:
 	void rotateZ(gl::GLfloat z);
 
 private:
-	bool handleInitialized;
+	std::map<HandleType, bool> handleInitialized;
 	Matrices *matrices;
+	Perspective *perspective;
+	Camera *camera;
+
 	glm::mat4 transformationMatrix;
 	std::stack<glm::mat4> matrixStack;
 	std::stack<Matrices> matricesStack;
