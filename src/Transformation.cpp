@@ -209,3 +209,7 @@ void Transformation::rotateZ(GLfloat z) {
 	matrices->setRotationMatrixZ(z);
 	transformationMatrix = matrices->getRotationMatrix() * transformationMatrix;
 }
+
+void Transformation::addMatrix(glm::mat4 matrix) {
+	transformationMatrix = matrix * transformationMatrix;
+}

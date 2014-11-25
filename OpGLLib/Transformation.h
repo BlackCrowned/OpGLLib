@@ -57,6 +57,8 @@ public:
 	void rotateY(gl::GLfloat y);
 	void rotateZ(gl::GLfloat z);
 
+	void addMatrix(glm::mat4 matrix);
+
 private:
 	std::map<HandleType, bool> handleInitialized;
 	Matrices *matrices;
