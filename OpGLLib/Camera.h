@@ -25,7 +25,8 @@ public:
 	void translateY(gl::GLfloat y);
 	void translateZ(gl::GLfloat z);
 
-	void lookAt(glm::vec3 pos, glm::vec3 forward, glm::vec3 upward);
+	void lookAt(glm::vec3 pos);
+	void lookAt(glm::vec3 pos, glm::vec3 forward, glm::vec3 upward, glm::vec3 right);
 
 	const glm::mat4& getCameraMatrix();
 
