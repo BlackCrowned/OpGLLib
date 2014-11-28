@@ -9,8 +9,6 @@
 #define OPGLLIB_DEBUG_H_
 
 #include <OpGLLib/internal.h>
-#include <typeindex>
-#include <iomanip>
 
 class Debug{
 public:
@@ -28,7 +26,7 @@ public:
 	void log(unsigned int& type, std::string name = "");
 	void log(float& type, std::string name = "");
 	void log(char& type, std::string name = "");
-	void log(char *& type, std::string name = "");
+	void log(char * type, std::string name = "");
 	void log(std::string& type, std::string name = "");
 	void log(glm::vec2& type, std::string name = "");
 	void log(glm::vec3& type, std::string name = "");
@@ -36,6 +34,9 @@ public:
 	void log(glm::mat3& type, std::string name = "");
 	void log(glm::mat4& type, std::string name = "");
 private:
+	void print(std::string name, std::string type, std::string data, std::string address);
+	void print(std::string name, std::string type, float* data, int colums);
+	void print(std::string name, std::string type, float* data, int rows, int colums);
 	static bool logging;
 	static bool limiters;
 	static std::string limiter;

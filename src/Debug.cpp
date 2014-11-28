@@ -10,7 +10,7 @@
 using namespace std;
 
 bool Debug::logging = false;
-bool Debug::limiters = true;
+bool Debug::limiters = false;
 string Debug::limiter = "---";
 
 Debug::Debug() {
@@ -43,119 +43,156 @@ void Debug::log(bool& type, string name) {
 	if (!logging) {
 		return;
 	}
-	showLimiter();
-	cout << boolalpha << name << "[bool]: " << type << " @" << &type << endl;
-	showLimiter();
+	stringstream data, adress;
+	data << type;
+	adress << &type;
+	print(name, "bool", data.str(), adress.str());
 }
 
 void Debug::log(int& type, string name) {
 	if (!logging) {
 		return;
 	}
-	showLimiter();
-	cout << name << "[int]: " << type << " @" << &type << endl;
-	showLimiter();
+	stringstream data, adress;
+	data << type;
+	adress << &type;
+	print(name, "int", data.str(), adress.str());
 }
 
 void Debug::log(unsigned int& type, string name) {
 	if (!logging) {
 		return;
 	}
-	showLimiter();
-	cout << name << "[uint]: " << type << " @" << &type << endl;
-	showLimiter();
+	stringstream data, adress;
+	data << type;
+	adress << &type;
+	print(name, "uint", data.str(), adress.str());
 }
 
 void Debug::log(float& type, string name) {
 	if (!logging) {
 		return;
 	}
-	showLimiter();
-	cout << name << "[float]: " << type << " @" << &type << endl;
-	showLimiter();
+	stringstream data, adress;
+	data << type;
+	adress << &type;
+	print(name, "float", data.str(), adress.str());
 }
 
 void Debug::log(char& type, string name) {
 	if (!logging) {
 		return;
 	}
-	showLimiter();
-	cout << name << "[char]: " << type << " @" << &type << endl;
-	showLimiter();
+	stringstream data, adress;
+	data << type;
+	adress << &type;
+	print(name, "char", data.str(), adress.str());
 }
 
-void Debug::log(char*& type, string name) {
+void Debug::log(char* type, string name) {
 	if (!logging) {
 		return;
 	}
-	showLimiter();
-	cout << name << "[char*]: " << type << " @" << &type << endl;
-	showLimiter();
+	stringstream data, adress;
+	data << type;
+	adress << static_cast<const void *>(&type);
+	print(name, "char*", data.str(), adress.str());
 }
 
 void Debug::log(string& type, string name) {
 	if (!logging) {
 		return;
 	}
-	showLimiter();
-	cout << name << "[string]: " << type << " @" << &type << endl;
-	showLimiter();
+	stringstream data, adress;
+	data << type;
+	adress << static_cast<const void *>(&type);
+	print(name, "string", data.str(), adress.str());
 }
 
 void Debug::log(glm::vec2& type, string name) {
 	if (!logging) {
 		return;
 	}
-	showLimiter();
-	cout << name << "[vec2]: (" << type.x << "|" << type.y << ") @" << &type << endl;
-	showLimiter();
+	float* data = glm::value_ptr(type);
+	print(name, "vec2", data, 2);
 }
 
 void Debug::log(glm::vec3& type, string name) {
 	if (!logging) {
 		return;
 	}
-	showLimiter();
-	cout << name << "[vec3]: (" << type.x << "|" << type.y << "|" << type.z << ") @" << &type << endl;
-	showLimiter();
+	float* data = glm::value_ptr(type);
+	print(name, "vec3", data, 3);
 }
 
 void Debug::log(glm::vec4& type, string name) {
 	if (!logging) {
 		return;
 	}
-	showLimiter();
-	cout << name << "[vec4]: (" << type.x << "|" << type.y << "|" << type.z << "|" << type.w << ") @" << &type << endl;
-	showLimiter();
+	float* data = glm::value_ptr(type);
+	print(name, "vec4", data, 4);
 }
 
 void Debug::log(glm::mat3& type, string name) {
 	if (!logging) {
 		return;
 	}
-	showLimiter();
-	cout << showpoint << setprecision(3);
-	cout << name << "[mat3]:" << endl;
-	cout << "   1    2    3" << endl;
-	cout << "X  " << type[0].x << " " << type[1].x << " " << type[2].x << endl;
-	cout << "Y  " << type[0].y << " " << type[1].y << " " << type[2].y << endl;
-	cout << "Z  " << type[0].z << " " << type[1].z << " " << type[2].z << endl;
-	cout << "-----------------" << endl;
-	showLimiter();
+	float *array = glm::value_ptr(type);
+	print(name, "mat3", array, 3, 3);
 }
 
 void Debug::log(glm::mat4& type, string name) {
 	if (!logging) {
 		return;
 	}
+	float *array = glm::value_ptr(type);
+	print(name, "mat3", array, 4, 4);
+}
+
+void Debug::print(string name, string type, std::string data, std::string adress) {
 	showLimiter();
-	cout << showpoint << setprecision(3);
-	cout << name << "[mat3]:" << endl;
-	cout << "   1    2    3    4" << endl;
-	cout << "X  " << type[0].x << " " << type[1].x << " " << type[2].x << " " << type[3].x << endl;
-	cout << "Y  " << type[0].y << " " << type[1].y << " " << type[2].y << " " << type[3].y << endl;
-	cout << "Z  " << type[0].z << " " << type[1].z << " " << type[2].z << " " << type[3].z << endl;
-	cout << "W  " << type[0].w << " " << type[1].w << " " << type[2].w << " " << type[3].w << endl;
-	cout << "----------------------" << endl;
+	if (name == "") {
+		cout << fixed << setprecision(1) << boolalpha << "[" + type + "]: " << data << " [@" << adress << "]" << endl;
+	} else {
+		cout << fixed << setprecision(1) << boolalpha << name << " [" + type + "]: " << data << " [@" << adress << "]" << endl;
+	}
+	showLimiter();
+}
+
+void Debug::print(string name, string type, float* data, int colums) {
+	showLimiter();
+	if (name == "") {
+		cout << "[" << type << "]: ";
+	} else {
+		cout << name << " [" << type << "]: ";
+	}
+	cout << "(";
+	for (auto i = 0; i < colums; i++) {
+		if (i == colums - 1) {
+			cout << fixed << setprecision(1) << data[i] << ")";
+			continue;
+		}
+		cout << fixed << setprecision(1) << data[i] << "|";
+	}
+	cout << " [@" << data << "]" << endl;
+	showLimiter();
+
+}
+
+void Debug::print(string name, string type, float* array, int rows, int colums) {
+	showLimiter();
+	if (name == "") {
+		cout << "[" << type << "]: [@" << array << "]" << endl;
+	} else {
+		cout << name << " [" << type << "]: [@" << array << "]" << endl;
+	}
+	cout << setfill('-') << setw(colums * 4 + 1) << "" << setfill(' ') << endl;
+	for (auto i = 0; i < rows; i++) {
+		cout << "|";
+		for (auto j = 0; j < colums; j++) {
+			cout << fixed << setprecision(1) << array[(j * 4) + i] << "|";
+		}
+		cout << endl << setfill('-') << setw(colums * 4 + 1) << "" << setfill(' ') << endl;
+	}
 	showLimiter();
 }
