@@ -14,6 +14,7 @@
 #include <OpGLLib/Perspective.h>
 #include <OpGLLib/Camera.h>
 #include <OpGLLib/Transformation.h>
+#include <OpGLLib/Debug.h>
 
 class OpGLLib {
 public:

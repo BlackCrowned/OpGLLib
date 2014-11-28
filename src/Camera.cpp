@@ -63,10 +63,9 @@ void Camera::lookAt(glm::vec3 pos, glm::vec3 forward, glm::vec3 upward, glm::vec
 	glm::vec3 noXDimension = coordinateMatrix * directionalVector;
 	noXDimension.x = 0.0f;
 
-	std::cout << directionalVector.x << " | " << directionalVector.y << " | " << directionalVector.z << std::endl;
-	std::cout << noYDimension.x << " | " << noYDimension.y << " | " << noYDimension.z << std::endl;
-	std::cout << noXDimension.x << " | " << noXDimension.y << " | " << noXDimension.z << std::endl;
-	std::cout << "-------------------------------------" << std::endl;
+	_debug.log(directionalVector, "directionalVector");
+	_debug.log(noYDimension, "noYDimension");
+	_debug.log(noXDimension, "noXDimension");
 
 	GLfloat angleY, angleX;
 	if (glm::normalize(noYDimension).x < glm::normalize(forward).x) {

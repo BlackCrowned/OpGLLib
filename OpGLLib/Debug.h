@@ -41,4 +41,6 @@ private:
 	static bool limiters;
 	static std::string limiter;
 };
+
+static Debug _debug;
 #endif /* OPGLLIB_DEBUG_H_ */

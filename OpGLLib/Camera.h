@@ -10,6 +10,7 @@
 
 #include <OpGLLib/internal.h>
 #include <OpGLLib/Matrices.h>
+#include <OpGLLib/Debug.h>
 
 class Camera: private Matrices {
 public:

@@ -6,6 +6,7 @@ OpGLLib::OpGLLib() {
 	transformation.setHandle(&matrices);
 	transformation.setHandle(&perspective);
 	transformation.setHandle(&camera);
+	_debug.enableLogging();
 }
 
 OpGLLib::OpGLLib(glbinding::ContextHandle context) {
@@ -13,6 +14,7 @@ OpGLLib::OpGLLib(glbinding::ContextHandle context) {
 	transformation.setHandle(&matrices);
 	transformation.setHandle(&perspective);
 	transformation.setHandle(&camera);
+	_debug.enableLogging();
 }
 
 void OpGLLib::setContext(glbinding::ContextHandle context) {
