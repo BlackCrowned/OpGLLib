@@ -37,10 +37,16 @@ public:
 
 	const glm::mat4& getCameraMatrix();
 
+	void pushState();
+	void popState();
+	void seekState();
+
 private:
 	glm::mat4 cameraMatrix;
 
 	glm::vec3 center, up, cameraPos;
+
+	std::stack<Camera> stateStack;
 };
 
 #endif /* OPGLLIB_CAMERA_H_ */

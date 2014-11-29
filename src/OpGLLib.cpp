@@ -3,8 +3,6 @@
 using namespace gl;
 
 OpGLLib::OpGLLib() {
-	transformation.setHandle(&perspective);
-	transformation.setHandle(&camera);
 #ifndef RElEASE
 	_debug.enableLogging();
 #endif
@@ -12,8 +10,6 @@ OpGLLib::OpGLLib() {
 
 OpGLLib::OpGLLib(glbinding::ContextHandle context) {
 	setContext(context);
-	transformation.setHandle(&perspective);
-	transformation.setHandle(&camera);
 #ifndef RElEASE
 	_debug.enableLogging();
 #endif

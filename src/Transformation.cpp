@@ -10,68 +10,13 @@
 using namespace gl;
 using namespace std;
 
-Transformation::Transformation() : Matrices(){
+Transformation::Transformation() :
+		Matrices(), Camera(), Perspective() {
 	transformationMatrix = glm::mat4(1.0f);
-	handleInitialized[PERSPECTIVE] = handleInitialized[CAMERA] = true;
-	perspective = new Perspective();
-	camera = new Camera();
-}
-
-Transformation::Transformation(Perspective *perspective, Camera *camera) : Matrices(){
-	transformationMatrix = glm::mat4(1.0f);
-	handleInitialized[PERSPECTIVE] = handleInitialized[CAMERA] = false;
-	Transformation::perspective = perspective;
-	Transformation::camera = camera;
 }
 
 Transformation::~Transformation() {
-	if (handleInitialized[PERSPECTIVE]) {
-		deleteHandle(PERSPECTIVE);
-	}
-	if (handleInitialized[CAMERA]) {
-		deleteHandle(CAMERA);
-	}
-}
 
-void Transformation::setHandle(Perspective *newHandle) {
-	if (handleInitialized[PERSPECTIVE]) {
-		deleteHandle(PERSPECTIVE);
-	}
-	perspective = newHandle;
-}
-
-void Transformation::setHandle(Camera *newHandle) {
-	if (handleInitialized[CAMERA]) {
-		deleteHandle(CAMERA);
-	}
-	camera = newHandle;
-}
-
-void *Transformation::getHandle(HandleType handleType) {
-	switch (handleType) {
-	case PERSPECTIVE:
-		return perspective;
-	case CAMERA:
-		return camera;
-	default:
-		cerr << "HandleType: " << handleType << " not defined!" << endl;
-		return NULL;
-	}
-}
-
-void Transformation::deleteHandle(HandleType handleType) {
-	switch (handleType) {
-	case PERSPECTIVE:
-		handleInitialized[PERSPECTIVE] = false;
-		delete perspective;
-		break;
-	case CAMERA:
-		handleInitialized[CAMERA] = false;
-		delete camera;
-		break;
-	default:
-		cerr << "HandleType: " << handleType << " not defined!";
-	}
 }
 
 void Transformation::setTransformationMatrix(glm::mat4 transformationMatrix) {
@@ -108,27 +53,55 @@ void Transformation::updateTransformationMatrix(MultiplicationOrder multiplicati
 	}
 }
 
-glm::mat4 Transformation::getTransformationMatrix(bool noPerspectiveTransform) {
-	if (noPerspectiveTransform) {
+glm::mat4 Transformation::getTransformationMatrix(bool noCameraTransform, bool noPerspectiveTransform) {
+	if (noPerspectiveTransform && noCameraTransform) {
 		return transformationMatrix;
+	} else if (noPerspectiveTransform) {
+		return getCameraMatrix() * transformationMatrix;
+	} else if (noCameraTransform) {
+		return getPerspectiveMatrix() * transformationMatrix;
 	}
-	return perspective->getPerspectiveMatrix() * transformationMatrix;
+	return getPerspectiveMatrix() * getCameraMatrix() * transformationMatrix;
 }
 
 void Transformation::pushMatrix() {
 	matrixStack.push(transformationMatrix);
-	pushState();
+	Matrices::pushState();
 }
 
 void Transformation::popMatrix() {
 	transformationMatrix = matrixStack.top();
 	matrixStack.pop();
-	popState();
+	Matrices::popState();
 }
 
 void Transformation::seekMatrix() {
 	transformationMatrix = matrixStack.top();
-	seekState();
+	Matrices::seekState();
+}
+
+void Transformation::pushCamera() {
+	Camera::pushState();
+}
+
+void Transformation::popCamera() {
+	Camera::popState();
+}
+
+void Transformation::seekCamera() {
+	Camera::seekState();
+}
+
+void Transformation::pushPerspective() {
+	Perspective::pushState();
+}
+
+void Transformation::popPerspective() {
+	Perspective::popState();
+}
+
+void Transformation::seekPerpective() {
+	Perspective::seekState();
 }
 
 void Transformation::translate(glm::vec3 offset) {

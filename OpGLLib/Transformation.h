@@ -17,29 +17,31 @@ enum MultiplicationOrder {
 	SRT = 0x1, RST = 0x2, RTS = 0x4, STR = 0x8, TSR = 0x10, TRS = 0x20,
 };
 
-enum HandleType {
-	PERSPECTIVE, CAMERA
-};
-
-class Transformation : private Matrices{
+class Transformation : public Matrices, public Camera, public Perspective{
 public:
 	Transformation();
-	Transformation(Perspective *perspective, Camera *camera);
 	~Transformation();
-
-	void setHandle(Perspective *newHandle);
-	void setHandle(Camera *newHandle);
-	void *getHandle(HandleType handleType);
-	void deleteHandle(HandleType handleType);
 
 	void setTransformationMatrix(glm::mat4 transformationMatrix);
 	void resetTransformationMatrix();
 	void updateTransformationMatrix(MultiplicationOrder = SRT);
-	glm::mat4 getTransformationMatrix(bool noPerspectiveTransform = false);
+	glm::mat4 getTransformationMatrix(bool noCameraTransform = false, bool noPerspectiveTransform = false);
+
+	Matrices * matrices = static_cast<Matrices *>(this);
+	Camera * camera = static_cast<Camera *>(this);
+	Perspective * perspective = static_cast<Perspective *>(this);
 
 	void pushMatrix();
 	void popMatrix();
 	void seekMatrix();
+
+	void pushCamera();
+	void popCamera();
+	void seekCamera();
+
+	void pushPerspective();
+	void popPerspective();
+	void seekPerpective();
 
 	void translate(glm::vec3 offset);
 	void translateX(gl::GLfloat x);
@@ -59,11 +61,8 @@ public:
 	void addMatrix(glm::mat4 matrix);
 
 private:
-	std::map<HandleType, bool> handleInitialized;
-	Perspective *perspective;
-	Camera *camera;
-
 	glm::mat4 transformationMatrix;
+
 	std::stack<glm::mat4> matrixStack;
 };
 

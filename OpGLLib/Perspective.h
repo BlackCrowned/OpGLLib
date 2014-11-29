@@ -33,6 +33,10 @@ public:
 	void setZNear(gl::GLfloat zNear);
 	void setZFar(gl::GLfloat zFar);
 
+	void pushState();
+	void popState();
+	void seekState();
+
 private:
 	glm::mat4 perspectiveMatrix;
 
@@ -43,6 +47,8 @@ private:
 	gl::GLfloat zFar;
 
 	bool useFoV;
+
+	std::stack<Perspective> stateStack;
 };
 
 #endif /* OPGLLIB_PERSPECTIVE_H_ */

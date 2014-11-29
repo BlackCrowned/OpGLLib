@@ -131,3 +131,30 @@ void Perspective::setZNear(GLfloat zNear) {
 void Perspective::setZFar(GLfloat zFar) {
 	Perspective::zFar = zFar;
 }
+
+void Perspective::pushState() {
+	stateStack.push(*this);
+}
+
+void Perspective::popState() {
+	Perspective tmp = stateStack.top();
+	stateStack.pop();
+	perspectiveMatrix = tmp.perspectiveMatrix;
+	foV = tmp.foV;
+	aspectRatio = tmp.aspectRatio;
+	frustumScale = tmp.frustumScale;
+	zNear = tmp.zNear;
+	zFar = tmp.zFar;
+	useFoV = tmp.useFoV;
+}
+
+void Perspective::seekState() {
+	Perspective tmp = stateStack.top();
+	perspectiveMatrix = tmp.perspectiveMatrix;
+	foV = tmp.foV;
+	aspectRatio = tmp.aspectRatio;
+	frustumScale = tmp.frustumScale;
+	zNear = tmp.zNear;
+	zFar = tmp.zFar;
+	useFoV = tmp.useFoV;
+}

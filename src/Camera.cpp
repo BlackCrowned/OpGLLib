@@ -124,3 +124,23 @@ const glm::mat4& Camera::getCameraMatrix() {
 	return cameraMatrix;
 }
 
+void Camera::pushState() {
+	stateStack.push(*this);
+}
+
+void Camera::popState() {
+	Camera tmp = stateStack.top();
+	stateStack.pop();
+	cameraMatrix = tmp.cameraMatrix;
+	center = tmp.center;
+	up = tmp.up;
+	cameraPos = tmp.cameraPos;
+}
+
+void Camera::seekState() {
+	Camera tmp = stateStack.top();
+	cameraMatrix = tmp.cameraMatrix;
+	center = tmp.center;
+	up = tmp.up;
+	cameraPos = tmp.cameraPos;
+}
