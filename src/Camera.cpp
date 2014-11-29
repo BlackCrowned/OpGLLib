@@ -9,10 +9,24 @@
 
 using namespace gl;
 
-Camera::Camera() :
-		Matrices() {
-		cameraMatrix = glm::mat4(1.0f);
-		lookAtMatrix = glm::mat4(1.0f);
+Camera::Camera() {
+	cameraMatrix = glm::mat4(1.0f);
+
+	center = glm::vec3(0.0f, 0.0f, -1.0f);
+	up = glm::vec3(0.0f, 1.0f, 0.0f);
+	cameraPos = glm::vec3(0.0f, 0.0f, 0.0f);
+
+	lookAt(center, up, cameraPos);
+}
+
+Camera::Camera(glm::vec3 center, glm::vec3 up, glm::vec3 cameraPos) {
+	cameraMatrix = glm::mat4(1.0f);
+
+	Camera::center = center;
+	Camera::up = up;
+	Camera::cameraPos = cameraPos;
+
+	lookAt(center, up, cameraPos);
 }
 
 Camera::~Camera() {
@@ -23,57 +37,90 @@ void Camera::resetCameraMatrix() {
 	cameraMatrix = glm::mat4(1.0f);
 }
 
-void Camera::position(glm::vec3 pos) {
-	Camera::pos = pos;
-	setTranslationMatrix(-pos);
+void Camera::position(glm::vec3 cameraPos) {
+	Camera::cameraPos = cameraPos;
+	lookAt(center, up, cameraPos);
 }
 
 void Camera::translate(glm::vec3 offset) {
-	pos += offset;
-	setTranslationMatrix(-pos);
+	cameraPos += offset;
+	lookAt(center, up, cameraPos);
 }
 
 void Camera::translateX(GLfloat x) {
-	pos.x += x;
-	setTranslationMatrixX(-pos.x);
+	cameraPos.x += x;
+	lookAt(center, up, cameraPos);
 }
 
 void Camera::translateY(GLfloat y) {
-	pos.y += y;
-	setTranslationMatrixY(-pos.y);
+	cameraPos.y += y;
+	lookAt(center, up, cameraPos);
 }
 
 void Camera::translateZ(GLfloat z) {
-	pos.z += z;
-	setTranslationMatrixZ(-pos.z);
+	cameraPos.z += z;
+	lookAt(center, up, cameraPos);
 }
 
-void Camera::lookAt(glm::vec3 pos) {
-	lookAt(pos, glm::vec3(0.0f, 1.0f, 0.0f));
+void Camera::strafe(glm::vec3 offset) {
+	center += offset;
+	cameraPos += offset;
+	lookAt(center, up, cameraPos);
 }
 
-void Camera::lookAt(glm::vec3 pos, glm::vec3 up) {
-	glm::vec3 ZAxis = glm::normalize(pos - Camera::pos);
-	glm::vec3 XAxis = glm::normalize(glm::cross(ZAxis, up));
-	glm::vec3 YAxis = glm::cross(XAxis, ZAxis);
-	lookAtMatrix = glm::mat4(1.0f);
+void Camera::strafeX(GLfloat x) {
+	center.x += x;
+	cameraPos.x += x;
+	lookAt(center, up, cameraPos);
+}
 
-	lookAtMatrix[0].x = XAxis.x;
-	lookAtMatrix[1].x = XAxis.y;
-	lookAtMatrix[2].x = XAxis.z;
-	lookAtMatrix[0].y = YAxis.x;
-	lookAtMatrix[1].y = YAxis.y;
-	lookAtMatrix[2].y = YAxis.z;
-	lookAtMatrix[0].z = -ZAxis.x;
-	lookAtMatrix[1].z = -ZAxis.y;
-	lookAtMatrix[2].z = -ZAxis.z;
+void Camera::strafeY(GLfloat y) {
+	center.y += y;
+	cameraPos.y += y;
+	lookAt(center, up, cameraPos);
+}
 
-	_debug.log(lookAtMatrix, "lookAtMatrix");
+void Camera::strafeZ(GLfloat z) {
+	center.z += z;
+	cameraPos.x += z;
+	lookAt(center, up, cameraPos);
+}
 
+void Camera::lookAt(glm::vec3 center) {
+	Camera::center = center;
+	lookAt(center, up, cameraPos);
+}
+
+void Camera::lookAt(glm::vec3 center, glm::vec3 up) {
+	Camera::center = center;
+	Camera::up = up;
+	lookAt(center, up, cameraPos);
+}
+
+void Camera::lookAt(glm::vec3 center, glm::vec3 up, glm::vec3 cameraPos) {
+	Camera::center = center;
+	Camera::up = up;
+	Camera::cameraPos = cameraPos;
+	glm::vec3 zAxis = glm::normalize(center - cameraPos);
+	glm::vec3 xAxis = glm::normalize(glm::cross(zAxis, up));
+	glm::vec3 yAxis = glm::cross(xAxis, zAxis);
+	cameraMatrix = glm::mat4(1.0f);
+
+	cameraMatrix[0].x = xAxis.x;
+	cameraMatrix[1].x = xAxis.y;
+	cameraMatrix[2].x = xAxis.z;
+	cameraMatrix[0].y = yAxis.x;
+	cameraMatrix[1].y = yAxis.y;
+	cameraMatrix[2].y = yAxis.z;
+	cameraMatrix[0].z = -zAxis.x;
+	cameraMatrix[1].z = -zAxis.y;
+	cameraMatrix[2].z = -zAxis.z;
+	cameraMatrix[3].x = -glm::dot(xAxis, cameraPos);
+	cameraMatrix[3].y = -glm::dot(yAxis, cameraPos);
+	cameraMatrix[3].z = glm::dot(zAxis, cameraPos);
 }
 
 const glm::mat4& Camera::getCameraMatrix() {
-	cameraMatrix = lookAtMatrix * getTranslationMatrix();
 	return cameraMatrix;
 }
 
