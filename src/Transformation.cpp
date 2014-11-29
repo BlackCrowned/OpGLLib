@@ -10,39 +10,27 @@
 using namespace gl;
 using namespace std;
 
-Transformation::Transformation() {
+Transformation::Transformation() : Matrices(){
 	transformationMatrix = glm::mat4(1.0f);
-	handleInitialized[MATRICES] = handleInitialized[PERSPECTIVE] = handleInitialized[CAMERA] = true;
-	matrices = new Matrices();
+	handleInitialized[PERSPECTIVE] = handleInitialized[CAMERA] = true;
 	perspective = new Perspective();
 	camera = new Camera();
 }
 
-Transformation::Transformation(Matrices *matrices, Perspective *perspective, Camera *camera) {
+Transformation::Transformation(Perspective *perspective, Camera *camera) : Matrices(){
 	transformationMatrix = glm::mat4(1.0f);
-	handleInitialized[MATRICES] = handleInitialized[PERSPECTIVE] = handleInitialized[CAMERA] = false;
-	Transformation::matrices = matrices;
+	handleInitialized[PERSPECTIVE] = handleInitialized[CAMERA] = false;
 	Transformation::perspective = perspective;
 	Transformation::camera = camera;
 }
 
 Transformation::~Transformation() {
-	if (handleInitialized[MATRICES]) {
-		deleteHandle(MATRICES);
-	}
 	if (handleInitialized[PERSPECTIVE]) {
 		deleteHandle(PERSPECTIVE);
 	}
 	if (handleInitialized[CAMERA]) {
 		deleteHandle(CAMERA);
 	}
-}
-
-void Transformation::setHandle(Matrices *newHandle) {
-	if (handleInitialized[MATRICES]) {
-		deleteHandle(MATRICES);
-	}
-	matrices = newHandle;
 }
 
 void Transformation::setHandle(Perspective *newHandle) {
@@ -61,8 +49,6 @@ void Transformation::setHandle(Camera *newHandle) {
 
 void *Transformation::getHandle(HandleType handleType) {
 	switch (handleType) {
-	case MATRICES:
-		return matrices;
 	case PERSPECTIVE:
 		return perspective;
 	case CAMERA:
@@ -75,10 +61,6 @@ void *Transformation::getHandle(HandleType handleType) {
 
 void Transformation::deleteHandle(HandleType handleType) {
 	switch (handleType) {
-	case MATRICES:
-		handleInitialized[MATRICES] = false;
-		delete matrices;
-		break;
 	case PERSPECTIVE:
 		handleInitialized[PERSPECTIVE] = false;
 		delete perspective;
@@ -103,26 +85,26 @@ void Transformation::resetTransformationMatrix() {
 void Transformation::updateTransformationMatrix(MultiplicationOrder multiplicationOrder) {
 	switch (multiplicationOrder) {
 	case TRS:
-		transformationMatrix = matrices->getScalingMatrix() * matrices->getRotationMatrix() * matrices->getTranslationMatrix();
+		transformationMatrix = getScalingMatrix() * getRotationMatrix() * getTranslationMatrix();
 		break;
 	case TSR:
-		transformationMatrix = matrices->getRotationMatrix() * matrices->getScalingMatrix() * matrices->getTranslationMatrix();
+		transformationMatrix = getRotationMatrix() * getScalingMatrix() * getTranslationMatrix();
 		break;
 	case STR:
-		transformationMatrix = matrices->getRotationMatrix() * matrices->getTranslationMatrix() * matrices->getScalingMatrix();
+		transformationMatrix = getRotationMatrix() * getTranslationMatrix() * getScalingMatrix();
 		break;
 	case RTS:
-		transformationMatrix = matrices->getScalingMatrix() * matrices->getTranslationMatrix() * matrices->getRotationMatrix();
+		transformationMatrix = getScalingMatrix() * getTranslationMatrix() * getRotationMatrix();
 		break;
 	case RST:
-		transformationMatrix = matrices->getTranslationMatrix() * matrices->getScalingMatrix() * matrices->getRotationMatrix();
+		transformationMatrix = getTranslationMatrix() * getScalingMatrix() * getRotationMatrix();
 		break;
 	case SRT:
-		transformationMatrix = matrices->getTranslationMatrix() * matrices->getRotationMatrix() * matrices->getScalingMatrix();
+		transformationMatrix = getTranslationMatrix() * getRotationMatrix() * getScalingMatrix();
 		break;
 	default:
 		cerr << "Wrong Multiplication-Order submitted: " << multiplicationOrder << endl;
-		transformationMatrix = matrices->getTranslationMatrix() * matrices->getRotationMatrix() * matrices->getScalingMatrix();
+		transformationMatrix = getTranslationMatrix() * getRotationMatrix() * getScalingMatrix();
 	}
 }
 
@@ -135,79 +117,78 @@ glm::mat4 Transformation::getTransformationMatrix(bool noPerspectiveTransform) {
 
 void Transformation::pushMatrix() {
 	matrixStack.push(transformationMatrix);
-	matricesStack.push(*matrices);
+	pushState();
 }
 
 void Transformation::popMatrix() {
 	transformationMatrix = matrixStack.top();
 	matrixStack.pop();
-	*matrices = matricesStack.top();
-	matricesStack.pop();
+	popState();
 }
 
 void Transformation::seekMatrix() {
 	transformationMatrix = matrixStack.top();
-	*matrices = matricesStack.top();
+	seekState();
 }
 
 void Transformation::translate(glm::vec3 offset) {
-	matrices->setTranslationMatrix(offset);
-	transformationMatrix = matrices->getTranslationMatrix() * transformationMatrix;
+	setTranslationMatrix(offset);
+	transformationMatrix = getTranslationMatrix() * transformationMatrix;
 }
 
 void Transformation::translateX(GLfloat x) {
-	matrices->setTranslationMatrixX(x);
-	transformationMatrix = matrices->getTranslationMatrix() * transformationMatrix;
+	setTranslationMatrixX(x);
+	transformationMatrix = getTranslationMatrix() * transformationMatrix;
 }
 
 void Transformation::translateY(GLfloat y) {
-	matrices->setTranslationMatrixY(y);
-	transformationMatrix = matrices->getTranslationMatrix() * transformationMatrix;
+	setTranslationMatrixY(y);
+	transformationMatrix = getTranslationMatrix() * transformationMatrix;
 }
 
 void Transformation::translateZ(GLfloat z) {
-	matrices->setTranslationMatrixZ(z);
-	transformationMatrix = matrices->getTranslationMatrix() * transformationMatrix;
+	setTranslationMatrixZ(z);
+	transformationMatrix = getTranslationMatrix() * transformationMatrix;
 }
 
 void Transformation::scale(glm::vec3 scale) {
-	matrices->setScalingMatrix(scale);
-	transformationMatrix = matrices->getScalingMatrix() * transformationMatrix;
+	setScalingMatrix(scale);
+	transformationMatrix = getScalingMatrix() * transformationMatrix;
 }
 
 void Transformation::scaleX(GLfloat x) {
-	matrices->setScalingMatrixX(x);
-	transformationMatrix = matrices->getScalingMatrix() * transformationMatrix;
+	setScalingMatrixX(x);
+	transformationMatrix = getScalingMatrix() * transformationMatrix;
 }
 
 void Transformation::scaleY(GLfloat y) {
-	matrices->setScalingMatrixY(y);
-	transformationMatrix = matrices->getScalingMatrix() * transformationMatrix;
+	setScalingMatrixY(y);
+	transformationMatrix = getScalingMatrix() * transformationMatrix;
 }
 
 void Transformation::scaleZ(GLfloat z) {
-	matrices->setScalingMatrixZ(z);
-	transformationMatrix = matrices->getScalingMatrix() * transformationMatrix;
+	setScalingMatrixZ(z);
+	transformationMatrix = getScalingMatrix() * transformationMatrix;
 }
 
 void Transformation::rotate(glm::vec3 rotation) {
-	matrices->setRotationMatrix(rotation);
-	transformationMatrix = matrices->getRotationMatrix() * transformationMatrix;
+	setRotationMatrix(rotation);
+	transformationMatrix = getRotationMatrix() * transformationMatrix;
 }
 
 void Transformation::rotateX(GLfloat x) {
-	matrices->setRotationMatrixX(x);
-	transformationMatrix = matrices->getRotationMatrix() * transformationMatrix;
+	setRotationMatrixX(x);
+	transformationMatrix = getRotationMatrix() * transformationMatrix;
 }
 
 void Transformation::rotateY(GLfloat y) {
-	matrices->setRotationMatrixY(y);
-	transformationMatrix = matrices->getRotationMatrix() * transformationMatrix;
+	setRotationMatrixY(y);
+	transformationMatrix = getRotationMatrix() * transformationMatrix;
 }
 
 void Transformation::rotateZ(GLfloat z) {
-	matrices->setRotationMatrixZ(z);
-	transformationMatrix = matrices->getRotationMatrix() * transformationMatrix;
+	setRotationMatrixZ(z);
+	transformationMatrix = getRotationMatrix() * transformationMatrix;
 }
 
 void Transformation::addMatrix(glm::mat4 matrix) {

@@ -18,16 +18,15 @@ enum MultiplicationOrder {
 };
 
 enum HandleType {
-	MATRICES, PERSPECTIVE, CAMERA
+	PERSPECTIVE, CAMERA
 };
 
-class Transformation {
+class Transformation : private Matrices{
 public:
 	Transformation();
-	Transformation(Matrices *matrices, Perspective *perspective, Camera *camera);
+	Transformation(Perspective *perspective, Camera *camera);
 	~Transformation();
 
-	void setHandle(Matrices *newHandle);
 	void setHandle(Perspective *newHandle);
 	void setHandle(Camera *newHandle);
 	void *getHandle(HandleType handleType);
@@ -61,13 +60,11 @@ public:
 
 private:
 	std::map<HandleType, bool> handleInitialized;
-	Matrices *matrices;
 	Perspective *perspective;
 	Camera *camera;
 
 	glm::mat4 transformationMatrix;
 	std::stack<glm::mat4> matrixStack;
-	std::stack<Matrices> matricesStack;
 };
 
 #endif /* OPGLLIB_TRANSFORMATION_H_ */
