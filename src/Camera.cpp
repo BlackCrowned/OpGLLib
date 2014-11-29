@@ -12,6 +12,7 @@ using namespace gl;
 Camera::Camera() :
 		Matrices() {
 		cameraMatrix = glm::mat4(1.0f);
+		lookAtMatrix = glm::mat4(1.0f);
 }
 
 Camera::~Camera() {
@@ -48,45 +49,31 @@ void Camera::translateZ(GLfloat z) {
 }
 
 void Camera::lookAt(glm::vec3 pos) {
-	lookAt(pos, glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	lookAt(pos, glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
-void Camera::lookAt(glm::vec3 pos, glm::vec3 forward, glm::vec3 upward, glm::vec3 right) {
-	glm::vec3 directionalVector = pos - Camera::pos;
-	glm::mat3 coordinateMatrix = glm::mat3(1.0f);
-	coordinateMatrix[0] = right;
-	coordinateMatrix[1] = upward;
-	coordinateMatrix[2] = glm::vec3(0.0f, 0.0f, 1.0f);
+void Camera::lookAt(glm::vec3 pos, glm::vec3 up) {
+	glm::vec3 ZAxis = glm::normalize(pos - Camera::pos);
+	glm::vec3 XAxis = glm::normalize(glm::cross(ZAxis, up));
+	glm::vec3 YAxis = glm::cross(XAxis, ZAxis);
+	lookAtMatrix = glm::mat4(1.0f);
 
-	glm::vec3 noYDimension = coordinateMatrix * directionalVector;
-	noYDimension.y = 0.0f;
-	glm::vec3 noXDimension = coordinateMatrix * directionalVector;
-	noXDimension.x = 0.0f;
+	lookAtMatrix[0].x = XAxis.x;
+	lookAtMatrix[1].x = XAxis.y;
+	lookAtMatrix[2].x = XAxis.z;
+	lookAtMatrix[0].y = YAxis.x;
+	lookAtMatrix[1].y = YAxis.y;
+	lookAtMatrix[2].y = YAxis.z;
+	lookAtMatrix[0].z = -ZAxis.x;
+	lookAtMatrix[1].z = -ZAxis.y;
+	lookAtMatrix[2].z = -ZAxis.z;
 
-	_debug.log(directionalVector, "directionalVector");
-	_debug.log(noYDimension, "noYDimension");
-	_debug.log(noXDimension, "noXDimension");
-
-	GLfloat angleY, angleX;
-	if (glm::normalize(noYDimension).x < glm::normalize(forward).x) {
-		angleY = glm::acos(glm::dot(noYDimension, forward) / (glm::length(noYDimension) * glm::length(forward)));
-	}
-	else {
-		angleY = -glm::acos(glm::dot(noYDimension, forward) / (glm::length(noYDimension) * glm::length(forward)));
-	}
-	if (glm::normalize(noXDimension).y < glm::normalize(forward).y) {
-		angleX = -glm::acos(glm::dot(noXDimension, forward) / (glm::length(noXDimension) * glm::length(forward)));
-	}
-	else {
-		angleX = glm::acos(glm::dot(noXDimension, forward) / (glm::length(noXDimension) * glm::length(forward)));
-	}
-
-	setRotationMatrix(glm::vec3(-angleX, -angleY, 0.0f));
+	_debug.log(lookAtMatrix, "lookAtMatrix");
 
 }
 
 const glm::mat4& Camera::getCameraMatrix() {
-	cameraMatrix = getRotationMatrix() * getTranslationMatrix();
+	cameraMatrix = lookAtMatrix * getTranslationMatrix();
 	return cameraMatrix;
 }
 

@@ -27,12 +27,13 @@ public:
 	void translateZ(gl::GLfloat z);
 
 	void lookAt(glm::vec3 pos);
-	void lookAt(glm::vec3 pos, glm::vec3 forward, glm::vec3 upward, glm::vec3 right);
+	void lookAt(glm::vec3 pos, glm::vec3 up);
 
 	const glm::mat4& getCameraMatrix();
 
 private:
 	glm::mat4 cameraMatrix;
+	glm::mat4 lookAtMatrix;
 
 	glm::vec3 pos;
 };
