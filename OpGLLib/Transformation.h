@@ -58,7 +58,7 @@ public:
 	void rotateY(gl::GLfloat y);
 	void rotateZ(gl::GLfloat z);
 
-	void addMatrix(glm::mat4 matrix);
+	void multMatrix(glm::mat4 matrix);
 
 private:
 	glm::mat4 transformationMatrix;
