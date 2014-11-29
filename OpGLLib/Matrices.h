@@ -44,6 +44,10 @@ public:
 
 	const glm::mat4& getRotationMatrix();
 
+	void pushState();
+	void popState();
+	void seekState();
+
 private:
 	glm::mat4 translationMatrix;
 	glm::mat4 scalingMatrix;
@@ -53,6 +57,8 @@ private:
 	glm::mat4 rotationZMatrix;
 
 	glm::vec3 offset, scale, rotation;
+
+	std::stack<Matrices> stateStack;
 };
 
 #endif /* OPGLLIB_MATRICES_H_ */

@@ -150,3 +150,36 @@ const glm::mat4& Matrices::getScalingMatrix() {
 const glm::mat4& Matrices::getRotationMatrix() {
 	return rotationMatrix;
 }
+
+void Matrices::pushState() {
+	stateStack.push(*this);
+}
+
+void Matrices::popState() {
+	Matrices tmp = stateStack.top();
+	stateStack.pop();
+	translationMatrix = tmp.translationMatrix;
+	scalingMatrix = tmp.scalingMatrix;
+	rotationMatrix = tmp.rotationMatrix;
+	rotationXMatrix = tmp.rotationXMatrix;
+	rotationYMatrix = tmp.rotationYMatrix;
+	rotationZMatrix = tmp.rotationZMatrix;
+
+	offset = tmp.offset;
+	scale = tmp.scale;
+	rotation = tmp.rotation;
+}
+
+void Matrices::seekState() {
+	Matrices tmp = stateStack.top();
+	translationMatrix = tmp.translationMatrix;
+	scalingMatrix = tmp.scalingMatrix;
+	rotationMatrix = tmp.rotationMatrix;
+	rotationXMatrix = tmp.rotationXMatrix;
+	rotationYMatrix = tmp.rotationYMatrix;
+	rotationZMatrix = tmp.rotationZMatrix;
+
+	offset = tmp.offset;
+	scale = tmp.scale;
+	rotation = tmp.rotation;
+}
