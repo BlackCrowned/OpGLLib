@@ -17,7 +17,7 @@ enum MultiplicationOrder {
 	SRT = 0x1, RST = 0x2, RTS = 0x4, STR = 0x8, TSR = 0x10, TRS = 0x20,
 };
 
-class Transformation : public Matrices, public Camera, public Perspective{
+class Transformation: public Matrices, public Camera, public Perspective {
 public:
 	Transformation();
 	~Transformation();
@@ -27,9 +27,9 @@ public:
 	void updateTransformationMatrix(MultiplicationOrder = SRT);
 	glm::mat4 getTransformationMatrix(bool noCameraTransform = false, bool noPerspectiveTransform = false);
 
-	Matrices * matrices = static_cast<Matrices *>(this);
-	Camera * camera = static_cast<Camera *>(this);
-	Perspective * perspective = static_cast<Perspective *>(this);
+	Matrices & matrices = static_cast<Matrices &>(*this);
+	Camera & camera = static_cast<Camera &>(*this);
+	Perspective & perspective = static_cast<Perspective &>(*this);
 
 	void pushMatrix();
 	void popMatrix();
