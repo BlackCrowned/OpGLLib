@@ -3,7 +3,6 @@
 using namespace gl;
 
 OpGLLib::OpGLLib() {
-	transformation.setHandle(&matrices);
 	transformation.setHandle(&perspective);
 	transformation.setHandle(&camera);
 #ifndef RElEASE
@@ -13,7 +12,6 @@ OpGLLib::OpGLLib() {
 
 OpGLLib::OpGLLib(glbinding::ContextHandle context) {
 	setContext(context);
-	transformation.setHandle(&matrices);
 	transformation.setHandle(&perspective);
 	transformation.setHandle(&camera);
 #ifndef RElEASE
