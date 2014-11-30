@@ -9,7 +9,7 @@
 
 using namespace std;
 
-FileLoader::FileLoader( ) {
+FileLoader::FileLoader() {
 
 }
 
@@ -31,6 +31,7 @@ fstream *FileLoader::open(string name, ios::openmode openmode) {
 		cerr << "Failed to open file: '" << name << "'" << endl;
 		return NULL;
 	}
+	fileType = name.substr(name.find_last_of('.') + 1);
 
 	return &file;
 }
@@ -52,4 +53,8 @@ string FileLoader::toString() {
 
 fstream *FileLoader::getFile() {
 	return &file;
+}
+
+string FileLoader::getFileType() {
+	return fileType;
 }

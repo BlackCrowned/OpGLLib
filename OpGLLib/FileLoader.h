@@ -22,9 +22,11 @@ public:
 	std::string toString();
 
 	std::fstream *getFile();
+	std::string getFileType();
 
 private:
 	std::fstream file;
+	std::string fileType;
 };
 
 
