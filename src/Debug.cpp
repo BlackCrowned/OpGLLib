@@ -193,10 +193,10 @@ void Debug::print(string name, string type, float* data, int colums) {
 	cout << "(";
 	for (auto i = 0; i < colums; i++) {
 		if (i == colums - 1) {
-			cout << fixed << setprecision(1) << data[i] << ")";
+			cout << fixed << setprecision(1) << setw(4) << data[i] << ")";
 			continue;
 		}
-		cout << fixed << setprecision(1) << data[i] << "|";
+		cout << fixed << setprecision(1) << setw(4) << data[i] << "|";
 	}
 	cout << " [@" << data << "]" << endl;
 	showLimiter();
@@ -213,10 +213,10 @@ void Debug::print(string name, string type, int* data, int colums) {
 	cout << "(";
 	for (auto i = 0; i < colums; i++) {
 		if (i == colums - 1) {
-			cout << data[i] << ")";
+			cout << setw(2) << data[i] << ")";
 			continue;
 		}
-		cout << data[i] << "|";
+		cout << setw(2) << data[i] << "|";
 	}
 	cout << " [@" << data << "]" << endl;
 	showLimiter();
@@ -230,13 +230,13 @@ void Debug::print(string name, string type, float* array, int rows, int colums) 
 	} else {
 		cout << name << " [" << type << "]: [@" << array << "]" << endl;
 	}
-	cout << setfill('-') << setw(colums * 4 + 1) << "" << setfill(' ') << endl;
+	cout << setfill('-') << setw(colums * 5 + 1) << "" << setfill(' ') << "\n";
 	for (auto i = 0; i < rows; i++) {
 		cout << "|";
 		for (auto j = 0; j < colums; j++) {
-			cout << fixed << setprecision(1) << array[(j * 4) + i] << "|";
+			cout << fixed << setprecision(1) << setw(4) << array[(j * rows) + i] << "|";
 		}
-		cout << endl << setfill('-') << setw(colums * 4 + 1) << "" << setfill(' ') << endl;
+		cout << "\n" << setfill('-') << setw(colums * 5 + 1) << "" << setfill(' ') << endl;
 	}
 	showLimiter();
 }
