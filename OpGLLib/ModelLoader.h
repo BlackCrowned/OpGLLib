@@ -10,25 +10,39 @@
 
 #include <OpGLLib/internal.h>
 #include <OpGLLib/FileLoader.h>
+#include <OpGLLib/Debug.h>
+
+struct Object {
+	std::string name = "";
+	int count = 0;
+	int lineSmoothing = 0;
+	std::vector<glm::vec4> vertices;
+	std::vector<glm::vec2> textureVertices;
+	std::vector<glm::vec3> normals;
+	std::vector<glm::ivec3> indicies;
+	std::vector<glm::ivec3> textureIndicies;
+	std::vector<glm::ivec3> normalIndicies;
+};
 
 struct Model {
-	std::string name;
-	std::string fileType;
-	std::vector<glm::vec4> vertices;
-	std::vector<gl::GLint> indicies;
+	std::string name = "";
+	unsigned int id = 0;
+	int count = 0;
+	std::vector<Object> objects;
 };
 
 class ModelLoader : private FileLoader {
 public:
 	ModelLoader();
-	ModelLoader(std::string name, int id);
+	ModelLoader(const std::string& name, unsigned int id);
 	~ModelLoader();
 
-	int load(std::string name, int id);
+	unsigned int load(const std::string& name, unsigned int id);
 
-	Model &getModel(int id);
+	Model &getModel(unsigned int id);
 private:
-	std::map<int, Model> models;
+	Model parseObj(const std::string& name, unsigned int id);
+	static std::map<unsigned int, Model> models;
 };
 
 #endif /* OPGLLIB_MODELLOADER_H_ */
