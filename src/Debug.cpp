@@ -133,6 +133,30 @@ void Debug::log(glm::vec4& type, string name) {
 	print(name, "vec4", data, 4);
 }
 
+void Debug::log(glm::ivec2& type, string name) {
+	if (!logging) {
+		return;
+	}
+	int* data = glm::value_ptr(type);
+	print(name, "ivec2", data, 2);
+}
+
+void Debug::log(glm::ivec3& type, string name) {
+	if (!logging) {
+		return;
+	}
+	int* data = glm::value_ptr(type);
+	print(name, "ivec3", data, 3);
+}
+
+void Debug::log(glm::ivec4& type, string name) {
+	if (!logging) {
+		return;
+	}
+	int* data = glm::value_ptr(type);
+	print(name, "ivec4", data, 4);
+}
+
 void Debug::log(glm::mat3& type, string name) {
 	if (!logging) {
 		return;
@@ -173,6 +197,26 @@ void Debug::print(string name, string type, float* data, int colums) {
 			continue;
 		}
 		cout << fixed << setprecision(1) << data[i] << "|";
+	}
+	cout << " [@" << data << "]" << endl;
+	showLimiter();
+
+}
+
+void Debug::print(string name, string type, int* data, int colums) {
+	showLimiter();
+	if (name == "") {
+		cout << "[" << type << "]: ";
+	} else {
+		cout << name << " [" << type << "]: ";
+	}
+	cout << "(";
+	for (auto i = 0; i < colums; i++) {
+		if (i == colums - 1) {
+			cout << data[i] << ")";
+			continue;
+		}
+		cout << data[i] << "|";
 	}
 	cout << " [@" << data << "]" << endl;
 	showLimiter();

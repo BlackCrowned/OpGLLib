@@ -31,11 +31,15 @@ public:
 	void log(glm::vec2& type, std::string name = "");
 	void log(glm::vec3& type, std::string name = "");
 	void log(glm::vec4& type, std::string name = "");
+	void log(glm::ivec2& type, std::string name = "");
+	void log(glm::ivec3& type, std::string name = "");
+	void log(glm::ivec4& type, std::string name = "");
 	void log(glm::mat3& type, std::string name = "");
 	void log(glm::mat4& type, std::string name = "");
 private:
 	void print(std::string name, std::string type, std::string data, std::string address);
 	void print(std::string name, std::string type, float* data, int colums);
+	void print(std::string name, std::string type, int* data, int colums);
 	void print(std::string name, std::string type, float* data, int rows, int colums);
 	static bool logging;
 	static bool limiters;
