@@ -103,6 +103,7 @@ Model ModelLoader::parseObj(const string& name, unsigned int id) {
 					ss >> x >> y >> z;
 					model.objects[model.count - 1].normals.push_back(glm::vec3(x, y, z));
 				}
+				i = line.length();
 				break;
 				//Edge smoothing
 			case 's':
@@ -122,14 +123,14 @@ Model ModelLoader::parseObj(const string& name, unsigned int id) {
 					model.objects.emplace_back();
 				}
 				string str = line.substr(i + 1);
-				regex pattern("\\d\\s\\d\\s\\d");
+				regex pattern("\\d+\\s\\d+\\s\\d+");
 				smatch match;
 				if (regex_search(str, match, pattern)) {
 					ss.str(match[0].str());
 					ss >> x >> y >> z;
-					model.objects[model.count - 1].indicies.push_back(glm::ivec3(x, y, z));
+					model.objects[model.count - 1].indicies.push_back(glm::uvec3(--x, --y, --z));
 				}
-				else if (regex_search(str, match, pattern.assign("\\d/\\d\\s\\d/\\d\\s\\d/\\d"))) {
+				else if (regex_search(str, match, pattern.assign("\\d+/\\d+\\s\\d+/\\d+\\s\\d+/\\d+"))) {
 					ss.str(match[0].str());
 					ss >> x;
 					ss.get();
@@ -140,10 +141,10 @@ Model ModelLoader::parseObj(const string& name, unsigned int id) {
 					ss >> z;
 					ss.get();
 					ss >> zT;
-					model.objects[model.count - 1].indicies.push_back(glm::ivec3(x, y, z));
-					model.objects[model.count - 1].textureIndicies.push_back(glm::ivec3(xT, yT, zT));
+					model.objects[model.count - 1].indicies.push_back(glm::uvec3(--x, --y, --z));
+					model.objects[model.count - 1].textureIndicies.push_back(glm::uvec3(--xT, --yT, --zT));
 				}
-				else if (regex_search(str, match, pattern.assign("\\d//\\d\\s\\d//\\d\\s\\d//\\d"))) {
+				else if (regex_search(str, match, pattern.assign("\\d+//\\d+\\s\\d+//\\d+\\s\\d+//\\d+"))) {
 					ss.str(match[0].str());
 					ss >> x;
 					ss.get();
@@ -157,10 +158,10 @@ Model ModelLoader::parseObj(const string& name, unsigned int id) {
 					ss.get();
 					ss.get();
 					ss >> zN;
-					model.objects[model.count - 1].indicies.push_back(glm::ivec3(x, y, z));
-					model.objects[model.count - 1].normalIndicies.push_back(glm::ivec3(xN, yN, zN));
+					model.objects[model.count - 1].indicies.push_back(glm::uvec3(--x, --y, --z));
+					model.objects[model.count - 1].normalIndicies.push_back(glm::uvec3(--xN, --yN, --zN));
 				}
-				else if (regex_search(str, match, pattern.assign("\\d/\\d/\\d\\s\\d/\\d/\\d\\s\\d/\\d/\\d"))) {
+				else if (regex_search(str, match, pattern.assign("\\d+/\\d+/\\d+\\s\\d+/\\d+/\\d+\\s\\d+/\\d+/\\d+"))) {
 					ss.str(match[0].str());
 					ss >> x;
 					ss.get();
@@ -177,9 +178,9 @@ Model ModelLoader::parseObj(const string& name, unsigned int id) {
 					ss >> zT;
 					ss.get();
 					ss >> zN;
-					model.objects[model.count - 1].indicies.push_back(glm::ivec3(x, y, z));
-					model.objects[model.count - 1].textureIndicies.push_back(glm::ivec3(xT, yT, zT));
-					model.objects[model.count - 1].normalIndicies.push_back(glm::ivec3(xN, yN, zN));
+					model.objects[model.count - 1].indicies.push_back(glm::uvec3(--x, --y, --z));
+					model.objects[model.count - 1].textureIndicies.push_back(glm::uvec3(--xT, --yT, --zT));
+					model.objects[model.count - 1].normalIndicies.push_back(glm::uvec3(--xN, --yN, --zN));
 				}
 				i = line.length();
 			}

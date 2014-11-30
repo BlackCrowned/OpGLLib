@@ -19,9 +19,9 @@ struct Object {
 	std::vector<glm::vec4> vertices;
 	std::vector<glm::vec2> textureVertices;
 	std::vector<glm::vec3> normals;
-	std::vector<glm::ivec3> indicies;
-	std::vector<glm::ivec3> textureIndicies;
-	std::vector<glm::ivec3> normalIndicies;
+	std::vector<glm::uvec3> indicies;
+	std::vector<glm::uvec3> textureIndicies;
+	std::vector<glm::uvec3> normalIndicies;
 };
 
 struct Model {
