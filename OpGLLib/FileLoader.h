@@ -19,7 +19,7 @@ public:
 	std::fstream *open(std::string name, std::ios::openmode openmode = std::ios::in);
 	void close();
 
-	std::string toString();
+	const std::string toString();
 
 	std::fstream *getFile();
 	std::string getFileType();

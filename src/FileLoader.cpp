@@ -40,11 +40,13 @@ void FileLoader::close() {
 	file.close();
 }
 
-string FileLoader::toString() {
+const string FileLoader::toString() {
 	stringstream datastream;
 	if (!file.is_open()) {
 		return "";
 	}
+
+	file.seekg(0, ios::beg);
 
 	datastream << file.rdbuf();
 
