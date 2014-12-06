@@ -58,6 +58,11 @@ public:
 	void rotateY(gl::GLfloat y);
 	void rotateZ(gl::GLfloat z);
 
+	void orient(gl::GLfloat yaw, gl::GLfloat pitch, gl::GLfloat roll);
+	void yaw(gl::GLfloat yaw);
+	void pitch(gl::GLfloat pitch);
+	void roll(gl::GLfloat roll);
+
 	void multMatrix(glm::mat4 matrix);
 
 private:

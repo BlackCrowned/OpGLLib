@@ -57,11 +57,11 @@ glm::mat4 Transformation::getTransformationMatrix(bool noCameraTransform, bool n
 	if (noPerspectiveTransform && noCameraTransform) {
 		return transformationMatrix;
 	} else if (noPerspectiveTransform) {
-		return getCameraMatrix() * transformationMatrix;
+		return getCameraMatrix() * transformationMatrix * getOrientationMatrix();
 	} else if (noCameraTransform) {
-		return getPerspectiveMatrix() * transformationMatrix;
+		return getPerspectiveMatrix() * transformationMatrix * getOrientationMatrix();
 	}
-	return getPerspectiveMatrix() * getCameraMatrix() * transformationMatrix;
+	return getPerspectiveMatrix() * getCameraMatrix() * transformationMatrix * getOrientationMatrix();
 }
 
 void Transformation::pushMatrix() {
@@ -162,6 +162,22 @@ void Transformation::rotateY(GLfloat y) {
 void Transformation::rotateZ(GLfloat z) {
 	setRotationMatrixZ(z);
 	transformationMatrix = getRotationMatrix() * transformationMatrix;
+}
+
+void Transformation::orient(GLfloat yaw, GLfloat pitch, GLfloat roll) {
+	multOrientationMatrix(yaw, pitch, roll);
+}
+
+void Transformation::yaw(GLfloat yaw) {
+	multOrientationMatrixYaw(yaw);
+}
+
+void Transformation::pitch(GLfloat pitch) {
+	multOrientationMatrixPitch(pitch);
+}
+
+void Transformation::roll(GLfloat roll) {
+	multOrientationMatrixRoll(roll);
 }
 
 void Transformation::multMatrix(glm::mat4 matrix) {

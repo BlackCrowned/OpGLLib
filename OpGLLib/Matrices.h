@@ -38,23 +38,56 @@ public:
 	void setRotationYMatrix(gl::GLfloat y);
 	void setRotationZMatrix(gl::GLfloat z);
 
+	void setOrientationMatrix(glm::mat4 orientationMatrix);
+	void setOrientationMatrix(glm::mat3 axes, glm::vec3 rotations);
+	void setOrientationMatrix(glm::vec3 axis, gl::GLfloat rotation);
+	void setOrientationMatrix(gl::GLfloat yaw, gl::GLfloat pitch, gl::GLfloat roll);
+	void resetOrientationMatrix();
+	void multOrientationMatrix(glm::mat3 axes, glm::vec3 rotations);
+	void multOrientationMatrix(glm::vec3 axis, gl::GLfloat rotation);
+	void multOrientationMatrix(gl::GLfloat yaw, gl::GLfloat pitch, gl::GLfloat roll);
+	void setOrientationMatrixYaw(gl::GLfloat yaw);
+	void setOrientationMatrixPitch(gl::GLfloat pitch);
+	void setOrientationMatrixRoll(gl::GLfloat roll);
+	void multOrientationMatrixYaw(gl::GLfloat yaw);
+	void multOrientationMatrixPitch(gl::GLfloat pitch);
+	void multOrientationMatrixRoll(gl::GLfloat roll);
+
+	void setOrientationYawMatrix(gl::GLfloat yaw);
+	void setOrientationPitchMatrix(gl::GLfloat pitch);
+	void setOrientationRollMatrix(gl::GLfloat roll);
+
 	const glm::mat4& getTranslationMatrix();
 
 	const glm::mat4& getScalingMatrix();
 
 	const glm::mat4& getRotationMatrix();
 
+	const glm::mat4& getOrientationMatrix();
+
+	const glm::mat4 &getYawMatrix();
+	const glm::mat4 &getPitchMatrix();
+	const glm::mat4 &getRollMatrix();
+
 	void pushState();
 	void popState();
 	void seekState();
 
 private:
-	glm::mat4 translationMatrix;
-	glm::mat4 scalingMatrix;
-	glm::mat4 rotationMatrix;
-	glm::mat4 rotationXMatrix;
-	glm::mat4 rotationYMatrix;
-	glm::mat4 rotationZMatrix;
+	glm::mat4 translationMatrix = glm::mat4(1.0f);
+	glm::mat4 scalingMatrix = glm::mat4(1.0f);
+	glm::mat4 rotationMatrix = glm::mat4(1.0f);
+	glm::mat4 rotationXMatrix = glm::mat4(1.0f);
+	glm::mat4 rotationYMatrix = glm::mat4(1.0f);
+	glm::mat4 rotationZMatrix = glm::mat4(1.0f);
+	glm::mat4 orientationMatrix = glm::mat4(1.0f);
+	glm::quat orientationQuat = glm::quat();
+	glm::mat4 yawMatrix = glm::mat4(1.0f);
+	glm::quat yawQuat = glm::quat();
+	glm::mat4 pitchMatrix = glm::mat4(1.0f);
+	glm::quat pitchQuat = glm::quat();
+	glm::mat4 rollMatrix = glm::mat4(1.0f);
+	glm::quat rollQuat = glm::quat();
 
 	glm::vec3 offset, scale, rotation;
 
