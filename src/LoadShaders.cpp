@@ -21,7 +21,7 @@ GLuint LoadShaders::LoadShader(GLenum type, const string shader, GLint id) {
 	if (open(shader) == NULL) {
 		return -1;
 	}
-	const char * const& fileData = toString().c_str();
+	const char *fileData = toCString();
 	close();
 
 	GLuint shaderObj = glCreateShader(type);

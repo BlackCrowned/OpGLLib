@@ -53,6 +53,16 @@ const string FileLoader::toString() {
 	return datastream.str();
 }
 
+const char *FileLoader::toCString() {
+	const string &string = toString();
+	char *cStr = new char[string.length() + 1];
+
+	string.copy(cStr, string.length());
+	cStr[string.length()] = '\0';
+
+	return cStr;
+}
+
 fstream *FileLoader::getFile() {
 	return &file;
 }

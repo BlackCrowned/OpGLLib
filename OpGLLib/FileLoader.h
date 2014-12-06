@@ -20,6 +20,7 @@ public:
 	void close();
 
 	const std::string toString();
+	const char *toCString();
 
 	std::fstream *getFile();
 	std::string getFileType();
