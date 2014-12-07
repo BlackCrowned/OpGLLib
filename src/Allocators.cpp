@@ -90,8 +90,8 @@ template<class T> void FileAllocator<T>::closeFile(T &file) {
 
 template<class T> void FileAllocator<T>::closeFiles() {
 	for (auto i : Allocator<T>::objects) {
-		if (file->is_open()) {
-			file->close();
+		if (i->is_open()) {
+			i->close();
 		}
 	}
 }
