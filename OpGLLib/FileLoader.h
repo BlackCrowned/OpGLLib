@@ -9,8 +9,9 @@
 #define OPGLLIB_FILELOADER_H_
 
 #include <OpGLLib/internal.h>
+#include <OpGLLib/Allocators.h>
 
-class FileLoader {
+class FileLoader : FileAllocator<std::fstream>{
 public:
 	FileLoader();
 	FileLoader(std::string name, std::ios::openmode openmode = std::ios::in);
@@ -26,9 +27,8 @@ public:
 	std::string getFileType();
 
 private:
-	std::fstream file;
+	std::fstream *file;
 	std::string fileType;
 };
-
 
 #endif /* OPGLLIB_FILELOADER_H_ */

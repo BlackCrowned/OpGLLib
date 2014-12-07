@@ -9,46 +9,45 @@
 
 using namespace std;
 
-FileLoader::FileLoader() {
-
+FileLoader::FileLoader() : FileAllocator(){
+	file = constructObject();
 }
 
 FileLoader::FileLoader(string name, ios::openmode openmode) {
-	open(name, openmode);
+	file = openFile(name, openmode);
 }
 
 FileLoader::~FileLoader() {
-	if (file.is_open()) {
-		file.close();
+	if (file->is_open()) {
+		file->close();
 	}
 }
 
 fstream *FileLoader::open(string name, ios::openmode openmode) {
+	file = openFile(*file, name, openmode);
 
-	file.open(name.c_str(), openmode);
-
-	if (!file.good()) {
+	if (!file->good()) {
 		cerr << "Failed to open file: '" << name << "'" << endl;
 		return NULL;
 	}
 	fileType = name.substr(name.find_last_of('.') + 1);
 
-	return &file;
+	return file;
 }
 
 void FileLoader::close() {
-	file.close();
+	closeFile(file);
 }
 
 const string FileLoader::toString() {
 	stringstream datastream;
-	if (!file.is_open()) {
+	if (!file->is_open()) {
 		return "";
 	}
 
-	file.seekg(0, ios::beg);
+	file->seekg(0, ios::beg);
 
-	datastream << file.rdbuf();
+	datastream << file->rdbuf();
 
 	return datastream.str();
 }
@@ -64,7 +63,7 @@ const char *FileLoader::toCString() {
 }
 
 fstream *FileLoader::getFile() {
-	return &file;
+	return file;
 }
 
 string FileLoader::getFileType() {
