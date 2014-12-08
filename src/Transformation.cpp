@@ -53,13 +53,26 @@ void Transformation::updateTransformationMatrix(MultiplicationOrder multiplicati
 	}
 }
 
-glm::mat4 Transformation::getTransformationMatrix(bool noCameraTransform, bool noPerspectiveTransform) {
-	if (noPerspectiveTransform && noCameraTransform) {
+glm::mat4 Transformation::getTransformationMatrix(bool noCameraTransform, bool noPerspectiveTransform, bool noOrientationTransform) {
+	if (noPerspectiveTransform && noCameraTransform && noOrientationTransform) {
 		return transformationMatrix;
-	} else if (noPerspectiveTransform) {
+	}
+	else if (noPerspectiveTransform && noCameraTransform){
+		return transformationMatrix * getOrientationMatrix();
+	}
+	else if (noPerspectiveTransform && noOrientationTransform) {
+		return getCameraMatrix() * transformationMatrix;
+	}
+	else if (noCameraTransform && noOrientationTransform) {
+		return getPerspectiveMatrix() * transformationMatrix;
+	}
+	else if (noPerspectiveTransform) {
 		return getCameraMatrix() * transformationMatrix * getOrientationMatrix();
 	} else if (noCameraTransform) {
 		return getPerspectiveMatrix() * transformationMatrix * getOrientationMatrix();
+	}
+	else if (noOrientationTransform) {
+		return getPerspectiveMatrix() * getCameraMatrix() * transformationMatrix;
 	}
 	return getPerspectiveMatrix() * getCameraMatrix() * transformationMatrix * getOrientationMatrix();
 }

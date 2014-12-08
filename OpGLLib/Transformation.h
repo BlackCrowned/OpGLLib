@@ -25,7 +25,8 @@ public:
 	void setTransformationMatrix(glm::mat4 transformationMatrix);
 	void resetTransformationMatrix();
 	void updateTransformationMatrix(MultiplicationOrder = SRT);
-	glm::mat4 getTransformationMatrix(bool noCameraTransform = false, bool noPerspectiveTransform = false);
+	glm::mat4 getTransformationMatrix(bool noCameraTransform = false, bool noPerspectiveTransform = false,
+			bool noOrientationTransform = false);
 
 	Matrices & matrices = static_cast<Matrices &>(*this);
 	Camera & camera = static_cast<Camera &>(*this);
