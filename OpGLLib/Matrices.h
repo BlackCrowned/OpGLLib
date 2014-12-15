@@ -17,18 +17,21 @@ public:
 
 	void setTranslationMatrix(glm::mat4 translationMatrix);
 	void setTranslationMatrix(glm::vec3 offset);
+	void resetTranslationMatrix();
 	void setTranslationMatrixX(gl::GLfloat x);
 	void setTranslationMatrixY(gl::GLfloat y);
 	void setTranslationMatrixZ(gl::GLfloat z);
 
 	void setScalingMatrix(glm::mat4 scalingMatrix);
 	void setScalingMatrix(glm::vec3 scale);
+	void resetScalingMatrix();
 	void setScalingMatrixX(gl::GLfloat x);
 	void setScalingMatrixY(gl::GLfloat y);
 	void setScalingMatrixZ(gl::GLfloat z);
 
 	void setRotationMatrix(glm::mat4 rotationMatrix);
 	void setRotationMatrix(glm::vec3 rotation);
+	void resetRotationMatrix();
 	void setRotationMatrixX(gl::GLfloat x);
 	void setRotationMatrixY(gl::GLfloat y);
 	void setRotationMatrixZ(gl::GLfloat z);

@@ -30,6 +30,11 @@ void Matrices::setTranslationMatrix(glm::vec3 offset) {
 	translationMatrix[3].z = offset.z;
 }
 
+void Matrices::resetTranslationMatrix() {
+	offset = glm::vec3(0, 0, 0);
+	translationMatrix = glm::mat4(1.0f);
+}
+
 void Matrices::setTranslationMatrixX(GLfloat x) {
 	offset.x = x;
 	translationMatrix[3].x = x;
@@ -54,6 +59,11 @@ void Matrices::setScalingMatrix(glm::vec3 scale) {
 	scalingMatrix[0].x = scale.x;
 	scalingMatrix[1].y = scale.y;
 	scalingMatrix[2].z = scale.z;
+}
+
+void Matrices::resetScalingMatrix() {
+	scale = glm::vec3(1.0f, 1.0f, 1.0f);
+	scalingMatrix = glm::mat4(1.0f);
 }
 
 void Matrices::setScalingMatrixX(GLfloat x) {
@@ -81,6 +91,11 @@ void Matrices::setRotationMatrix(glm::vec3 rotation) {
 	setRotationYMatrix(rotation.y);
 	setRotationZMatrix(rotation.z);
 	rotationMatrix = rotationXMatrix * rotationYMatrix * rotationZMatrix;
+}
+
+void Matrices::resetRotationMatrix() {
+	rotation = glm::vec3(0, 0, 0);
+	rotationMatrix = glm::mat4(1.0f);
 }
 
 void Matrices::setRotationMatrixX(GLfloat x) {
