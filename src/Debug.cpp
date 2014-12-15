@@ -33,8 +33,8 @@ void Debug::setLimiter(string limiter) {
 	Debug::limiter = limiter;
 }
 
-void Debug::showLimiter() {
-	if (limiters) {
+void Debug::showLimiter(bool ignoreState) {
+	if (limiters || ignoreState) {
 		cout << limiter << endl;
 	}
 }
@@ -237,6 +237,24 @@ void Debug::print(string name, string type, float* array, int rows, int colums) 
 			cout << fixed << setprecision(1) << setw(4) << array[(j * rows) + i] << "|";
 		}
 		cout << "\n" << setfill('-') << setw(colums * 5 + 1) << "" << setfill(' ') << endl;
+	}
+	showLimiter();
+}
+
+void Debug::print(string name, string type, int* array, int rows, int colums) {
+	showLimiter();
+	if (name == "") {
+		cout << "[" << type << "]: [@" << array << "]" << endl;
+	} else {
+		cout << name << " [" << type << "]: [@" << array << "]" << endl;
+	}
+	cout << setfill('-') << setw(colums * 3 + 1) << "" << setfill(' ') << "\n";
+	for (auto i = 0; i < rows; i++) {
+		cout << "|";
+		for (auto j = 0; j < colums; j++) {
+			cout << setw(2) << array[(j * rows) + i] << "|";
+		}
+		cout << "\n" << setfill('-') << setw(colums * 3 + 1) << "" << setfill(' ') << endl;
 	}
 	showLimiter();
 }

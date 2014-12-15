@@ -19,7 +19,7 @@ public:
 
 	void enableLimiters(bool state = 1);
 	void setLimiter(std::string limiter);
-	void showLimiter();
+	void showLimiter(bool ignoreState = 0);
 
 	void log(bool& type, std::string name = "");
 	void log(int& type, std::string name = "");
@@ -36,11 +36,13 @@ public:
 	void log(glm::ivec4& type, std::string name = "");
 	void log(glm::mat3& type, std::string name = "");
 	void log(glm::mat4& type, std::string name = "");
-private:
+
 	void print(std::string name, std::string type, std::string data, std::string address);
 	void print(std::string name, std::string type, float* data, int colums);
 	void print(std::string name, std::string type, int* data, int colums);
 	void print(std::string name, std::string type, float* data, int rows, int colums);
+	void print(std::string name, std::string type, int* data, int rows, int colums);
+private:
 	static bool logging;
 	static bool limiters;
 	static std::string limiter;
