@@ -18,7 +18,7 @@ Perspective::Perspective() {
 	zNear = 1.0f;
 	zFar = 500.0f;
 
-	useFoV = true;
+	useFoV = false;
 
 	updatePerspectiveMatrix();
 }
@@ -74,16 +74,19 @@ void Perspective::setPerspectiveMatrix(glm::mat4 perspectiveMatrix) {
 
 void Perspective::setPerspectiveMatrix(GLfloat foV, GLfloat zNear, GLfloat zFar) {
 	setPerspectiveMatrix(calcFrustumScale(foV), zNear, zFar);
+	useFoV = true;
 }
 
 void Perspective::setPerspectiveMatrix(GLfloat foV, GLfloat aspectRatio, GLfloat zNear, GLfloat zFar) {
 	setPerspectiveMatrix(calcFrustumScale(foV, aspectRatio), zNear, zFar);
+	useFoV = true;
 }
 
 void Perspective::setPerspectiveMatrix(glm::vec2 frustumScale, GLfloat zNear, GLfloat zFar) {
 	Perspective::frustumScale = frustumScale;
 	Perspective::zNear = zNear;
 	Perspective::zFar = zFar;
+	Perspective::useFoV = false;
 	perspectiveMatrix[0].x = frustumScale.x;
 	perspectiveMatrix[1].y = frustumScale.y;
 	perspectiveMatrix[2].z = (zFar + zNear) / (zNear - zFar);
