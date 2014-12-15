@@ -32,6 +32,8 @@ public:
 	Camera & camera = static_cast<Camera &>(*this);
 	Perspective & perspective = static_cast<Perspective &>(*this);
 
+	void loadIdentityMatrix();
+
 	void pushMatrix();
 	void popMatrix();
 	void seekMatrix();

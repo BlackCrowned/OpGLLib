@@ -77,6 +77,14 @@ glm::mat4 Transformation::getTransformationMatrix(bool noCameraTransform, bool n
 	return getPerspectiveMatrix() * getCameraMatrix() * transformationMatrix * getOrientationMatrix();
 }
 
+void Transformation::loadIdentityMatrix() {
+	resetTransformationMatrix();
+	resetTranslationMatrix();
+	resetScalingMatrix();
+	resetRotationMatrix();
+	resetOrientationMatrix();
+}
+
 void Transformation::pushMatrix() {
 	matrixStack.push(transformationMatrix);
 	Matrices::pushState();
@@ -123,16 +131,19 @@ void Transformation::translate(glm::vec3 offset) {
 }
 
 void Transformation::translateX(GLfloat x) {
+	resetTranslationMatrix();
 	setTranslationMatrixX(x);
 	transformationMatrix = getTranslationMatrix() * transformationMatrix;
 }
 
 void Transformation::translateY(GLfloat y) {
+	resetTranslationMatrix();
 	setTranslationMatrixY(y);
 	transformationMatrix = getTranslationMatrix() * transformationMatrix;
 }
 
 void Transformation::translateZ(GLfloat z) {
+	resetTranslationMatrix();
 	setTranslationMatrixZ(z);
 	transformationMatrix = getTranslationMatrix() * transformationMatrix;
 }
