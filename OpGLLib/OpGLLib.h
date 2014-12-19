@@ -28,12 +28,17 @@ public:
 	void enableDepthTest(gl::GLboolean DepthMasc = gl::GL_TRUE, gl::GLenum DepthFunc = gl::GL_LEQUAL);
 	void disableDepthTest();
 
+	std::chrono::milliseconds getFrameTime(int range = 1);
+	float getFrameRate(int range = 1);
+
 	LoadShaders loadShaders;
 	Matrices matrices;
 	Perspective perspective;
 	Camera camera;
 	Transformation transformation;
 private:
+	std::chrono::time_point<std::chrono::system_clock> lastFrame;
+	std::deque<std::chrono::milliseconds> frameDuration;
 };
 
 #endif /* OPGLLIB_OPGLLIB_H_ */
