@@ -28,7 +28,7 @@ enum AnimationObjectStatus {
 	shown, hidden
 };
 
-enum AnimationCallbacks {
+enum AnimationCallbackEvents {
 	start, done, update
 };
 
@@ -56,17 +56,22 @@ private:
 	int inclusion;
 };
 
-class AnimationObject : private Callbacks<AnimationCallbacks, void (AnimationObject&), AnimationObject&> {
+class AnimationObject {
 public:
 	AnimationObject();
 	~AnimationObject();
 
-	void addUniformAttribute(AnimationAttribute<glm::vec4> attribute, AnimationAttributeTypes type, AnimationAttributeTarget target =
+	void addUniformAttribute(AnimationAttribute<glm::vec4> attribute, AnimationAttributeTarget target =
 			AnimationAttributeTarget::position, float progressStart = 0, float progressEnd = 1.0f);
 	void addUniformAttribute(std::string attribute, AnimationAttributeTypes type,
 			AnimationAttributeTarget target = AnimationAttributeTarget::position, float progressStart = 0, float progressEnd = 1.0f);
-	void addPerVertexAttribute(AnimationAttribute<Object> attribute, AnimationAttributeTypes type, AnimationAttributeTarget target =
+	void addPerVertexAttribute(AnimationAttribute<Object> attribute, AnimationAttributeTarget target =
 			AnimationAttributeTarget::position, float progressStart = 0, float progressEnd = 1.0f);
+
+	template<typename Function, typename ...Args>
+	void addCallback(AnimationCallbackEvents event, Function const& func, Args const& ...args) {
+		callbacks.addCallback<Function, Args...>(event, removeWhenFinished, func, args...);
+	};
 
 	void setStartTime(std::chrono::time_point<std::chrono::system_clock> start);
 	void setDuration(std::chrono::milliseconds duration);
@@ -75,6 +80,8 @@ private:
 
 	AnimationObjectStatus objectStatus;
 	Object *objectVisible;
+
+	Callbacks<int> callbacks;
 
 	std::deque<std::tuple<AnimationAttributeTypes, int, AnimationAttributeTarget, float, float> > attributes;
 	std::deque<AnimationAttribute<glm::vec4> > uniformAttributes;

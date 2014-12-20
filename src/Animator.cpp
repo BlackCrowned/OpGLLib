@@ -54,7 +54,15 @@ int AnimationAttribute<T>::getInclusion() {
 	return inclusion;
 }
 
-void AnimationObject::addUniformAttribute(AnimationAttribute<glm::vec4> attribute, AnimationAttributeTypes type, AnimationAttributeTarget target, float progressStart, float progressEnd) {
+AnimationObject::AnimationObject() {
+
+}
+
+AnimationObject::~AnimationObject() {
+
+}
+
+void AnimationObject::addUniformAttribute(AnimationAttribute<glm::vec4> attribute, AnimationAttributeTarget target, float progressStart, float progressEnd) {
 	uniformAttributes.push_back(move(attribute));
 	attributes.push_back(make_tuple(attribute.getType(), uniformAttributes.size() - 1, target, progressStart, progressEnd));
 }
@@ -88,7 +96,7 @@ void AnimationObject::addUniformAttribute(string attribute, AnimationAttributeTy
 
 }
 
-void AnimationObject::addPerVertexAttribute(AnimationAttribute<Object> attribute, AnimationAttributeTypes type, AnimationAttributeTarget target, float progressStart, float progressEnd) {
+void AnimationObject::addPerVertexAttribute(AnimationAttribute<Object> attribute, AnimationAttributeTarget target, float progressStart, float progressEnd) {
 	perVertexAttributes.push_back(move(attribute));
 	attributes.push_back(make_tuple(attribute.getType(), perVertexAttributes.size() - 1, target, progressStart, progressEnd));
 }
