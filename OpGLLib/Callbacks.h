@@ -21,7 +21,7 @@ public:
 	~Callbacks();
 
 	template<typename Function, typename ...Args>
-	void addCallback(Event event, int settings, Function const& func, Args const& ...args) {
+	void addCallback(Event event, Function const& func, Args const& ...args, int settings) {
 		this->callbacks.push_back(new Callback<Function, Args...>(event, func, args..., settings));
 	};
 

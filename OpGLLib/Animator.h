@@ -70,7 +70,7 @@ public:
 
 	template<typename Function, typename ...Args>
 	void addCallback(AnimationCallbackEvents event, Function const& func, Args const& ...args) {
-		callbacks.addCallback<Function, Args...>(event, removeWhenFinished, func, args...);
+		callbacks.addCallback<Function, Args...>(event, func, args..., removeWhenFinished);
 	};
 
 	void setStartTime(std::chrono::time_point<std::chrono::system_clock> start);
