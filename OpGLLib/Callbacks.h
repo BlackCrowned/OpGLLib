@@ -26,6 +26,7 @@ public:
 	};
 
 	void removeCallbacks(Event event);
+	void removeCallbacks();
 
 	void dispatchEvent(Event event);
 
