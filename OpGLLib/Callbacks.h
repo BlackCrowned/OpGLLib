@@ -30,6 +30,8 @@ public:
 
 	void dispatchEvent(Event event);
 
+	int size();
+
 private:
 	void removeCallback(int i);
 

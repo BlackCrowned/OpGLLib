@@ -49,3 +49,8 @@ template<typename Event>
 void Callbacks<Event>::removeCallback(int i) {
 	callbacks.erase(callbacks.begin() + i);
 }
+
+template<typename Event>
+int Callbacks<Event>::size() {
+	return callbacks.size();
+}
