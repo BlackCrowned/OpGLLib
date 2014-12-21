@@ -28,7 +28,7 @@ public:
 	void removeCallbacks(Event event);
 	void removeCallbacks();
 
-	void dispatchEvent(Event event);
+	void dispatchEvent(Event event, bool firstOnly = false);
 
 	int size();
 
