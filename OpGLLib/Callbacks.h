@@ -23,7 +23,8 @@ public:
 	template<typename Function, typename ...Args>
 	void addCallback(Event event, Function const& func, Args const& ...args, int settings) {
 		this->callbacks.push_back(new Callback<Function, Args...>(event, func, args..., settings));
-	};
+	}
+	;
 
 	void removeCallbacks(Event event);
 	void removeCallbacks();
@@ -37,37 +38,43 @@ private:
 
 	class virtualCallback {
 	public:
-		virtual ~virtualCallback() {};
+		virtual ~virtualCallback() {
+		}
+		;
 		virtual void call() = 0;
 		virtual Event event() = 0;
 		virtual int settings() = 0;
 	};
 
-	template <typename Function, typename ...Args>
-	class Callback : public virtualCallback{
+	template<typename Function, typename ...Args>
+	class Callback: public virtualCallback {
 	public:
 		Callback(Event event, Function const& func, Args const&... args, int settings) {
 			this->_event = event;
 			this->func = &func;
 			this->args = std::make_tuple(args...);
 			this->_settings = settings;
-		};
+		}
+		;
 
 		~Callback() {
 			delete this;
 		}
 
 		void call() {
-			call_func(std::index_sequence_for<Args...> {});
-		};
+			call_func(std::index_sequence_for<Args...> { });
+		}
+		;
 
 		Event event() {
 			return _event;
-		};
+		}
+		;
 
 		int settings() {
 			return _settings;
-		};
+		}
+		;
 
 		template<size_t ...I>
 		void call_func(std::index_sequence<I...> seq) {
@@ -82,10 +89,9 @@ private:
 		int _settings;
 	};
 
-
 	std::deque<virtualCallback *> callbacks;
 };
 
-template class Callbacks<int>;
+template class Callbacks<int> ;
 
 #endif /* OPGLLIB_CALLBACKS_H_ */

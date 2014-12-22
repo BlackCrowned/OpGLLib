@@ -14,12 +14,12 @@ Callbacks<Event>::Callbacks() {
 
 }
 
-template <typename Event>
+template<typename Event>
 Callbacks<Event>::~Callbacks() {
 
 }
 
-template <typename Event>
+template<typename Event>
 void Callbacks<Event>::removeCallbacks(Event event) {
 	for (unsigned int i = 0; i < callbacks.size(); i++) {
 		if (callbacks.at(i)->event() == event) {
@@ -28,12 +28,12 @@ void Callbacks<Event>::removeCallbacks(Event event) {
 	}
 }
 
-template <typename Event>
+template<typename Event>
 void Callbacks<Event>::removeCallbacks() {
 	callbacks.clear();
 }
 
-template <typename Event>
+template<typename Event>
 void Callbacks<Event>::dispatchEvent(Event event, bool firstOnly) {
 	for (unsigned int i = 0; i < callbacks.size(); i++) {
 		if (callbacks.at(i)->event() == event) {
