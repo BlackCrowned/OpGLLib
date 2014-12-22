@@ -10,6 +10,8 @@
 
 #include <OpGLLib/internal.h>
 #include <OpGLLib/Callbacks.h>
+#include <OpGLLib/Transformation.h>
+#include <OpGLLib/Debug.h>
 
 enum AnimationAttributeTypes {
 	translate, scale, rotate, translateTo, scaleTo, rotateTo
@@ -24,101 +26,129 @@ enum AnimationObjectStatus {
 };
 
 enum AnimationCallbackEvents {
-	start, done, update
+	onStart = 0x1, onUpdate = 0x2, onComplete = 0x4, onRestart = 0x8, onReverse = 0x10,
 };
 
 enum AnimationCallbackTypes {
 	function, animationObject
 };
 
+enum AnimationSettings {
+	restart = 0x1, reverse = 0x2, restartOnce = 0x4, reverseOnce = 0x8
+};
+
 enum InterpolationFunctions {
-	accelerate, decelelerate, acceleratedecelerate
+	accelerate, decelerate, acceleratedecelerate
 };
 
 class Animator;
 class AnimationObject;
-void _addCallback(Animator* animator, glm::mat4* modelMatrix, AnimationObject animationObject);
+void _addCallback(Animator* animator, glm::mat4* matrix, AnimationObject animationObject);
 
 template<class T> class AnimationAttribute {
 public:
 	AnimationAttribute();
-	AnimationAttribute(T attribute, AnimationAttributeTypes type, int inclusion = AnimationAttributeInclusion::all);
+	AnimationAttribute(T attribute, AnimationAttributeTypes type = translate, InterpolationFunctions interpolator = acceleratedecelerate,
+			float progressStart = 0.0f, float progressEnd = 1.0f, int inclusion = AnimationAttributeInclusion::all);
 	~AnimationAttribute();
 
-	void setAttribute(T attribute, AnimationAttributeTypes type, int inclusion = AnimationAttributeInclusion::all);
+	void setAttribute(T attribute, AnimationAttributeTypes type = translate, InterpolationFunctions interpolator = acceleratedecelerate,
+			float progressStart = 0.0f, float progressEnd = 1.0f, int inclusion = AnimationAttributeInclusion::all);
+
 	T const& getAttribute();
-
 	AnimationAttributeTypes getType();
-	int getInclusion();
+	InterpolationFunctions getInterpolator();
+	float getProgressStart();
+	float getProgressEnd();
 
-	bool operator==(AnimationAttribute<T> attribute);
+	void reverse();
 
 private:
 	T attribute;
 	AnimationAttributeTypes type;
+	InterpolationFunctions interpolator;
+	float progressStart;
+	float progressEnd;
 	int inclusion;
 };
 
 class AnimationObject {
 public:
 	AnimationObject();
+	AnimationObject(std::initializer_list<AnimationAttribute<glm::vec3> > attributes);
 	~AnimationObject();
 
-	void addAttribute(AnimationAttribute<glm::vec4> attribute, float progressStart = 0, float progressEnd = 1.0f);
-	void addAttribute(std::string attribute, AnimationAttributeTypes type, float progressStart = 0, float progressEnd = 1.0f);
+	void addAttribute(AnimationAttribute<glm::vec3> attribute);
 
 	template<typename Function, typename ...Args>
 	void addCallback(AnimationCallbackEvents event, Function const& func, Args const& ...args) {
-		callbacks.addCallback<Function, Args...>(event, func, args..., event == update ? 0 : removeWhenFinished);
+		callbacks.addCallback<Function, Args...>(event, func, args...,
+				((event == onUpdate) || (event == onRestart) || (event == onReverse)) ? 0 : removeWhenFinished);
 	}
 	;
 	void addCallback(AnimationCallbackEvents event, AnimationObject animationObject) {
-		callbacks.addCallback<decltype(_addCallback), Animator*, glm::mat4*, AnimationObject>(event, _addCallback, animator, modelMatrix,
-				animationObject, event == update ? 0 : removeWhenFinished);
+		callbacks.addCallback<decltype(_addCallback), Animator*, glm::mat4*, AnimationObject>(event, _addCallback, animator, matrix,
+				animationObject, event == onUpdate ? 0 : removeWhenFinished);
 	}
 
+	void setStartTime();
 	void setStartTime(std::chrono::time_point<std::chrono::system_clock> start);
 	void setDuration(std::chrono::milliseconds duration);
+	void setDelay(std::chrono::milliseconds delay);
 
-	void setModelMatrix(glm::mat4* modelMatrix);
+	void setMatrix(glm::mat4* matrix);
 	void setAnimator(Animator* animator);
+
+	void setSettings(int settings);
+
+	void reverse();
 
 	void animationStart();
 	void animationUpdate();
-	void animationDone();
+	void animationComplete();
+
+	bool complete();
 private:
 	Callbacks<int> callbacks;
 
-	glm::mat4* modelMatrix;
+	glm::mat4 oldMatrix;
+
+	glm::mat4* matrix;
 	Animator* animator;
 
-	std::deque<std::tuple<AnimationAttribute<glm::vec4>, float, float> > attributes;
+	std::deque<AnimationAttribute<glm::vec3> > attributes;
 
 	std::chrono::time_point<std::chrono::system_clock> start;
+	std::chrono::time_point<std::chrono::system_clock> lastTick;
 	std::chrono::milliseconds duration;
+	std::chrono::milliseconds delay;
+
+	int settings;
 
 	friend class Animator;
 };
 
-class Animator {
+class Animator: private Transformation {
 public:
 	Animator();
 	~Animator();
 
-	void animate(glm::mat4 *modelMatrix, AnimationObject animationObject);
+	void animate(glm::mat4 *matrix, AnimationObject animationObject);
 	glm::mat4* animate(AnimationObject animationObject);
 
 	void update();
 
-	void interpolate(std::chrono::time_point<std::chrono::system_clock> startTime, std::chrono::milliseconds duration,
-			InterpolationFunctions interpolator, float start, float end);
+	void translate(glm::mat4* matrix, AnimationAttribute<glm::vec3>& attribute, float progress);
+
+	float interpolate(std::chrono::time_point<std::chrono::system_clock> startTime, std::chrono::milliseconds duration,
+			std::chrono::milliseconds delay, InterpolationFunctions interpolator, float start, float end);
 
 private:
 	std::map<glm::mat4*, std::deque<AnimationObject> > queue;
 };
 
-template class AnimationAttribute<glm::vec4> ;
+template class AnimationAttribute<glm::vec3> ;
 
-using AnimationAttributeV4 = AnimationAttribute<glm::vec4>;
+using AnimationAttributeV3 = AnimationAttribute<glm::vec3>;
 
 #endif /* OPGLLIB_ANIMATOR_H_ */
