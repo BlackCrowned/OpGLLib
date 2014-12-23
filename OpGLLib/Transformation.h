@@ -61,6 +61,7 @@ public:
 	void rotateY(gl::GLfloat y);
 	void rotateZ(gl::GLfloat z);
 
+	void orient(glm::vec3 orientation);
 	void orient(gl::GLfloat yaw, gl::GLfloat pitch, gl::GLfloat roll);
 	void yaw(gl::GLfloat yaw);
 	void pitch(gl::GLfloat pitch);
