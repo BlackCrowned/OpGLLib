@@ -16,7 +16,6 @@ void _addCallback(Animator* animator, glm::mat4* matrix, AnimationObject animati
 template<class T>
 AnimationAttribute<T>::AnimationAttribute() {
 	type = translate;
-	inclusion = all;
 	interpolator = acceleratedecelerate;
 	progressStart = 0.0f;
 	progressEnd = 1.0f;
@@ -24,8 +23,8 @@ AnimationAttribute<T>::AnimationAttribute() {
 
 template<class T>
 AnimationAttribute<T>::AnimationAttribute(T attribute, AnimationAttributeTypes type, InterpolationFunctions interpolator,
-		float progressStart, float progressEnd, int inclusion) {
-	setAttribute(attribute, type, interpolator, progressStart, progressEnd, inclusion);
+		float progressStart, float progressEnd) {
+	setAttribute(attribute, type, interpolator, progressStart, progressEnd);
 }
 
 template<class T>
@@ -35,13 +34,12 @@ AnimationAttribute<T>::~AnimationAttribute() {
 
 template<class T>
 void AnimationAttribute<T>::setAttribute(T attribute, AnimationAttributeTypes type, InterpolationFunctions interpolator,
-		float progressStart, float progressEnd, int inclusion) {
+		float progressStart, float progressEnd) {
 	AnimationAttribute::attribute = attribute;
 	AnimationAttribute::type = type;
 	AnimationAttribute::interpolator = interpolator;
 	AnimationAttribute::progressStart = progressStart;
 	AnimationAttribute::progressEnd = progressEnd;
-	AnimationAttribute::inclusion = inclusion;
 }
 
 template<class T>
@@ -71,7 +69,13 @@ float AnimationAttribute<T>::getProgressEnd() {
 
 template<class T>
 void AnimationAttribute<T>::reverse() {
-	attribute = -attribute;
+	if (type != scale) {
+		attribute = -attribute;
+	}
+	else {
+		attribute = 1.0f / attribute;
+	}
+
 	switch(interpolator) {
 	case accelerate:
 		interpolator = decelerate;
@@ -171,6 +175,11 @@ void AnimationObject::animationComplete() {
 		callbacks.dispatchEvent(AnimationCallbackEvents::onReverse);
 		setStartTime();
 	}
+	if (AnimationSettings::repeat & settings) {
+		callbacks.dispatchEvent(AnimationCallbackEvents::onRepeat);
+		setMatrix(matrix);
+		setStartTime();
+	}
 	if (AnimationSettings::restartOnce & settings) {
 		callbacks.dispatchEvent(AnimationCallbackEvents::onRestart);
 		callbacks.removeCallbacks(AnimationCallbackEvents::onRestart);
@@ -182,6 +191,13 @@ void AnimationObject::animationComplete() {
 		callbacks.dispatchEvent(AnimationCallbackEvents::onReverse);
 		callbacks.removeCallbacks(AnimationCallbackEvents::onReverse);
 		settings ^= AnimationSettings::reverseOnce;
+		setStartTime();
+	}
+	if (AnimationSettings::repeatOnce & settings) {
+		callbacks.dispatchEvent(AnimationCallbackEvents::onRepeat);
+		callbacks.removeCallbacks(AnimationCallbackEvents::onRepeat);
+		settings ^= AnimationSettings::repeatOnce;
+		setMatrix(matrix);
 		setStartTime();
 	}
 }
@@ -210,15 +226,49 @@ void Animator::animate(glm::mat4* matrix, AnimationObject animationObject) {
 }
 
 glm::mat4* Animator::animate(AnimationObject animationObject) {
-	glm::mat4* matrix = new glm::mat4();
+	glm::mat4* matrix = new glm::mat4(1.0f);
 
-	animationObject.setAnimator(this);
-	animationObject.setMatrix(matrix);
-	animationObject.setStartTime();
-
-	queue[matrix].push_back(animationObject);
+	animate(matrix, animationObject);
 
 	return matrix;
+}
+
+void Animator::stop(glm::mat4* matrix, bool stopAll, bool finish) {
+	if (queue.count(matrix) < 1) {
+		return;
+	}
+	if (stopAll && finish) {
+		for (unsigned int i = 0; i < queue.at(matrix).size() ;i++) {
+			queue.at(matrix).at(i).setDuration(chrono::milliseconds(1));
+			queue.at(matrix).at(i).setDelay(chrono::milliseconds(0));
+			if ((queue.at(matrix).at(i).settings & AnimationSettings::reverse) || (queue.at(matrix).at(i).settings & AnimationSettings::reverseOnce)) {
+				queue.at(matrix).at(i).setSettings(AnimationSettings::reverseOnce);
+			}
+			else {
+				queue.at(matrix).at(i).setSettings(0);
+			}
+		}
+	}
+	else if (stopAll && !finish) {
+		queue.at(matrix).clear();
+	}
+	else if (!stopAll && finish) {
+		if (queue.at(matrix).size() >= 1) {
+			queue.at(matrix).at(0).setDuration(chrono::milliseconds(1));
+			queue.at(matrix).at(0).setDelay(chrono::milliseconds(0));
+			if ((queue.at(matrix).at(0).settings & AnimationSettings::reverse) || (queue.at(matrix).at(0).settings & AnimationSettings::reverseOnce)) {
+				queue.at(matrix).at(0).setSettings(AnimationSettings::reverseOnce);
+			}
+			else {
+				queue.at(matrix).at(0).setSettings(0);
+			}
+		}
+	}
+	else if(!stopAll && !finish) {
+		if (queue.at(matrix).size() >= 1) {
+			queue.at(matrix).pop_front();
+		}
+	}
 }
 
 void Animator::update() {
@@ -228,6 +278,7 @@ void Animator::update() {
 			AnimationObject& animationObject = queue.at(matrix).at(0);
 			animationObject.animationStart();
 			animationObject.lastTick = chrono::system_clock::now();
+			Transformation::loadIdentityMatrix();
 			Transformation::setTransformationMatrix(animationObject.oldMatrix);
 			animationObject.animationUpdate();
 			for (unsigned int a = 0; a < animationObject.attributes.size(); a++) {
@@ -240,8 +291,13 @@ void Animator::update() {
 					translate(matrix, attr, progress);
 					break;
 				case AnimationAttributeTypes::scale:
+					scale(matrix, attr, progress);
 					break;
 				case AnimationAttributeTypes::rotate:
+					rotate(matrix, attr, progress);
+					break;
+				case AnimationAttributeTypes::orient:
+					orient(matrix, attr, progress);
 					break;
 				default:
 					cerr << "Unknown AnimationAttributeType: " << attr.getType() << "!" << endl;
@@ -250,7 +306,7 @@ void Animator::update() {
 			if (animationObject.complete()) {
 				animationObject.animationComplete();
 				if (animationObject.complete()) {
-					queue.at(i->first).pop_front();
+					queue.at(matrix).pop_front();
 				}
 			}
 		}
@@ -260,7 +316,22 @@ void Animator::update() {
 
 void Animator::translate(glm::mat4* matrix, AnimationAttribute<glm::vec3>& attribute, float progress) {
 	Transformation::translate(attribute.getAttribute() * progress);
-	*matrix = Transformation::getTransformationMatrix(1, 1, 1);
+	*matrix = Transformation::getTransformationMatrix(1, 1, 0);
+}
+
+void Animator::scale(glm::mat4* matrix, AnimationAttribute<glm::vec3>& attribute, float progress) {
+	Transformation::scale(attribute.getAttribute() * progress + glm::vec3(1, 1, 1) * (1.0f - progress));
+	*matrix = Transformation::getTransformationMatrix(1, 1, 0);
+}
+
+void Animator::rotate(glm::mat4* matrix, AnimationAttribute<glm::vec3>& attribute, float progress) {
+	Transformation::rotate(attribute.getAttribute() * progress);
+	*matrix = Transformation::getTransformationMatrix(1, 1, 0);
+}
+
+void Animator::orient(glm::mat4* matrix, AnimationAttribute<glm::vec3>& attribute, float progress) {
+	Transformation::orient(attribute.getAttribute() * progress);
+	*matrix = Transformation::getTransformationMatrix(1, 1, 0);
 }
 
 float Animator::interpolate(chrono::time_point<chrono::system_clock> startTime, chrono::milliseconds duration, chrono::milliseconds delay,
@@ -286,6 +357,9 @@ float Animator::interpolate(chrono::time_point<chrono::system_clock> startTime, 
 	}
 
 	switch (interpolator) {
+	case InterpolationFunctions::linear:
+		interpolatedProgress = scaledProgress;
+		break;
 	case InterpolationFunctions::decelerate:
 		interpolatedProgress = sinf(scaledProgress * glm::pi<float>() / 2.0f);
 		break;
