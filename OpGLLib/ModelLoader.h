@@ -28,6 +28,7 @@ struct Model {
 	std::string name = "";
 	unsigned int id = 0;
 	int count = 0;
+	bool loaded = false;
 	std::vector<Object> objects;
 };
 
@@ -37,7 +38,9 @@ public:
 	ModelLoader(const std::string& name, unsigned int id);
 	~ModelLoader();
 
+	unsigned int reserve(const std::string& name, unsigned int id);
 	unsigned int load(const std::string& name, unsigned int id);
+	unsigned int unload(const std::string& name, unsigned int id);
 
 	Model &getModel(unsigned int id);
 private:
