@@ -22,14 +22,14 @@ public:
 	void position(glm::vec3 cameraPos);
 
 	void translate(glm::vec3 offset);
-	void translateX(gl::GLfloat x);
-	void translateY(gl::GLfloat y);
-	void translateZ(gl::GLfloat z);
+	void translateX(float x);
+	void translateY(float y);
+	void translateZ(float z);
 
 	void strafe(glm::vec3 offset);
-	void strafeX(gl::GLfloat x);
-	void strafeY(gl::GLfloat y);
-	void strafeZ(gl::GLfloat z);
+	void strafeX(float x);
+	void strafeY(float y);
+	void strafeZ(float z);
 
 	void lookAt(glm::vec3 center);
 	void lookAt(glm::vec3 center, glm::vec3 up);

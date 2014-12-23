@@ -7,8 +7,6 @@
 
 #include <OpGLLib/Perspective.h>
 
-using namespace gl;
-
 Perspective::Perspective() {
 	perspectiveMatrix = glm::mat4(0);
 
@@ -23,7 +21,7 @@ Perspective::Perspective() {
 	updatePerspectiveMatrix();
 }
 
-Perspective::Perspective(GLfloat foV, GLfloat aspectRatio, GLfloat zNear, GLfloat zFar) {
+Perspective::Perspective(float foV, float aspectRatio, float zNear, float zFar) {
 	perspectiveMatrix = glm::mat4(0);
 
 	Perspective::foV = foV;
@@ -37,7 +35,7 @@ Perspective::Perspective(GLfloat foV, GLfloat aspectRatio, GLfloat zNear, GLfloa
 	updatePerspectiveMatrix();
 }
 
-Perspective::Perspective(glm::vec2 frustumScale, GLfloat aspectRatio, GLfloat zNear, GLfloat zFar) {
+Perspective::Perspective(glm::vec2 frustumScale, float aspectRatio, float zNear, float zFar) {
 	perspectiveMatrix = glm::mat4(0);
 
 	Perspective::foV = 45.0f;
@@ -55,16 +53,16 @@ Perspective::~Perspective() {
 
 }
 
-glm::vec2 Perspective::calcFrustumScale(GLfloat foV) {
+glm::vec2 Perspective::calcFrustumScale(float foV) {
 	Perspective::foV = foV;
-	GLfloat foVRad = glm::radians(foV);
+	float foVRad = glm::radians(foV);
 	return glm::vec2(1.0f / glm::tan(foVRad / 2.0f), 1.0f / glm::tan(foVRad / 2.0f));
 }
 
-glm::vec2 Perspective::calcFrustumScale(GLfloat foV, GLfloat aspectRatio) {
+glm::vec2 Perspective::calcFrustumScale(float foV, float aspectRatio) {
 	Perspective::foV = foV;
 	Perspective::aspectRatio = aspectRatio;
-	GLfloat foVRad = glm::radians(foV);
+	float foVRad = glm::radians(foV);
 	return glm::vec2(1.0f / glm::tan(foVRad / 2.0f) / aspectRatio, 1.0f / glm::tan(foVRad / 2.0f));
 }
 
@@ -72,17 +70,17 @@ void Perspective::setPerspectiveMatrix(glm::mat4 perspectiveMatrix) {
 	Perspective::perspectiveMatrix = perspectiveMatrix;
 }
 
-void Perspective::setPerspectiveMatrix(GLfloat foV, GLfloat zNear, GLfloat zFar) {
+void Perspective::setPerspectiveMatrix(float foV, float zNear, float zFar) {
 	setPerspectiveMatrix(calcFrustumScale(foV), zNear, zFar);
 	useFoV = true;
 }
 
-void Perspective::setPerspectiveMatrix(GLfloat foV, GLfloat aspectRatio, GLfloat zNear, GLfloat zFar) {
+void Perspective::setPerspectiveMatrix(float foV, float aspectRatio, float zNear, float zFar) {
 	setPerspectiveMatrix(calcFrustumScale(foV, aspectRatio), zNear, zFar);
 	useFoV = true;
 }
 
-void Perspective::setPerspectiveMatrix(glm::vec2 frustumScale, GLfloat zNear, GLfloat zFar) {
+void Perspective::setPerspectiveMatrix(glm::vec2 frustumScale, float zNear, float zFar) {
 	Perspective::frustumScale = frustumScale;
 	Perspective::zNear = zNear;
 	Perspective::zFar = zFar;
@@ -113,11 +111,11 @@ glm::mat4 Perspective::getPerspectiveMatrix() {
 	return perspectiveMatrix;
 }
 
-void Perspective::setAspectRatio(GLfloat aspectRatio) {
+void Perspective::setAspectRatio(float aspectRatio) {
 	Perspective::aspectRatio = aspectRatio;
 }
 
-void Perspective::setFoV(GLfloat foV) {
+void Perspective::setFoV(float foV) {
 	Perspective::foV = foV;
 	useFoV = true;
 }
@@ -127,11 +125,11 @@ void Perspective::setFrustumScale(glm::vec2 frustumScale) {
 	useFoV = false;
 }
 
-void Perspective::setZNear(GLfloat zNear) {
+void Perspective::setZNear(float zNear) {
 	Perspective::zNear = zNear;
 }
 
-void Perspective::setZFar(GLfloat zFar) {
+void Perspective::setZFar(float zFar) {
 	Perspective::zFar = zFar;
 }
 

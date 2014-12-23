@@ -7,8 +7,6 @@
 
 #include <OpGLLib/Matrices.h>
 
-using namespace gl;
-
 Matrices::Matrices() {
 	offset = glm::vec3(0.0f, 0.0f, 0.0f);
 	scale = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -35,17 +33,17 @@ void Matrices::resetTranslationMatrix() {
 	translationMatrix = glm::mat4(1.0f);
 }
 
-void Matrices::setTranslationMatrixX(GLfloat x) {
+void Matrices::setTranslationMatrixX(float x) {
 	offset.x = x;
 	translationMatrix[3].x = x;
 }
 
-void Matrices::setTranslationMatrixY(GLfloat y) {
+void Matrices::setTranslationMatrixY(float y) {
 	offset.y = y;
 	translationMatrix[3].y = y;
 }
 
-void Matrices::setTranslationMatrixZ(GLfloat z) {
+void Matrices::setTranslationMatrixZ(float z) {
 	offset.z = z;
 	translationMatrix[3].z = z;
 }
@@ -66,17 +64,17 @@ void Matrices::resetScalingMatrix() {
 	scalingMatrix = glm::mat4(1.0f);
 }
 
-void Matrices::setScalingMatrixX(GLfloat x) {
+void Matrices::setScalingMatrixX(float x) {
 	scale.x = x;
 	scalingMatrix[0].x = x;
 }
 
-void Matrices::setScalingMatrixY(GLfloat y) {
+void Matrices::setScalingMatrixY(float y) {
 	scale.y = y;
 	scalingMatrix[1].y = y;
 }
 
-void Matrices::setScalingMatrixZ(GLfloat z) {
+void Matrices::setScalingMatrixZ(float z) {
 	scale.z = z;
 	scalingMatrix[2].z = z;
 }
@@ -98,19 +96,19 @@ void Matrices::resetRotationMatrix() {
 	rotationMatrix = glm::mat4(1.0f);
 }
 
-void Matrices::setRotationMatrixX(GLfloat x) {
+void Matrices::setRotationMatrixX(float x) {
 	rotation.x = x;
 	setRotationXMatrix(x);
 	rotationMatrix = rotationXMatrix * rotationYMatrix * rotationZMatrix;
 }
 
-void Matrices::setRotationMatrixY(GLfloat y) {
+void Matrices::setRotationMatrixY(float y) {
 	rotation.y = y;
 	setRotationYMatrix(y);
 	rotationMatrix = rotationXMatrix * rotationYMatrix * rotationZMatrix;
 }
 
-void Matrices::setRotationMatrixZ(GLfloat z) {
+void Matrices::setRotationMatrixZ(float z) {
 	rotation.z = z;
 	setRotationZMatrix(z);
 	rotationMatrix = rotationXMatrix * rotationYMatrix * rotationZMatrix;
@@ -120,7 +118,7 @@ void Matrices::updateRotationMatrix() {
 	rotationMatrix = rotationXMatrix * rotationYMatrix * rotationZMatrix;
 }
 
-void Matrices::setRotationXMatrix(GLfloat x) {
+void Matrices::setRotationXMatrix(float x) {
 	rotationXMatrix = glm::mat4(1.0f);
 	rotation.x = x;
 	rotationXMatrix[1].y = cos(x);
@@ -129,7 +127,7 @@ void Matrices::setRotationXMatrix(GLfloat x) {
 	rotationXMatrix[2].z = cos(x);
 }
 
-void Matrices::setRotationYMatrix(GLfloat y) {
+void Matrices::setRotationYMatrix(float y) {
 	rotationYMatrix = glm::mat4(1.0f);
 	rotation.y = y;
 	rotationYMatrix[0].x = cos(y);
@@ -138,7 +136,7 @@ void Matrices::setRotationYMatrix(GLfloat y) {
 	rotationYMatrix[2].z = cos(y);
 }
 
-void Matrices::setRotationZMatrix(GLfloat z) {
+void Matrices::setRotationZMatrix(float z) {
 	rotationZMatrix = glm::mat4(1.0f);
 	rotation.z = z;
 	rotationZMatrix[0].x = cos(z);
@@ -157,14 +155,14 @@ void Matrices::setOrientationMatrix(glm::mat3 axes, glm::vec3 rotations) {
 	multOrientationMatrix(axes[2], rotations.z);
 }
 
-void Matrices::setOrientationMatrix(glm::vec3 axis, GLfloat rotation) {
+void Matrices::setOrientationMatrix(glm::vec3 axis, float rotation) {
 	axis = axis * glm::sin(rotation / 2.0f);
 	float scalar = glm::cos(rotation / 2.0f);
 	glm::quat offset(scalar, axis);
 	orientationQuat = glm::normalize(offset);
 }
 
-void Matrices::setOrientationMatrix(GLfloat yaw, GLfloat pitch, GLfloat roll) {
+void Matrices::setOrientationMatrix(float yaw, float pitch, float roll) {
 	setOrientationMatrixYaw(yaw);
 	multOrientationMatrixPitch(pitch);
 	multOrientationMatrixRoll(roll);
@@ -180,7 +178,7 @@ void Matrices::multOrientationMatrix(glm::mat3 axes, glm::vec3 rotations) {
 	multOrientationMatrix(axes[2], rotations.z);
 }
 
-void Matrices::multOrientationMatrix(glm::vec3 axis, GLfloat rotation) {
+void Matrices::multOrientationMatrix(glm::vec3 axis, float rotation) {
 	//orientationQuat = orientationQuat * glm::quat(glm::cos(rotation / 2), glm::normalize(axis) * glm::sin(rotation / 2));
 	axis = axis * glm::sin(rotation / 2.0f);
 	float scalar = glm::cos(rotation / 2.0f);
@@ -189,51 +187,51 @@ void Matrices::multOrientationMatrix(glm::vec3 axis, GLfloat rotation) {
 	orientationQuat = glm::normalize(orientationQuat);
 }
 
-void Matrices::multOrientationMatrix(gl::GLfloat yaw, gl::GLfloat pitch, gl::GLfloat roll) {
+void Matrices::multOrientationMatrix(float yaw, float pitch, float roll) {
 	multOrientationMatrixYaw(yaw);
 	multOrientationMatrixPitch(pitch);
 	multOrientationMatrixRoll(roll);
 }
 
-void Matrices::setOrientationMatrixYaw(GLfloat yaw) {
+void Matrices::setOrientationMatrixYaw(float yaw) {
 	setOrientationYawMatrix(yaw);
 	orientationQuat = yawQuat;
 }
 
-void Matrices::setOrientationMatrixPitch(GLfloat pitch) {
+void Matrices::setOrientationMatrixPitch(float pitch) {
 	setOrientationPitchMatrix(pitch);
 	orientationQuat = pitchQuat;
 }
 
-void Matrices::setOrientationMatrixRoll(GLfloat roll) {
+void Matrices::setOrientationMatrixRoll(float roll) {
 	setOrientationRollMatrix(roll);
 	orientationQuat = rollQuat;
 }
 
-void Matrices::multOrientationMatrixYaw(GLfloat yaw) {
+void Matrices::multOrientationMatrixYaw(float yaw) {
 	setOrientationYawMatrix(yaw);
 	orientationQuat = glm::normalize(orientationQuat * yawQuat);
 }
 
-void Matrices::multOrientationMatrixPitch(GLfloat pitch) {
+void Matrices::multOrientationMatrixPitch(float pitch) {
 	setOrientationPitchMatrix(pitch);
 	orientationQuat = glm::normalize(orientationQuat * pitchQuat);
 }
 
-void Matrices::multOrientationMatrixRoll(GLfloat roll) {
+void Matrices::multOrientationMatrixRoll(float roll) {
 	setOrientationRollMatrix(roll);
 	orientationQuat = glm::normalize(orientationQuat * rollQuat);
 }
 
-void Matrices::setOrientationYawMatrix(GLfloat yaw) {
+void Matrices::setOrientationYawMatrix(float yaw) {
 	yawQuat = glm::normalize(glm::quat(glm::cos(yaw / 2.0f), glm::vec3(1.0f, 0.0f, 0.0f) * glm::sin(yaw / 2.0f)));
 }
 
-void Matrices::setOrientationPitchMatrix(GLfloat pitch) {
+void Matrices::setOrientationPitchMatrix(float pitch) {
 	pitchQuat = glm::normalize(glm::quat(glm::cos(pitch / 2.0f), glm::vec3(0.0f, 1.0f, 0.0f) * glm::sin(pitch / 2.0f)));
 }
 
-void Matrices::setOrientationRollMatrix(GLfloat roll) {
+void Matrices::setOrientationRollMatrix(float roll) {
 	rollQuat = glm::normalize(glm::quat(glm::cos(roll / 2.0f), glm::vec3(0.0f, 0.0f, -1.0f) * glm::sin(roll / 2.0f)));
 }
 

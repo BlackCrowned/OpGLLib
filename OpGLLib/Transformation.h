@@ -47,25 +47,25 @@ public:
 	void seekPerpective();
 
 	void translate(glm::vec3 offset);
-	void translateX(gl::GLfloat x);
-	void translateY(gl::GLfloat y);
-	void translateZ(gl::GLfloat z);
+	void translateX(float x);
+	void translateY(float y);
+	void translateZ(float z);
 
 	void scale(glm::vec3 scale);
-	void scaleX(gl::GLfloat x);
-	void scaleY(gl::GLfloat y);
-	void scaleZ(gl::GLfloat z);
+	void scaleX(float x);
+	void scaleY(float y);
+	void scaleZ(float z);
 
 	void rotate(glm::vec3 rotation);
-	void rotateX(gl::GLfloat x);
-	void rotateY(gl::GLfloat y);
-	void rotateZ(gl::GLfloat z);
+	void rotateX(float x);
+	void rotateY(float y);
+	void rotateZ(float z);
 
 	void orient(glm::vec3 orientation);
-	void orient(gl::GLfloat yaw, gl::GLfloat pitch, gl::GLfloat roll);
-	void yaw(gl::GLfloat yaw);
-	void pitch(gl::GLfloat pitch);
-	void roll(gl::GLfloat roll);
+	void orient(float yaw, float pitch, float roll);
+	void yaw(float yaw);
+	void pitch(float pitch);
+	void roll(float roll);
 
 	void multMatrix(glm::mat4 matrix);
 
