@@ -188,6 +188,10 @@ void Transformation::rotateZ(GLfloat z) {
 	transformationMatrix = getRotationMatrix() * transformationMatrix;
 }
 
+void Transformation::orient(glm::vec3 orientation) {
+	orient(orientation.x, orientation.y, orientation.z);
+}
+
 void Transformation::orient(GLfloat yaw, GLfloat pitch, GLfloat roll) {
 	multOrientationMatrix(yaw, pitch, roll);
 }
