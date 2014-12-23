@@ -9,7 +9,7 @@
 
 using namespace std;
 
-void _addCallback(Animator* animator, glm::mat4* matrix, AnimationObject animationObject) {
+void detail::addCallback(Animator* animator, glm::mat4* matrix, AnimationObject animationObject) {
 	animator->animate(matrix, animationObject);
 }
 

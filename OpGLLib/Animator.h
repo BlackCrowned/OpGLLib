@@ -39,8 +39,10 @@ enum InterpolationFunctions {
 
 class Animator;
 class AnimationObject;
-void _addCallback(Animator* animator, glm::mat4* matrix, AnimationObject animationObject);
 
+namespace detail {
+void addCallback(Animator* animator, glm::mat4* matrix, AnimationObject animationObject);
+}
 
 template<class T> class AnimationAttribute {
 public:
@@ -71,7 +73,7 @@ private:
 class AnimationObject {
 public:
 	AnimationObject();
-		~AnimationObject();
+	~AnimationObject();
 
 	void addAttribute(AnimationAttribute<glm::vec3> attribute);
 
@@ -82,8 +84,8 @@ public:
 	}
 	;
 	AnimationObject(std::initializer_list<AnimationAttribute<glm::vec3> > attributes);
-void addCallback(AnimationCallbackEvents event, AnimationObject animationObject) {
-		callbacks.addCallback<decltype(_addCallback), Animator*, glm::mat4*, AnimationObject>(event, _addCallback, animator, matrix,
+	void addCallback(AnimationCallbackEvents event, AnimationObject animationObject) {
+		callbacks.addCallback<decltype(detail::addCallback), Animator*, glm::mat4*, AnimationObject>(event, detail::addCallback, animator, matrix,
 				animationObject, event == onUpdate ? 0 : removeWhenFinished);
 	}
 
