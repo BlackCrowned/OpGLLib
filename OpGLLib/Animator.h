@@ -41,7 +41,7 @@ class Animator;
 class AnimationObject;
 
 namespace detail {
-void addCallback(Animator* animator, glm::mat4* matrix, AnimationObject animationObject);
+void addCallback(Animator*& animator, glm::mat4*& matrix, AnimationObject& animationObject);
 }
 
 template<class T> class AnimationAttribute {
@@ -73,26 +73,41 @@ private:
 class AnimationObject {
 public:
 	AnimationObject();
+	AnimationObject(std::initializer_list<AnimationAttribute<glm::vec3> > attributes);
 	~AnimationObject();
 
 	void addAttribute(AnimationAttribute<glm::vec3> attribute);
 
+	template<typename R = void, typename ...Args>
+	void addCallback(AnimationCallbackEvents event, std::function<R(Args...)> const& func, Args&& ...args) {
+		callbacks.addCallback<R, Args...>(event, func, args...,
+				((event == onUpdate) || (event == onRestart) || (event == onReverse)) ? 0 : removeWhenFinished);
+	}
+	;
 	template<typename Function, typename ...Args>
-	void addCallback(AnimationCallbackEvents event, Function const& func, Args const& ...args) {
+	void addCallback(AnimationCallbackEvents event, Function const& func, Args&& ...args) {
 		callbacks.addCallback<Function, Args...>(event, func, args...,
 				((event == onUpdate) || (event == onRestart) || (event == onReverse)) ? 0 : removeWhenFinished);
 	}
 	;
-	AnimationObject(std::initializer_list<AnimationAttribute<glm::vec3> > attributes);
-	void addCallback(AnimationCallbackEvents event, AnimationObject animationObject) {
-		callbacks.addCallback<decltype(detail::addCallback), Animator*, glm::mat4*, AnimationObject>(event, detail::addCallback, animator, matrix,
-				animationObject, event == onUpdate ? 0 : removeWhenFinished);
+	template<typename R = void, typename Function, typename ...Args>
+	void addCallback(AnimationCallbackEvents event, Function const& func, Args&& ...args) {
+		callbacks.addCallback<R, Function, Args...>(event, func, args...,
+				((event == onUpdate) || (event == onRestart) || (event == onReverse)) ? 0 : removeWhenFinished);
+	}
+	;
+	void addCallback(AnimationCallbackEvents event, AnimationObject& animationObject) {
+		callbacks.addCallback<void, Animator*&, glm::mat4*&, AnimationObject&>(event, detail::addCallback, std::ref(animator),
+				std::ref(matrix), std::ref(animationObject),
+				((event == onUpdate) || (event == onRestart) || (event == onReverse)) ? 0 : removeWhenFinished);
 	}
 
 	void setStartTime();
 	void setStartTime(std::chrono::time_point<std::chrono::system_clock> start);
 	void setDuration(std::chrono::milliseconds duration);
+	void setDuration(int milliseconds);
 	void setDelay(std::chrono::milliseconds delay);
+	void setDelay(int milliseconds);
 
 	void setMatrix(glm::mat4* matrix);
 	void setAnimator(Animator* animator);
@@ -122,6 +137,7 @@ private:
 	std::chrono::milliseconds delay;
 
 	int settings;
+	int reversed;
 
 	friend class Animator;
 };
@@ -131,8 +147,10 @@ public:
 	Animator();
 	~Animator();
 
-	void animate(glm::mat4 *matrix, AnimationObject animationObject);
-	glm::mat4* animate(AnimationObject animationObject);
+	void animate(glm::mat4* matrix, AnimationObject&& animationObject);
+	void animate(glm::mat4* matrix, AnimationObject& animationObject);
+	glm::mat4* animate(AnimationObject&& animationObject);
+	glm::mat4* animate(AnimationObject& animationObject);
 
 	void stop(glm::mat4* matrix, bool stopAll, bool finish);
 

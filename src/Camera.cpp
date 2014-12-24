@@ -7,11 +7,7 @@
 
 #include <OpGLLib/Camera.h>
 
-using namespace gl;
-
 Camera::Camera() {
-	cameraMatrix = glm::mat4(1.0f);
-
 	center = glm::vec3(0.0f, 0.0f, -1.0f);
 	up = glm::vec3(0.0f, 1.0f, 0.0f);
 	cameraPos = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -20,8 +16,6 @@ Camera::Camera() {
 }
 
 Camera::Camera(glm::vec3 center, glm::vec3 up, glm::vec3 cameraPos) {
-	cameraMatrix = glm::mat4(1.0f);
-
 	Camera::center = center;
 	Camera::up = up;
 	Camera::cameraPos = cameraPos;
@@ -47,17 +41,17 @@ void Camera::translate(glm::vec3 offset) {
 	lookAt(center, up, cameraPos);
 }
 
-void Camera::translateX(GLfloat x) {
+void Camera::translateX(float x) {
 	cameraPos.x += x;
 	lookAt(center, up, cameraPos);
 }
 
-void Camera::translateY(GLfloat y) {
+void Camera::translateY(float y) {
 	cameraPos.y += y;
 	lookAt(center, up, cameraPos);
 }
 
-void Camera::translateZ(GLfloat z) {
+void Camera::translateZ(float z) {
 	cameraPos.z += z;
 	lookAt(center, up, cameraPos);
 }
@@ -68,19 +62,19 @@ void Camera::strafe(glm::vec3 offset) {
 	lookAt(center, up, cameraPos);
 }
 
-void Camera::strafeX(GLfloat x) {
+void Camera::strafeX(float x) {
 	center.x += x;
 	cameraPos.x += x;
 	lookAt(center, up, cameraPos);
 }
 
-void Camera::strafeY(GLfloat y) {
+void Camera::strafeY(float y) {
 	center.y += y;
 	cameraPos.y += y;
 	lookAt(center, up, cameraPos);
 }
 
-void Camera::strafeZ(GLfloat z) {
+void Camera::strafeZ(float z) {
 	center.z += z;
 	cameraPos.x += z;
 	lookAt(center, up, cameraPos);

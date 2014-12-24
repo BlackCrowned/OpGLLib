@@ -10,35 +10,35 @@
 using namespace std;
 using namespace gl;
 
-map<GLint, vector<GLuint> > LoadShaders::shaders;
-map<GLint, GLuint> LoadShaders::programs;
+map<int, vector<unsigned int> > LoadShaders::shaders;
+map<int, unsigned int> LoadShaders::programs;
 
 LoadShaders::LoadShaders() : FileLoader() {
 
 }
 
-GLuint LoadShaders::LoadShader(GLenum type, const string shader, GLint id) {
+unsigned int LoadShaders::LoadShader(GLenum type, const string shader, int id) {
 	if (open(shader) == NULL) {
 		return -1;
 	}
 	const char *fileData = toCString();
 	close();
 
-	GLuint shaderObj = glCreateShader(type);
+	unsigned int shaderObj = glCreateShader(type);
 
 	cout << "Compiling shader: '" << shader << "'(" << shaderObj << ")...";
 
 	glShaderSource(shaderObj, 1, &fileData, NULL);
 	glCompileShader(shaderObj);
 
-	GLint status;
+	int status;
 
 	glGetShaderiv(shaderObj, GL_COMPILE_STATUS, &status);
 
 	if (status == false) {
 		cerr << endl << "Failed to compile shader:" << endl;
 
-		GLint infoLogLength = 0;
+		int infoLogLength = 0;
 		glGetShaderiv(shaderObj, GL_INFO_LOG_LENGTH, &infoLogLength);
 		char *infoLog = new char[infoLogLength];
 
@@ -56,8 +56,8 @@ GLuint LoadShaders::LoadShader(GLenum type, const string shader, GLint id) {
 	return shaderObj;
 }
 
-GLuint LoadShaders::CreateProgram(GLint id) {
-	GLuint program = glCreateProgram();
+unsigned int LoadShaders::CreateProgram(int id) {
+	unsigned int program = glCreateProgram();
 
 	cout << "Creating program: '" << program << "':" << endl;
 
@@ -71,13 +71,13 @@ GLuint LoadShaders::CreateProgram(GLint id) {
 	cout << "Linking program: '" << program << "'...";
 	glLinkProgram(program);
 
-	GLint status;
+	int status;
 	glGetProgramiv(program, GL_LINK_STATUS, &status);
 
 	if (status == false) {
 		cerr << endl << "Failed to link program:" << endl;
 
-		GLint infoLogLength;
+		int infoLogLength;
 		char *infoLog;
 		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLogLength);
 		infoLog = new char[infoLogLength];
@@ -99,7 +99,7 @@ GLuint LoadShaders::CreateProgram(GLint id) {
 	return program;
 }
 
-GLuint LoadShaders::GetProgram(GLint id) {
+unsigned int LoadShaders::GetProgram(int id) {
 
 	return programs[id];
 }

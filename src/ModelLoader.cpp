@@ -26,6 +26,20 @@ ModelLoader::~ModelLoader() {
 
 }
 
+unsigned int ModelLoader::reserve(const string& name, unsigned int id) {
+	if (open(name) == NULL) {
+		return -1;
+	}
+	close();
+	Model model;
+	model.name = name;
+	model.id = id;
+	model.loaded = false;
+
+	models[id] = model;
+	return id;
+}
+
 unsigned int ModelLoader::load(const string& name, unsigned int id) {
 	Model model;
 	if (open(name) == NULL) {
@@ -41,11 +55,21 @@ unsigned int ModelLoader::load(const string& name, unsigned int id) {
 		return -2;
 	}
 	close();
+	model.loaded = true;
 	models[id] = model;
 	return id;
 }
 
+unsigned int ModelLoader::unload(const string& name, unsigned int id) {
+	models[id].objects.clear();
+	models[id].loaded = false;
+	return id;
+}
+
 Model &ModelLoader::getModel(unsigned int id) {
+	if (!models[id].loaded) {
+		load(models[id].name, id);
+	}
 	return models[id];
 }
 

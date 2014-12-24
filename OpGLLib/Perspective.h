@@ -13,25 +13,25 @@
 class Perspective {
 public:
 	Perspective();
-	Perspective(gl::GLfloat foV, gl::GLfloat aspectRatio = 1.0f, gl::GLfloat zNear = 1.0f, gl::GLfloat zFar = 500.0f);
-	Perspective(glm::vec2 frustumScale, gl::GLfloat aspectRatio = 1.0f, gl::GLfloat zNear = 1.0f, gl::GLfloat zFar = 500.0f);
+	Perspective(float foV, float aspectRatio = 1.0f, float zNear = 1.0f, float zFar = 500.0f);
+	Perspective(glm::vec2 frustumScale, float aspectRatio = 1.0f, float zNear = 1.0f, float zFar = 500.0f);
 	~Perspective();
 
-	glm::vec2 calcFrustumScale(gl::GLfloat foV);
-	glm::vec2 calcFrustumScale(gl::GLfloat foV, gl::GLfloat aspectRatio);
+	glm::vec2 calcFrustumScale(float foV);
+	glm::vec2 calcFrustumScale(float foV, float aspectRatio);
 
 	void setPerspectiveMatrix(glm::mat4 perspectiveMatrix);
-	void setPerspectiveMatrix(gl::GLfloat foV, gl::GLfloat zNear, gl::GLfloat zFar);
-	void setPerspectiveMatrix(gl::GLfloat foV, gl::GLfloat aspectRatio, gl::GLfloat zNear, gl::GLfloat zFar);
-	void setPerspectiveMatrix(glm::vec2 frustumScale, gl::GLfloat zNear, gl::GLfloat zFar);
+	void setPerspectiveMatrix(float foV, float zNear, float zFar);
+	void setPerspectiveMatrix(float foV, float aspectRatio, float zNear, float zFar);
+	void setPerspectiveMatrix(glm::vec2 frustumScale, float zNear, float zFar);
 	void updatePerspectiveMatrix();
 	glm::mat4 getPerspectiveMatrix();
 
-	void setFoV(gl::GLfloat foV);
-	void setAspectRatio(gl::GLfloat aspectRatio);
+	void setFoV(float foV);
+	void setAspectRatio(float aspectRatio);
 	void setFrustumScale(glm::vec2 frustumScale);
-	void setZNear(gl::GLfloat zNear);
-	void setZFar(gl::GLfloat zFar);
+	void setZNear(float zNear);
+	void setZFar(float zFar);
 
 	void pushState();
 	void popState();
@@ -40,11 +40,11 @@ public:
 private:
 	glm::mat4 perspectiveMatrix;
 
-	gl::GLfloat foV;
-	gl::GLfloat aspectRatio;
+	float foV;
+	float aspectRatio;
 	glm::vec2 frustumScale;
-	gl::GLfloat zNear;
-	gl::GLfloat zFar;
+	float zNear;
+	float zFar;
 
 	bool useFoV;
 

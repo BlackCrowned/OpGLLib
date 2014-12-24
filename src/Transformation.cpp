@@ -7,7 +7,6 @@
 
 #include <OpGLLib/Transformation.h>
 
-using namespace gl;
 using namespace std;
 
 Transformation::Transformation() :
@@ -56,22 +55,17 @@ void Transformation::updateTransformationMatrix(MultiplicationOrder multiplicati
 glm::mat4 Transformation::getTransformationMatrix(bool noCameraTransform, bool noPerspectiveTransform, bool noOrientationTransform) {
 	if (noPerspectiveTransform && noCameraTransform && noOrientationTransform) {
 		return transformationMatrix;
-	}
-	else if (noPerspectiveTransform && noCameraTransform){
+	} else if (noPerspectiveTransform && noCameraTransform) {
 		return transformationMatrix * getOrientationMatrix();
-	}
-	else if (noPerspectiveTransform && noOrientationTransform) {
+	} else if (noPerspectiveTransform && noOrientationTransform) {
 		return getCameraMatrix() * transformationMatrix;
-	}
-	else if (noCameraTransform && noOrientationTransform) {
+	} else if (noCameraTransform && noOrientationTransform) {
 		return getPerspectiveMatrix() * transformationMatrix;
-	}
-	else if (noPerspectiveTransform) {
+	} else if (noPerspectiveTransform) {
 		return getCameraMatrix() * transformationMatrix * getOrientationMatrix();
 	} else if (noCameraTransform) {
 		return getPerspectiveMatrix() * transformationMatrix * getOrientationMatrix();
-	}
-	else if (noOrientationTransform) {
+	} else if (noOrientationTransform) {
 		return getPerspectiveMatrix() * getCameraMatrix() * transformationMatrix;
 	}
 	return getPerspectiveMatrix() * getCameraMatrix() * transformationMatrix * getOrientationMatrix();
@@ -130,19 +124,19 @@ void Transformation::translate(glm::vec3 offset) {
 	transformationMatrix = getTranslationMatrix() * transformationMatrix;
 }
 
-void Transformation::translateX(GLfloat x) {
+void Transformation::translateX(float x) {
 	resetTranslationMatrix();
 	setTranslationMatrixX(x);
 	transformationMatrix = getTranslationMatrix() * transformationMatrix;
 }
 
-void Transformation::translateY(GLfloat y) {
+void Transformation::translateY(float y) {
 	resetTranslationMatrix();
 	setTranslationMatrixY(y);
 	transformationMatrix = getTranslationMatrix() * transformationMatrix;
 }
 
-void Transformation::translateZ(GLfloat z) {
+void Transformation::translateZ(float z) {
 	resetTranslationMatrix();
 	setTranslationMatrixZ(z);
 	transformationMatrix = getTranslationMatrix() * transformationMatrix;
@@ -153,17 +147,17 @@ void Transformation::scale(glm::vec3 scale) {
 	transformationMatrix = getScalingMatrix() * transformationMatrix;
 }
 
-void Transformation::scaleX(GLfloat x) {
+void Transformation::scaleX(float x) {
 	setScalingMatrixX(x);
 	transformationMatrix = getScalingMatrix() * transformationMatrix;
 }
 
-void Transformation::scaleY(GLfloat y) {
+void Transformation::scaleY(float y) {
 	setScalingMatrixY(y);
 	transformationMatrix = getScalingMatrix() * transformationMatrix;
 }
 
-void Transformation::scaleZ(GLfloat z) {
+void Transformation::scaleZ(float z) {
 	setScalingMatrixZ(z);
 	transformationMatrix = getScalingMatrix() * transformationMatrix;
 }
@@ -173,17 +167,17 @@ void Transformation::rotate(glm::vec3 rotation) {
 	transformationMatrix = getRotationMatrix() * transformationMatrix;
 }
 
-void Transformation::rotateX(GLfloat x) {
+void Transformation::rotateX(float x) {
 	setRotationMatrixX(x);
 	transformationMatrix = getRotationMatrix() * transformationMatrix;
 }
 
-void Transformation::rotateY(GLfloat y) {
+void Transformation::rotateY(float y) {
 	setRotationMatrixY(y);
 	transformationMatrix = getRotationMatrix() * transformationMatrix;
 }
 
-void Transformation::rotateZ(GLfloat z) {
+void Transformation::rotateZ(float z) {
 	setRotationMatrixZ(z);
 	transformationMatrix = getRotationMatrix() * transformationMatrix;
 }
@@ -192,19 +186,19 @@ void Transformation::orient(glm::vec3 orientation) {
 	orient(orientation.x, orientation.y, orientation.z);
 }
 
-void Transformation::orient(GLfloat yaw, GLfloat pitch, GLfloat roll) {
+void Transformation::orient(float yaw, float pitch, float roll) {
 	multOrientationMatrix(yaw, pitch, roll);
 }
 
-void Transformation::yaw(GLfloat yaw) {
+void Transformation::yaw(float yaw) {
 	multOrientationMatrixYaw(yaw);
 }
 
-void Transformation::pitch(GLfloat pitch) {
+void Transformation::pitch(float pitch) {
 	multOrientationMatrixPitch(pitch);
 }
 
-void Transformation::roll(GLfloat roll) {
+void Transformation::roll(float roll) {
 	multOrientationMatrixRoll(roll);
 }
 

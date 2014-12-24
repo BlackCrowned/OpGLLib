@@ -20,9 +20,30 @@ public:
 	Callbacks();
 	~Callbacks();
 
+//	template<typename R, typename ...Args>
+//	void addCallback(Event event, std::function<R(Args...)> function, Args&& ...args, int settings) {
+//		std::cout << "Using rvalue reference" << std::endl;
+//		this->callbacks.push_back(new Callback<std::function<R(Args...)>, Args...>(event, function, args..., settings));
+//	}
+//	;
+
+	template<typename R = void, typename ...Args>
+	void addCallback(Event event, std::function<R(Args...)> function, Args&& ...args, int settings) {
+		this->callbacks.push_back(
+				new Callback<std::function<R(Args...)>, Args...>(event, function, std::forward_as_tuple(args...), settings));
+	}
+	;
 	template<typename Function, typename ...Args>
-	void addCallback(Event event, Function const& func, Args const& ...args, int settings) {
-		this->callbacks.push_back(new Callback<Function, Args...>(event, func, args..., settings));
+	void addCallback(Event event, Function function, Args&& ...args, int settings) {
+		this->callbacks.push_back(
+				new Callback<std::function<typename Function::result_type(Args...)>, Args...>(event, function,
+						std::forward_as_tuple(args...), settings));
+	}
+	;
+	template<typename R = void, typename Function, typename ...Args>
+	void addCallback(Event event, Function function, Args&& ...args, int settings) {
+		std::function<R(Args...)> func = function;
+		this->callbacks.push_back(new Callback<std::function<R(Args...)>, Args...>(event, func, std::forward_as_tuple(args...), settings));
 	}
 	;
 
@@ -49,16 +70,16 @@ private:
 	template<typename Function, typename ...Args>
 	class Callback: public virtualCallback {
 	public:
-		Callback(Event event, Function const& func, Args const&... args, int settings) {
+		Callback(Event event, Function const& func, std::tuple<Args&&...> const& argsT, int settings) :
+				args(argsT) {
 			this->_event = event;
-			this->func = &func;
-			this->args = std::make_tuple(args...);
+			this->func = func;
 			this->_settings = settings;
 		}
 		;
 
 		~Callback() {
-			delete this;
+			//delete this;
 		}
 
 		void call() {
@@ -78,14 +99,14 @@ private:
 
 		template<size_t ...I>
 		void call_func(std::index_sequence<I...> seq) {
-			(*func)(std::get<I>(args)...);
+			func(std::get<I>(args)...);
 		}
 
 	private:
 
 		Event _event;
-		Function* func;
-		std::tuple<Args...> args;
+		Function func;
+		std::tuple<Args&&...> args;
 		int _settings;
 	};
 
