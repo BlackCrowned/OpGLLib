@@ -136,6 +136,7 @@ private:
 	std::chrono::milliseconds delay;
 
 	int settings;
+	int reversed;
 
 	friend class Animator;
 };

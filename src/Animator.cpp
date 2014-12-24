@@ -95,6 +95,7 @@ AnimationObject::AnimationObject() {
 	matrix = nullptr;
 	animator = nullptr;
 	settings = 0;
+	reversed = 0;
 	duration = chrono::milliseconds(1000);
 	delay = chrono::milliseconds(0);
 }
@@ -162,6 +163,7 @@ void AnimationObject::reverse() {
 		attributes.insert(attributes.begin() + i, attribute);
 		attributes.pop_back();
 	}
+	reversed ^= 1;
 }
 
 void AnimationObject::animationStart() {
@@ -265,7 +267,7 @@ void Animator::stop(glm::mat4* matrix, bool stopAll, bool finish) {
 		for (unsigned int i = 0; i < queue.at(matrix).size() ;i++) {
 			queue.at(matrix).at(i).setDuration(chrono::milliseconds(1));
 			queue.at(matrix).at(i).setDelay(chrono::milliseconds(0));
-			if ((queue.at(matrix).at(i).settings & AnimationSettings::reverse) || (queue.at(matrix).at(i).settings & AnimationSettings::reverseOnce)) {
+			if (((queue.at(matrix).at(i).settings & AnimationSettings::reverse) || (queue.at(matrix).at(i).settings & AnimationSettings::reverseOnce)) && !queue.at(matrix).at(i).reversed) {
 				queue.at(matrix).at(i).setSettings(AnimationSettings::reverseOnce);
 			}
 			else {
@@ -280,7 +282,7 @@ void Animator::stop(glm::mat4* matrix, bool stopAll, bool finish) {
 		if (queue.at(matrix).size() >= 1) {
 			queue.at(matrix).at(0).setDuration(chrono::milliseconds(1));
 			queue.at(matrix).at(0).setDelay(chrono::milliseconds(0));
-			if ((queue.at(matrix).at(0).settings & AnimationSettings::reverse) || (queue.at(matrix).at(0).settings & AnimationSettings::reverseOnce)) {
+			if (((queue.at(matrix).at(0).settings & AnimationSettings::reverse) || (queue.at(matrix).at(0).settings & AnimationSettings::reverseOnce))&& !queue.at(matrix).at(0).reversed) {
 				queue.at(matrix).at(0).setSettings(AnimationSettings::reverseOnce);
 			}
 			else {
