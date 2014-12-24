@@ -9,7 +9,7 @@
 
 using namespace std;
 
-void detail::addCallback(Animator* animator, glm::mat4* matrix, AnimationObject animationObject) {
+void detail::addCallback(Animator*& animator, glm::mat4*& matrix, AnimationObject& animationObject) {
 	animator->animate(matrix, animationObject);
 }
 
@@ -217,7 +217,15 @@ Animator::~Animator() {
 
 }
 
-void Animator::animate(glm::mat4* matrix, AnimationObject animationObject) {
+void Animator::animate(glm::mat4* matrix, AnimationObject&& animationObject) {
+	animationObject.setAnimator(this);
+	animationObject.setMatrix(matrix);
+	animationObject.setStartTime();
+
+	queue[matrix].push_back(forward<AnimationObject>(animationObject));
+}
+
+void Animator::animate(glm::mat4* matrix, AnimationObject& animationObject) {
 	animationObject.setAnimator(this);
 	animationObject.setMatrix(matrix);
 	animationObject.setStartTime();
@@ -225,10 +233,18 @@ void Animator::animate(glm::mat4* matrix, AnimationObject animationObject) {
 	queue[matrix].push_back(animationObject);
 }
 
-glm::mat4* Animator::animate(AnimationObject animationObject) {
+glm::mat4* Animator::animate(AnimationObject&& animationObject) {
 	glm::mat4* matrix = new glm::mat4(1.0f);
 
-	animate(matrix, animationObject);
+	animate(matrix, forward<AnimationObject>(animationObject));
+
+	return matrix;
+}
+
+glm::mat4* Animator::animate(AnimationObject& animationObject) {
+	glm::mat4* matrix = new glm::mat4(1.0f);
+
+	animate(matrix, forward<AnimationObject>(animationObject));
 
 	return matrix;
 }
