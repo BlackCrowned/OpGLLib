@@ -104,7 +104,9 @@ public:
 	void setStartTime();
 	void setStartTime(std::chrono::time_point<std::chrono::system_clock> start);
 	void setDuration(std::chrono::milliseconds duration);
+	void setDuration(int milliseconds);
 	void setDelay(std::chrono::milliseconds delay);
+	void setDelay(int milliseconds);
 
 	void setMatrix(glm::mat4* matrix);
 	void setAnimator(Animator* animator);

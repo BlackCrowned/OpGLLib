@@ -129,8 +129,16 @@ void AnimationObject::setDuration(chrono::milliseconds duration) {
 	AnimationObject::duration = duration;
 }
 
+void AnimationObject::setDuration(int milliseconds) {
+	setDuration(chrono::milliseconds(milliseconds));
+}
+
 void AnimationObject::setDelay(chrono::milliseconds delay) {
 	AnimationObject::delay = delay;
+}
+
+void AnimationObject::setDelay(int milliseconds) {
+	setDelay(chrono::milliseconds(milliseconds));
 }
 
 void AnimationObject::setMatrix(glm::mat4* matrix) {
