@@ -10,7 +10,7 @@
 
 #include <OpGLLib/internal.h>
 
-class Debug{
+class Debug {
 public:
 	Debug();
 	~Debug();

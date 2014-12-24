@@ -71,12 +71,11 @@ template<class T>
 void AnimationAttribute<T>::reverse() {
 	if (type != scale) {
 		attribute = -attribute;
-	}
-	else {
+	} else {
 		attribute = 1.0f / attribute;
 	}
 
-	switch(interpolator) {
+	switch (interpolator) {
 	case accelerate:
 		interpolator = decelerate;
 		break;
@@ -264,33 +263,30 @@ void Animator::stop(glm::mat4* matrix, bool stopAll, bool finish) {
 		return;
 	}
 	if (stopAll && finish) {
-		for (unsigned int i = 0; i < queue.at(matrix).size() ;i++) {
+		for (unsigned int i = 0; i < queue.at(matrix).size(); i++) {
 			queue.at(matrix).at(i).setDuration(chrono::milliseconds(1));
 			queue.at(matrix).at(i).setDelay(chrono::milliseconds(0));
-			if (((queue.at(matrix).at(i).settings & AnimationSettings::reverse) || (queue.at(matrix).at(i).settings & AnimationSettings::reverseOnce)) && !queue.at(matrix).at(i).reversed) {
+			if (((queue.at(matrix).at(i).settings & AnimationSettings::reverse)
+					|| (queue.at(matrix).at(i).settings & AnimationSettings::reverseOnce)) && !queue.at(matrix).at(i).reversed) {
 				queue.at(matrix).at(i).setSettings(AnimationSettings::reverseOnce);
-			}
-			else {
+			} else {
 				queue.at(matrix).at(i).setSettings(0);
 			}
 		}
-	}
-	else if (stopAll && !finish) {
+	} else if (stopAll && !finish) {
 		queue.at(matrix).clear();
-	}
-	else if (!stopAll && finish) {
+	} else if (!stopAll && finish) {
 		if (queue.at(matrix).size() >= 1) {
 			queue.at(matrix).at(0).setDuration(chrono::milliseconds(1));
 			queue.at(matrix).at(0).setDelay(chrono::milliseconds(0));
-			if (((queue.at(matrix).at(0).settings & AnimationSettings::reverse) || (queue.at(matrix).at(0).settings & AnimationSettings::reverseOnce))&& !queue.at(matrix).at(0).reversed) {
+			if (((queue.at(matrix).at(0).settings & AnimationSettings::reverse)
+					|| (queue.at(matrix).at(0).settings & AnimationSettings::reverseOnce)) && !queue.at(matrix).at(0).reversed) {
 				queue.at(matrix).at(0).setSettings(AnimationSettings::reverseOnce);
-			}
-			else {
+			} else {
 				queue.at(matrix).at(0).setSettings(0);
 			}
 		}
-	}
-	else if(!stopAll && !finish) {
+	} else if (!stopAll && !finish) {
 		if (queue.at(matrix).size() >= 1) {
 			queue.at(matrix).pop_front();
 		}

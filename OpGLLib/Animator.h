@@ -73,6 +73,7 @@ private:
 class AnimationObject {
 public:
 	AnimationObject();
+	AnimationObject(std::initializer_list<AnimationAttribute<glm::vec3> > attributes);
 	~AnimationObject();
 
 	void addAttribute(AnimationAttribute<glm::vec3> attribute);
@@ -95,10 +96,10 @@ public:
 				((event == onUpdate) || (event == onRestart) || (event == onReverse)) ? 0 : removeWhenFinished);
 	}
 	;
-	AnimationObject(std::initializer_list<AnimationAttribute<glm::vec3> > attributes);
 	void addCallback(AnimationCallbackEvents event, AnimationObject& animationObject) {
-		callbacks.addCallback<void, Animator*&, glm::mat4*&, AnimationObject&>(event, detail::addCallback, std::ref(animator), std::ref(matrix),
-				std::ref(animationObject), ((event == onUpdate) || (event == onRestart) || (event == onReverse)) ? 0 : removeWhenFinished);
+		callbacks.addCallback<void, Animator*&, glm::mat4*&, AnimationObject&>(event, detail::addCallback, std::ref(animator),
+				std::ref(matrix), std::ref(animationObject),
+				((event == onUpdate) || (event == onRestart) || (event == onReverse)) ? 0 : removeWhenFinished);
 	}
 
 	void setStartTime();

@@ -29,12 +29,15 @@ public:
 
 	template<typename R = void, typename ...Args>
 	void addCallback(Event event, std::function<R(Args...)> function, Args&& ...args, int settings) {
-		this->callbacks.push_back(new Callback<std::function<R(Args...)>, Args...>(event, function, std::forward_as_tuple(args...), settings));
+		this->callbacks.push_back(
+				new Callback<std::function<R(Args...)>, Args...>(event, function, std::forward_as_tuple(args...), settings));
 	}
 	;
 	template<typename Function, typename ...Args>
 	void addCallback(Event event, Function function, Args&& ...args, int settings) {
-		this->callbacks.push_back(new Callback<std::function<typename Function::result_type(Args...)>, Args...>(event, function, std::forward_as_tuple(args...), settings));
+		this->callbacks.push_back(
+				new Callback<std::function<typename Function::result_type(Args...)>, Args...>(event, function,
+						std::forward_as_tuple(args...), settings));
 	}
 	;
 	template<typename R = void, typename Function, typename ...Args>
@@ -67,7 +70,8 @@ private:
 	template<typename Function, typename ...Args>
 	class Callback: public virtualCallback {
 	public:
-		Callback(Event event, Function const& func, std::tuple<Args&&...> const& argsT, int settings) : args(argsT) {
+		Callback(Event event, Function const& func, std::tuple<Args&&...> const& argsT, int settings) :
+				args(argsT) {
 			this->_event = event;
 			this->func = func;
 			this->_settings = settings;
