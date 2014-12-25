@@ -10,46 +10,53 @@
 
 #include <OpGLLib/internal.h>
 
-template <class T>
+template<class T>
 class Allocator {
 public:
 	Allocator();
+	Allocator(Allocator<T> const& other) = default;
+	Allocator(Allocator<T> && other) = default;
 	~Allocator();
 
-	template <class ...Args> T *constructObject(Args&&... args) {
-		objects.push_back(new T(args...));
+	template<class ...Args> T *constructObject(Args&&... args) {
+		objects.push_back(new T(std::forward<Args>(args)...));
 		return objects.back();
-	};
-	T *constructObject(T & object);
+	}
 	T *constructObject(T&& object);
-	void deleteObject(T & object);
-	void deleteObject(T *object);
+	T *constructObject(T* object);
+	void deleteObject(T&& object);
+	void deleteObject(T* object);
 	void deleteObjects();
 
 protected:
-	std::vector <T *> objects;
+	std::vector<T *> objects;
 };
 
-template <class T>
-class FileAllocator : public Allocator<T>{
+template<class T>
+class FileAllocator: public Allocator<T> {
 public:
 	FileAllocator();
 	~FileAllocator();
 
-	template <class ...Args> T *openFile(Args&&... args) {
-		return Allocator<T>::constructObject(args...);
-	};
-	template <class ...Args> T *openFile(T& file, Args&&... args){
-		closeFile(file);
-		file.open(args...);
+	template<class ...Args> T *openFile(Args&&... args) {
+		return Allocator<T>::constructObject(std::forward<Args>(args)...);
+	}
+	template<class ...Args> T *openFile(T&& file, Args&&... args) {
+		closeFile(std::forward<T>(file));
+		file.open(std::forward<Args>(args)...);
 		return &file;
-	};
-	void closeFile(T *file);
-	void closeFile(T& file);
+	}
+	template<class ...Args> T *openFile(T* file, Args&&... args) {
+		closeFile(file);
+		file->open(std::forward<Args>(args)...);
+		return file;
+	}
+	void closeFile(T* file);
+	void closeFile(T&& file);
 	void closeFiles();
 };
 
-template class Allocator<std::fstream>;
-template class FileAllocator<std::fstream>;
+template class Allocator<std::fstream> ;
+template class FileAllocator<std::fstream> ;
 
 #endif /* OPGLLIB_ALLOCATORS_H_ */

@@ -24,7 +24,7 @@ FileLoader::~FileLoader() {
 }
 
 fstream *FileLoader::open(string name, ios::openmode openmode) {
-	file = openFile(*file, name, openmode);
+	file = openFile(file, name, openmode);
 
 	if (!file->good()) {
 		cerr << "Failed to open file: '" << name << "'" << endl;

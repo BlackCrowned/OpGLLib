@@ -17,36 +17,25 @@ template<class T> Allocator<T>::~Allocator() {
 	deleteObjects();
 }
 
-//template<class T> template<class ...Args> T *Allocator<T>::constructObject(Args&&... args) {
-//	cout << "Constructing Object" << endl;
-//	objects.push_back(new T(forward<Args...>(args...)));
-//	return objects.back();
-//}
-
-template<class T> T *Allocator<T>::constructObject(T& object) {
+template<class T> T *Allocator<T>::constructObject(T&& object) {
 	objects.push_back(&object);
-	return objects.back();
+	return &object;
 }
 
-template<class T> T *Allocator<T>::constructObject(T&& object) {
-	objects.push_back(move(&object));
-	return objects.back();
+template<class T> T* Allocator<T>::constructObject(T* object) {
+	objects.push_back(object);
+	return object;
+}
+
+template<class T> void Allocator<T>::deleteObject(T&& object) {
+	deleteObject(&object);
 }
 
 template<class T> void Allocator<T>::deleteObject(T *object) {
 	for (unsigned int i = 0; i < objects.size(); i++) {
 		if (objects[i] == object) {
 			delete objects[i];
-			objects.erase(objects.begin() + i);
-		}
-	}
-}
-
-template<class T> void Allocator<T>::deleteObject(T &object) {
-	for (unsigned int i = 0; i < objects.size(); i++) {
-		if (objects[i] == &object) {
-			delete objects[i];
-			objects.erase(objects.begin() + i);
+			objects.erase(objects.begin() + i--);
 		}
 	}
 }
@@ -76,15 +65,15 @@ template<class T> FileAllocator<T>::~FileAllocator() {
 //	return &file;
 //}
 
-template<class T> void FileAllocator<T>::closeFile(T *file) {
-	if (file->is_open()) {
-		file->close();
+template<class T> void FileAllocator<T>::closeFile(T&& file) {
+	if (file.is_open()) {
+		file.close();
 	}
 }
 
-template<class T> void FileAllocator<T>::closeFile(T &file) {
-	if (file.is_open()) {
-		file.close();
+template<class T> void FileAllocator<T>::closeFile(T *file) {
+	if (file->is_open()) {
+		file->close();
 	}
 }
 
