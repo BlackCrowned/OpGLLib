@@ -41,11 +41,6 @@ public:
 	template<class ...Args> T *openFile(Args&&... args) {
 		return Allocator<T>::constructObject(std::forward<Args>(args)...);
 	}
-	template<class ...Args> T *openFile(T&& file, Args&&... args) {
-		closeFile(std::forward<T>(file));
-		file.open(std::forward<Args>(args)...);
-		return &file;
-	}
 	template<class ...Args> T *openFile(T* file, Args&&... args) {
 		closeFile(file);
 		file->open(std::forward<Args>(args)...);

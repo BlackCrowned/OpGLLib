@@ -15,6 +15,8 @@ class FileLoader : FileAllocator<std::fstream>{
 public:
 	FileLoader();
 	FileLoader(std::string name, std::ios::openmode openmode = std::ios::in);
+	FileLoader(FileLoader const& other) = delete;
+	FileLoader(FileLoader&& other);
 	~FileLoader();
 
 	std::fstream *open(std::string name, std::ios::openmode openmode = std::ios::in);

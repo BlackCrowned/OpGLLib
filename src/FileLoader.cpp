@@ -17,6 +17,11 @@ FileLoader::FileLoader(string name, ios::openmode openmode) {
 	file = openFile(name, openmode);
 }
 
+FileLoader::FileLoader(FileLoader&& other) {
+	file = openFile(std::move(*other.file));
+	fileType = std::move(other.fileType);
+}
+
 FileLoader::~FileLoader() {
 	if (file->is_open()) {
 		file->close();
