@@ -13,20 +13,43 @@
 template<class T>
 class Allocator {
 public:
-	Allocator();
+	Allocator() {
+	}
 	Allocator(Allocator<T> const& other) = default;
 	Allocator(Allocator<T> && other) = default;
-	~Allocator();
+	~Allocator() {
+		deleteObjects();
+	}
 
 	template<class ...Args> T *constructObject(Args&&... args) {
 		objects.push_back(new T(std::forward<Args>(args)...));
 		return objects.back();
 	}
-	T *constructObject(T&& object);
-	T *constructObject(T* object);
-	void deleteObject(T&& object);
-	void deleteObject(T* object);
-	void deleteObjects();
+	T *constructObject(T&& object) {
+		objects.push_back(&object);
+		return &object;
+	}
+	T *constructObject(T* object) {
+		objects.push_back(object);
+		return object;
+	}
+	void deleteObject(T&& object) {
+		deleteObject(&object);
+	}
+	void deleteObject(T* object) {
+		for (unsigned int i = 0; i < objects.size(); i++) {
+			if (objects[i] == object) {
+				delete objects[i];
+				objects.erase(objects.begin() + i--);
+			}
+		}
+	}
+	void deleteObjects() {
+		for (auto i : objects) {
+			delete i;
+		}
+		objects.clear();
+	}
 
 protected:
 	std::vector<T *> objects;

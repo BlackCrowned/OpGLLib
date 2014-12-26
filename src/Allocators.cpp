@@ -9,44 +9,6 @@
 
 using namespace std;
 
-template<class T> Allocator<T>::Allocator() {
-
-}
-
-template<class T> Allocator<T>::~Allocator() {
-	deleteObjects();
-}
-
-template<class T> T *Allocator<T>::constructObject(T&& object) {
-	objects.push_back(&object);
-	return &object;
-}
-
-template<class T> T* Allocator<T>::constructObject(T* object) {
-	objects.push_back(object);
-	return object;
-}
-
-template<class T> void Allocator<T>::deleteObject(T&& object) {
-	deleteObject(&object);
-}
-
-template<class T> void Allocator<T>::deleteObject(T *object) {
-	for (unsigned int i = 0; i < objects.size(); i++) {
-		if (objects[i] == object) {
-			delete objects[i];
-			objects.erase(objects.begin() + i--);
-		}
-	}
-}
-
-template<class T> void Allocator<T>::deleteObjects() {
-	for (auto i : objects) {
-		delete i;
-	}
-	objects.clear();
-}
-
 template<class T> FileAllocator<T>::FileAllocator() :
 		Allocator<T>::Allocator() {
 
