@@ -10,8 +10,6 @@
 
 using namespace std;
 
-map<unsigned int, Model> ModelLoader::models;
-
 ModelLoader::ModelLoader() :
 		FileLoader() {
 
