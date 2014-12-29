@@ -58,49 +58,46 @@ template<class T>
 class MemManager {
 public:
 	MemManager() {
-		std::cout << "MemManager constructed!" << std::endl;
 	}
 	MemManager(MemManager<T> const& other) = default;
 	MemManager(MemManager<T> && other) = default;
 	~MemManager() {
-		std::cout << "Destructing MemManager..." << std::endl;
 		destroyAll();
 		deallocateAll();
-		std::cout << "MemManager successfully destructed!" << std::endl;
 	}
 
 	template<class ...Args> T* construct(Args&&... args) {
-		int i = nextFree();
-		T* tmp = allocated[i];
-		constructed.push_back(tmp);
-		allocated.erase(allocated.begin() + i);
-		allocator.construct(tmp, std::forward<Args>(args)...);
-		return tmp;
+		requestAllocation(1);
+		int block = nextAvailableBlock();
+		if (block == -1) {
+			std::cerr << "Error: No blocks to construct in available" << std::endl;
+			return nullptr;
+		}
+		int i = blockTable[block].nextAvailable();
+		if (i == -1) {
+			std::cerr << "Error: Block was indeed full" << std::endl;
+			return nullptr;
+		}
+		totalFree--;
+		totalUsed++;
+		allocator.construct(blockTable[block].construct(i), std::forward<Args>(args)...);
+		return blockTable[block][i];
 	}
 	template<class container, class ...Args> void constructN(size_t n, container& c, Args&&...args) {
-		int i = /*nextFreeRange(n)*/ -1;
-		if (i != -1) {
-			for (size_t j = 0; j < n; j++) {
-				//allocator.construct(n, allocated[i], std::forward<Args>(args)...);
-				c.push_back(allocated[i]);
-				constructed.push_back(allocated[i]);
-				allocated.erase(allocated.begin() + i);
-			}
-		} else {
-			for (size_t i = 0; i < n; i++) {
-				c.push_back(construct(std::forward<Args>(args)...));
-			}
+		requestAllocation(n);
+		for (size_t i = 0; i < n; i++) {
+			c.push_back(construct(std::forward<Args>(args)...));
 		}
 	}
 
 	T *manage(T&& object) {
-		std::cout << "Called: MemManager::manage(object)" << std::endl;
-		constructed.push_back(&object);
+		manage(&object);
 		return &object;
 	}
 	T *manage(T* object) {
-		std::cout << "Called: MemManager::manage(" << object << ")" << std::endl;
-		constructed.push_back(object);
+		Block managedBlock(1, object, false, true);
+		totalUsed++;
+		blockTable.push_back(std::move(managedBlock));
 		return object;
 	}
 
@@ -108,127 +105,229 @@ public:
 		destroy(&object);
 	}
 	void destroy(T* object) {
-		int i = constructedPos(object);
-		if (i != -1) {
-			allocator.destroy(object);
-			markFree(constructed[i]);
-			constructed.erase(constructed.begin() + i);
-			deallocateMemory(0);
+		for (size_t i = 0; i < blockTable.size(); i++) {
+			if (!blockTable[i].empty) {
+				if (object >= blockTable[i].first && object <= blockTable[i][blockTable[i].size]) {
+					for (size_t j = 0; j < blockTable[i].size; j++) {
+						if (blockTable[i][j] == object) {
+							totalFree++;
+							totalUsed--;
+							allocator.destroy(blockTable[i].destroy(j));
+							requestDeallocation();
+							return;
+						}
+					}
+				}
+			}
 		}
-
+		std::cerr << "Coudn't find object@" << object << "!" << std::endl;
 	}
 
 	T* release(T&& object) {
 		return release(&object);
 	}
 	T* release(T* object) {
-		int i = constructedPos(object);
-		if (i != -1) {
-			constructed.erase(constructed.begin() + i);
+		for (size_t i = 0; i < blockTable.size(); i++) {
+			if (!blockTable[i].empty && blockTable[i].size == 1) {
+				for (size_t j = 0; j < blockTable[i].size; j++) {
+					if (blockTable[i][j] == object) {
+						blockTable.erase(blockTable.begin() + i);
+						return object;
+					}
+				}
+			}
 		}
-		return object;
+		return nullptr;
 	}
 
 	void destroyAll() {
-		std::cout << "Called: MemManager::destroyAll()" << std::endl;
-		for (auto i : constructed) {
-			allocator.destroy(i);
-			markFree(i);
+		for (size_t i = 0; i < blockTable.size(); i++) {
+			if (!blockTable[i].empty) {
+				for (size_t j = 0; j < blockTable[i].size; j++) {
+					totalFree++;
+					totalUsed--;
+					allocator.destroy(blockTable[i].destroy(j));
+				}
+				requestDeallocation();
+			}
 		}
-		constructed.clear();
+		return;
 	}
 	void deallocateAll() {
-		std::cout << "Called: MemManager::deallocateAll()" << std::endl;
-		for (auto i : allocated) {
-			allocator.deallocate(i, 1);
+		for (size_t i = 0; i < blockTable.size(); i++) {
+			totalFree--;
+			allocator.deallocate(blockTable[i].first, blockTable[i].size);
 		}
 	}
 
 private:
-	Allocator<T> allocator;
-	std::deque<T*> allocated;
-	std::deque<T*> constructed;
-	size_t lastAutoResize = 1;
-
-	void allocateMemory(size_t n) {
-		std::cout << "Called: MemManager::allocateMemory(" << n << ")" << std::endl;
-		while (allocated.size() < n) {
-			lastAutoResize *= 2;
-			std::cout << "Increased allocated memory by " << lastAutoResize << std::endl;
-			for (size_t i = 0; i < lastAutoResize; i++) {
-				markFree(allocator.allocate(1));
+	struct Block {
+		Block(size_t _size, T* _first, bool _empty = true, bool _full = false) {
+			size = _size;
+			empty = _empty;
+			full = _full;
+			first = _first;
+			available = new bool[size];
+			for (size_t i = 0; i < size; i++) {
+				available[i] = true;
 			}
+			amountAvailable = size;
 		}
-	}
-	void deallocateMemory(size_t n) {
-		while (allocated.size() > n + lastAutoResize + 1) {
-			std::cout << "Decreased allocated memory by " << lastAutoResize << std::endl;
-			int tmp = /*nextFreeRange(lastAutoDecrease)*/-1;
-			if (tmp != -1) {
-				std::cout << "Sorry but you just found a freeRange" << std::endl;
-				//allocator.deallocate(allocated[tmp], lastAutoDecrease);
-			} else {
-				for (size_t i = 0; i < lastAutoResize; i++) {
-					allocator.deallocate(allocated[nextFree()], 1);
-					allocated.erase(allocated.begin());
-				}
+		Block(Block const& other) {
+			size = other.size;
+			empty = other.empty;
+			full = other.full;
+			first = other.first;
+			available = new bool[size];
+			for (size_t i = 0; i < size; i++) {
+				available[i] = other.available[i];
 			}
+			firstAvailable = other.firstAvailable;
+			amountAvailable = other.amountAvailable;
 		}
-	}
+		Block(Block&& other) {
+			size = other.size;
+			empty = other.empty;
+			full = other.full;
+			first = other.first;
+			available = other.available;
+			other.available = nullptr;
+			firstAvailable = other.firstAvailable;
+			amountAvailable = other.amountAvailable;
+		}
+		~Block() {
+			delete[] available;
+		}
 
-	void markFree(T* p) {
-		size_t i = 0;
-		while (i < allocated.size() && allocated[i] < p) {
-			i++;
+		Block& operator =(Block const& other) {
+			this->size = other.size;
+			this->empty = other.empty;
+			this->full = other.full;
+			this->first = other.first;
+			this->available = new bool[this->size];
+			for (size_t i = 0; i < this->size; i++) {
+				this->available[i] = other.available[i];
+			}
+			this->firstAvailable = other.firstAvailable;
+			this->amountAvailable = other.amountAvailable;
+			return *this;
 		}
-		if (i == allocated.size()) {
-			allocated.push_back(p);
-		} else {
-			allocated.insert(allocated.begin() + i, p);
-		}
-	}
 
-	int nextFreeRange(size_t n) {
-		if (n < 1) {
-			return -1;
-		}
-		if (allocated.size() < n) {
-			allocateMemory(n - allocated.size());
-		}
-		size_t start = 0;
-		size_t current = 1;
-		for (size_t i = 0; i < allocated.size(); i++) {
-			if ((current - start) + (allocated.size() - current) < n) {
+		size_t size;
+		bool empty;
+		bool full;
+		T* first;
+		bool *available;
+		int firstAvailable = 0;
+		size_t amountAvailable;
+
+		int nextAvailable() {
+			if (full) {
 				return -1;
 			}
-			if (allocated[start] + 1 == allocated[current]) {
-				if (current - start == n) {
-					return start;
+			if (available[firstAvailable]) {
+				return firstAvailable;
+			}
+			for (size_t i = firstAvailable; i < size; i++) {
+				if (available[i]) {
+					firstAvailable = i;
+					return i;
 				}
-				current++;
+			}
+			//Try again starting from 0
+			for (size_t i = 0; i < size; i++) {
+				if (available[i]) {
+					firstAvailable = i;
+					return i;
+				}
+			}
+			full = true;
+			return -1;
+		}
+		T* operator [](int i) {
+			return first + i;
+		}
+		T* construct(int i) {
+			if (amountAvailable == 1) {
+				full = true;
 			} else {
-				start = current++;
+				full = false;
+			}
+			empty = false;
+			amountAvailable--;
+			available[i] = false;
+			return first + i;
+		}
+		T* destroy(int i) {
+			if (amountAvailable == size - 1) {
+				empty = true;
+			} else {
+				empty = false;
+			}
+			full = false;
+			amountAvailable++;
+			available[i] = true;
+			return first + i;
+		}
+	};
+	std::deque<Block> blockTable;
+	size_t totalFree = 0;
+	size_t totalUsed = 0;
+	int firstAvailableBlock = 0;
+	size_t medianBlockSize = 0;
+	Allocator<T> allocator;
+
+	void requestAllocation(size_t amount) {
+		if (amount <= totalFree) {
+			return;
+		}
+		size_t amountToAllocate = amount - totalFree;
+		T* first = allocator.allocate(amountToAllocate);
+		Block newBlock(amountToAllocate, first);
+		blockTable.push_back(std::move(newBlock));
+		totalFree += amountToAllocate;
+		medianBlockSize = (medianBlockSize * blockTable.size() + amountToAllocate) / (blockTable.size() + 1);
+		return;
+	}
+	void requestDeallocation() {
+		if (totalFree > 2 * medianBlockSize) {
+			int i = nextEmptyBlock();
+			if (i != -1) {
+				totalFree -= blockTable[i].size;
+				allocator.deallocate(blockTable[i].first);
+				blockTable.erase(blockTable.begin() + i);
 			}
 		}
-		return -1;
 	}
 
-	int nextFree() {
-		if (allocated.size() < 1) {
-			allocateMemory(1);
-		}
-		return 0;
-	}
-
-	int constructedPos(T* p) {
-		for (size_t i = 0; i < constructed.size(); i++) {
-			if (constructed[i] == p) {
+	int nextEmptyBlock() {
+		for (size_t i = 0; i < blockTable.size(); i++) {
+			if (blockTable[i].empty) {
 				return i;
 			}
 		}
 		return -1;
 	}
 
+	int nextAvailableBlock() {
+		if (!blockTable[firstAvailableBlock].full) {
+			return firstAvailableBlock;
+		}
+		for (size_t i = firstAvailableBlock; i < blockTable.size(); i++) {
+			if (!blockTable[i].full) {
+				firstAvailableBlock = i;
+				return i;
+			}
+		}
+		//Try again starting from 0
+		for (size_t i = 0; i < blockTable.size(); i++) {
+			if (!blockTable[i].full) {
+				firstAvailableBlock = i;
+				return i;
+			}
+		}
+		return -1;
+	}
 };
 
 template<class T>
