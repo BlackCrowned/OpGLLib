@@ -10,7 +10,7 @@
 using namespace std;
 
 FileLoader::FileLoader() : FileAllocator(){
-	file = constructObject();
+	file = construct();
 }
 
 FileLoader::FileLoader(string name, ios::openmode openmode) {
@@ -18,7 +18,7 @@ FileLoader::FileLoader(string name, ios::openmode openmode) {
 }
 
 FileLoader::FileLoader(FileLoader&& other) {
-	file = openFile(std::move(*other.file));
+	file = other.file;
 	fileType = std::move(other.fileType);
 }
 

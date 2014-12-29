@@ -8,7 +8,9 @@
 #ifndef OPGLLIB_FILELOADER_H_
 #define OPGLLIB_FILELOADER_H_
 
-#include <OpGLLib/internal.h>
+#include <fstream>
+#include <string>
+#include <sstream>
 #include <OpGLLib/Allocators.h>
 
 class FileLoader : FileAllocator<std::fstream>{

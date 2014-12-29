@@ -9,8 +9,7 @@
 
 using namespace std;
 
-template<class T> FileAllocator<T>::FileAllocator() :
-		Allocator<T>::Allocator() {
+template<class T> FileAllocator<T>::FileAllocator() {
 
 }
 
@@ -40,9 +39,5 @@ template<class T> void FileAllocator<T>::closeFile(T *file) {
 }
 
 template<class T> void FileAllocator<T>::closeFiles() {
-	for (auto i : Allocator<T>::objects) {
-		if (i->is_open()) {
-			i->close();
-		}
-	}
+	cerr << "Closing all files not supported right now!" << endl;
 }
