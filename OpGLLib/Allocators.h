@@ -330,24 +330,4 @@ private:
 	}
 };
 
-template<class T>
-class FileAllocator: public MemManager<T> {
-public:
-	FileAllocator();
-	~FileAllocator();
-
-	template<class ...Args> T *openFile(Args&&... args) {
-		return MemManager<T>::construct(std::forward<Args>(args)...);
-	}
-	template<class ...Args> T *openFile(T* file, Args&&... args) {
-		closeFile(file);
-		file->open(std::forward<Args>(args)...);
-		return file;
-	}
-	void closeFile(T* file);
-	void closeFile(T&& file);
-};
-
-template class FileAllocator<std::fstream> ;
-
 #endif /* OPGLLIB_ALLOCATORS_H_ */

@@ -13,7 +13,7 @@
 #include <sstream>
 #include <OpGLLib/Allocators.h>
 
-class FileLoader : FileAllocator<std::fstream>{
+class FileLoader {
 public:
 	FileLoader();
 	FileLoader(std::string name, std::ios::openmode openmode = std::ios::in);

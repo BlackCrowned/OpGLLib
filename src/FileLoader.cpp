@@ -9,13 +9,12 @@
 
 using namespace std;
 
-FileLoader::FileLoader() :
-		FileAllocator() {
-	file = construct();
+FileLoader::FileLoader() {
+	file = new fstream();
 }
 
 FileLoader::FileLoader(string name, ios::openmode openmode) {
-	file = openFile(name, openmode);
+	file = new fstream(name, openmode);
 }
 
 FileLoader::FileLoader(FileLoader&& other) {
@@ -24,11 +23,11 @@ FileLoader::FileLoader(FileLoader&& other) {
 }
 
 FileLoader::~FileLoader() {
-	closeFile(file);
+	delete file;
 }
 
 fstream *FileLoader::open(string name, ios::openmode openmode) {
-	file = openFile(file, name, openmode);
+	file->open(name, openmode);
 
 	if (!file->good()) {
 		cerr << "Failed to open file: '" << name << "'" << endl;
@@ -40,7 +39,9 @@ fstream *FileLoader::open(string name, ios::openmode openmode) {
 }
 
 void FileLoader::close() {
-	closeFile(file);
+	if (file->is_open()) {
+		file->close();
+	}
 }
 
 const string FileLoader::toString() {
