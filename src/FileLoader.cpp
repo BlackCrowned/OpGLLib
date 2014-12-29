@@ -9,7 +9,8 @@
 
 using namespace std;
 
-FileLoader::FileLoader() : FileAllocator(){
+FileLoader::FileLoader() :
+		FileAllocator() {
 	file = construct();
 }
 
@@ -23,9 +24,7 @@ FileLoader::FileLoader(FileLoader&& other) {
 }
 
 FileLoader::~FileLoader() {
-	if (file->is_open()) {
-		file->close();
-	}
+	closeFile(file);
 }
 
 fstream *FileLoader::open(string name, ios::openmode openmode) {

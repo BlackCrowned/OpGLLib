@@ -346,7 +346,6 @@ public:
 	}
 	void closeFile(T* file);
 	void closeFile(T&& file);
-	void closeFiles();
 };
 
 template class FileAllocator<std::fstream> ;

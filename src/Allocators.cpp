@@ -14,7 +14,6 @@ template<class T> FileAllocator<T>::FileAllocator() {
 }
 
 template<class T> FileAllocator<T>::~FileAllocator() {
-	closeFiles();
 }
 
 //template<class T> template<class ...Args> T *FileAllocator<T>::openFile(Args&&... args) {
@@ -36,8 +35,4 @@ template<class T> void FileAllocator<T>::closeFile(T *file) {
 	if (file->is_open()) {
 		file->close();
 	}
-}
-
-template<class T> void FileAllocator<T>::closeFiles() {
-	cerr << "Closing all files not supported right now!" << endl;
 }
