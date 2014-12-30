@@ -45,7 +45,8 @@ public:
 	template<class U>
 	void destroy(U* ptr, int n) {
 		for (auto i = 0; i < n; i++) {
-			(ptr + i)->~U();
+			T* tmp = ptr + i;
+			tmp->~U();
 		}
 	}
 	template<class U>
@@ -107,7 +108,7 @@ public:
 	void destroy(T* object) {
 		for (size_t i = 0; i < blockTable.size(); i++) {
 			if (!blockTable[i].empty) {
-				if (object >= blockTable[i].first && object <= blockTable[i][blockTable[i].size]) {
+				if (object >= blockTable[i].first && object < blockTable[i][blockTable[i].size]) {
 					for (size_t j = 0; j < blockTable[i].size; j++) {
 						if (blockTable[i][j] == object) {
 							totalFree++;
@@ -138,6 +139,10 @@ public:
 			}
 		}
 		return nullptr;
+	}
+
+	void reserve(size_t amount) {
+		return requestAllocation(amount);
 	}
 
 	void destroyAll() {
@@ -213,12 +218,24 @@ private:
 			return *this;
 		}
 
+		Block& operator =(Block&& other) {
+			this->size = other.size;
+			this->empty = other.empty;
+			this->full = other.full;
+			this->first = other.first;
+			this->available = other.available;
+			other.available = nullptr;
+			this->firstAvailable = other.firstAvailable;
+			this->amountAvailable = other.amountAvailable;
+			return *this;
+		}
+
 		size_t size;
 		bool empty;
 		bool full;
 		T* first;
-		bool *available;
-		int firstAvailable = 0;
+		bool* available;
+		size_t firstAvailable = 0;
 		size_t amountAvailable;
 
 		int nextAvailable() {
@@ -235,7 +252,7 @@ private:
 				}
 			}
 			//Try again starting from 0
-			for (size_t i = 0; i < size; i++) {
+			for (size_t i = 0; i < firstAvailable; i++) {
 				if (available[i]) {
 					firstAvailable = i;
 					return i;
@@ -273,8 +290,8 @@ private:
 	std::deque<Block> blockTable;
 	size_t totalFree = 0;
 	size_t totalUsed = 0;
-	int firstAvailableBlock = 0;
-	size_t medianBlockSize = 0;
+	size_t firstAvailableBlock = 0;
+	size_t medianAllocationSize = 0;
 	Allocator<T> allocator;
 
 	void requestAllocation(size_t amount) {
@@ -286,15 +303,15 @@ private:
 		Block newBlock(amountToAllocate, first);
 		blockTable.push_back(std::move(newBlock));
 		totalFree += amountToAllocate;
-		medianBlockSize = (medianBlockSize * blockTable.size() + amountToAllocate) / (blockTable.size() + 1);
+		medianAllocationSize = (medianAllocationSize * blockTable.size() + amount) / (blockTable.size() + 1);
 		return;
 	}
 	void requestDeallocation() {
-		if (totalFree > 2 * medianBlockSize) {
+		if (totalFree > 2 * medianAllocationSize) {
 			int i = nextEmptyBlock();
 			if (i != -1) {
 				totalFree -= blockTable[i].size;
-				allocator.deallocate(blockTable[i].first);
+				allocator.deallocate(blockTable[i].first, blockTable[i].size);
 				blockTable.erase(blockTable.begin() + i);
 			}
 		}
@@ -320,7 +337,7 @@ private:
 			}
 		}
 		//Try again starting from 0
-		for (size_t i = 0; i < blockTable.size(); i++) {
+		for (size_t i = 0; i < firstAvailableBlock; i++) {
 			if (!blockTable[i].full) {
 				firstAvailableBlock = i;
 				return i;
