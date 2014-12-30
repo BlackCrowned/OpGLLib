@@ -11,7 +11,6 @@
 #include <deque>
 #include <iostream>
 #include <fstream>
-#include <memory>
 
 template<class T>
 class Allocator {
@@ -173,7 +172,7 @@ private:
 			empty = _empty;
 			full = _full;
 			first = _first;
-			available = std::unique_ptr<bool[]>(new bool[size]);
+			available = new bool[size];
 			for (size_t i = 0; i < size; i++) {
 				available[i] = true;
 			}
@@ -184,7 +183,7 @@ private:
 			empty = other.empty;
 			full = other.full;
 			first = other.first;
-			available = std::unique_ptr<bool[]>(new bool[size]);
+			available = new bool[size];
 			for (size_t i = 0; i < size; i++) {
 				available[i] = other.available[i];
 			}
@@ -196,35 +195,23 @@ private:
 			empty = other.empty;
 			full = other.full;
 			first = other.first;
-			available = std::move(other.available);
+			available = other.available;
+			other.available = nullptr;
 			firstAvailable = other.firstAvailable;
 			amountAvailable = other.amountAvailable;
 		}
 		~Block() {
+			delete[] available;
 		}
 
-		Block& operator =(Block const& other) {
-			this->size = other.size;
-			this->empty = other.empty;
-			this->full = other.full;
-			this->first = other.first;
-			this->available = std::unique_ptr<bool[]>(other.size);
-			for (size_t i = 0; i < this->size; i++) {
-				this->available[i] = other.available[i];
-			}
-			this->firstAvailable = other.firstAvailable;
-			this->amountAvailable = other.amountAvailable;
-			return *this;
-		}
-
-		Block& operator =(Block&& other) {
-			this->size = other.size;
-			this->empty = other.empty;
-			this->full = other.full;
-			this->first = other.first;
-			this->available = std::move(other.available);
-			this->firstAvailable = other.firstAvailable;
-			this->amountAvailable = other.amountAvailable;
+		Block& operator =(Block other) {
+			std::swap(size, other.size);
+			std::swap(empty, other.empty);
+			std::swap(full, other.full);
+			std::swap(first, other.first);
+			std::swap(available, other.available);
+			std::swap(firstAvailable, other.firstAvailable);
+			std::swap(amountAvailable, other.amountAvailable);
 			return *this;
 		}
 
@@ -232,7 +219,7 @@ private:
 		bool empty;
 		bool full;
 		T* first;
-		std::unique_ptr<bool[]> available;
+		bool* available;
 		size_t firstAvailable = 0;
 		size_t amountAvailable;
 
