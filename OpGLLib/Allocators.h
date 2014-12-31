@@ -153,7 +153,6 @@ public:
 					totalUsed--;
 					allocator.destroy(blockTable[i].destroy(j));
 				}
-				requestDeallocation();
 			}
 		}
 		return;
@@ -204,14 +203,20 @@ private:
 			delete[] available;
 		}
 
-		Block& operator =(Block other) {
-			std::swap(size, other.size);
-			std::swap(empty, other.empty);
-			std::swap(full, other.full);
-			std::swap(first, other.first);
-			std::swap(available, other.available);
-			std::swap(firstAvailable, other.firstAvailable);
-			std::swap(amountAvailable, other.amountAvailable);
+		Block& operator =(Block&& other) {
+			if (this != &other) {
+				Block tmp(std::forward<Block>(other));
+				std::swap(size, tmp.size);
+				std::swap(empty, tmp.empty);
+				std::swap(full, tmp.full);
+				std::swap(first, tmp.first);
+				std::swap(available, tmp.available);
+				std::swap(firstAvailable, tmp.firstAvailable);
+				std::swap(amountAvailable, tmp.amountAvailable);
+			}
+			else {
+				std::cout << "this == &other" << std::endl;
+			}
 			return *this;
 		}
 
@@ -312,7 +317,7 @@ private:
 	}
 
 	int nextAvailableBlock() {
-		if (!blockTable[firstAvailableBlock].full) {
+		if (firstAvailableBlock < blockTable.size() && !blockTable[firstAvailableBlock].full) {
 			return firstAvailableBlock;
 		}
 		for (size_t i = firstAvailableBlock; i < blockTable.size(); i++) {
