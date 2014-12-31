@@ -8,10 +8,10 @@
 #ifndef OPGLLIB_FILELOADER_H_
 #define OPGLLIB_FILELOADER_H_
 
+#include <OpGLLib/MemManager.h>
 #include <fstream>
 #include <string>
 #include <sstream>
-#include <OpGLLib/Allocators.h>
 
 class FileLoader {
 public:
