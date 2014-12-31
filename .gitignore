@@ -3,6 +3,9 @@ Debug
 Release
 Static Release
 
+# Doxygen config file
+Doxyfile
+
 # Eclipse project settings
 .project
 .cproject
