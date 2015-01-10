@@ -75,12 +75,13 @@ private:
 };
 
 template<class modelType, class objectType, template<class > class objectWrapperType>
-class ModelWrapper: private Allocator<objectWrapperType<objectType> > {
+class ModelWrapper: private MemManager<objectWrapperType<objectType> > {
 public:
 	ModelWrapper(modelType* model) {
 		ModelWrapper::model = model;
+		ModelWrapper::objectWrapper = new objectWrapperType<objectType>*[*getObjectCount()];
 		for (auto i = 0; i < *getObjectCount(); i++) {
-			objectWrapper[i] = Allocator<objectWrapperType<objectType> >::constructObject(getObject(i));
+			objectWrapper[i] = MemManager<objectWrapperType<objectType> >::construct(getObject(i));
 		}
 	}
 	virtual ~ModelWrapper() {
