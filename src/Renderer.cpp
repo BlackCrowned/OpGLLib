@@ -10,8 +10,12 @@
 using namespace std;
 using namespace gl;
 
-RenderObject::RenderObject(GLenum mode, size_t start, size_t count, bool indexedDraw, GLenum type, const void* indicies) {
-	glGenVertexArrays(1, &vao);
+namespace Renderer {
+
+RenderObject::RenderObject(Renderer* renderer, GLenum mode, size_t start, size_t count, bool indexedDraw, GLenum type,
+		const void* indicies) {
+	RenderObject::renderer = renderer;
+	RenderObject::vao = RenderObject::renderer->genVertexArray();
 	RenderObject::mode = mode;
 	RenderObject::start = start;
 	RenderObject::count = count;
@@ -21,16 +25,54 @@ RenderObject::RenderObject(GLenum mode, size_t start, size_t count, bool indexed
 }
 
 RenderObject::~RenderObject() {
-	glDeleteVertexArrays(1, &vao);
-	for (size_t i = 0; i < bufferObjects.size(); i++) {
-		glDeleteBuffers(1, &bufferObjects[i]);
+	renderer->deleteVertexArray(vao);
+	for (auto i : vertexBufferObjects) {
+		renderer->deleteBuffer(i.second);
+	}
+	for (auto i : indexBufferObjects) {
+		renderer->deleteBuffer(i.second);
 	}
 	vao = 0;
-	bufferObjects.clear();
+	vertexBufferObjects.clear();
+	indexBufferObjects.clear();
 }
 
-void RenderObject::addBufferObject(unsigned int vbo) {
-	bufferObjects.push_back(vbo);
+void RenderObject::setVertexBufferObject(unsigned int index, unsigned int buffer) {
+	if (vertexBufferObjects.count(index) > 0) {
+		renderer->deleteBuffer(vertexBufferObjects[index]);
+	}
+	vertexBufferObjects[index] = buffer;
+}
+
+void RenderObject::setIndexBufferObject(unsigned int index, unsigned int buffer) {
+	if (indexBufferObjects.count(index) > 0) {
+		renderer->deleteBuffer(indexBufferObjects[index]);
+	}
+	indexBufferObjects[index] = buffer;
+}
+
+unsigned int RenderObject::getVertexBufferObject(unsigned int index) {
+	if (vertexBufferObjects.count(index) == 0) {
+		vertexBufferObjects[index] = renderer->genBuffer();
+	}
+	return vertexBufferObjects[index];
+}
+
+unsigned int RenderObject::getIndexBufferObject(unsigned int index) {
+	if (indexBufferObjects.count(index) == 0) {
+		indexBufferObjects[index] = renderer->genBuffer();
+	}
+	return indexBufferObjects[index];
+}
+
+void RenderObject::enableVertexAttribArray(unsigned int index) {
+	renderer->bindVertexArray(vao);
+	glEnableVertexAttribArray(index);
+}
+
+void RenderObject::disableVertexAttribArray(unsigned int index) {
+	renderer->bindVertexArray(vao);
+	glDisableVertexAttribArray(index);
 }
 
 Renderer::Renderer() {
@@ -38,7 +80,23 @@ Renderer::Renderer() {
 }
 
 Renderer::~Renderer() {
+	deleteRenderObjects();
+	deleteVertexArrays();
+	deleteBuffers();
+}
 
+unsigned int Renderer::genVertexArray() {
+	unsigned int vao;
+	glGenVertexArrays(1, &vao);
+	return manageVertexArray(vao);
+}
+
+unsigned int Renderer::manageVertexArray(unsigned int vao) {
+	if (vertexArrayObjectInstances[vao] < 0) {
+		vertexArrayObjectInstances[vao] = 0;
+	}
+	vertexArrayObjectInstances[vao]++;
+	return vao;
 }
 
 bool Renderer::bindVertexArray(unsigned int vao) {
@@ -52,30 +110,57 @@ bool Renderer::bindVertexArray(unsigned int vao) {
 	}
 }
 
-bool Renderer::bindVertexBuffer(unsigned vbo) {
-	if (currentVertexBufferObject == vbo) {
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+bool Renderer::deleteVertexArray(unsigned int vao) {
+	if (vertexArrayObjectInstances[vao] == 0) {
 		return false;
-	} else {
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		currentVertexBufferObject = vbo;
+	}
+	vertexArrayObjectInstances[vao]--;
+	if (vertexArrayObjectInstances[vao] == 0) {
+		glDeleteVertexArrays(1, &vao);
 		return true;
 	}
+	return false;
+}
+
+unsigned int Renderer::genBuffer() {
+	unsigned int buffer;
+	glGenBuffers(1, &buffer);
+	return manageBuffer(buffer);
+}
+
+unsigned int Renderer::manageBuffer(unsigned int buffer) {
+	if (bufferObjectInstances[buffer] < 0) {
+		bufferObjectInstances[buffer] = 0;
+	}
+	bufferObjectInstances[buffer]++;
+	return buffer;
 }
 
 bool Renderer::bindBuffer(GLenum target, unsigned int buffer) {
-	if (currentBuffeObject == buffer) {
+	if (currentBufferObject == buffer) {
 		glBindBuffer(target, buffer);
 		return false;
 	} else {
 		glBindBuffer(target, buffer);
-		currentBuffeObject = buffer;
+		currentBufferObject = buffer;
 		return true;
 	}
 }
 
+bool Renderer::deleteBuffer(unsigned int buffer) {
+	if (bufferObjectInstances[buffer] == 0) {
+		return false;
+	}
+	bufferObjectInstances[buffer]--;
+	if (bufferObjectInstances[buffer] == 0) {
+		glDeleteBuffers(1, &buffer);
+		return true;
+	}
+	return false;
+}
+
 void Renderer::genRenderObject(unsigned int id) {
-	renderObjects[id] = new RenderObject(GL_TRIANGLES, 0, 0);
+	renderObjects[id] = new RenderObject(this, GL_TRIANGLES, 0, 0);
 }
 
 void Renderer::deleteRenderObject(unsigned int id) {
@@ -84,16 +169,20 @@ void Renderer::deleteRenderObject(unsigned int id) {
 }
 
 RenderObject& Renderer::getRenderObject(unsigned int id) {
+	if (renderObjects.count(id) == 0) {
+		genRenderObject(id);
+	}
 	return *renderObjects[id];
 }
 
 void Renderer::loadMesh(unsigned int renderObjectId, unsigned int index, ModelWrapper&& model, size_t meshId) {
 	RenderObject& renderObject = getRenderObject(renderObjectId);
-	unsigned int vbo, indexBuffer;
-	glGenBuffers(1, &vbo);
-	renderObject.addBufferObject(vbo);
+	unsigned int vbo = 0, indexBuffer = 0;
+	vbo = genBuffer();
+	renderObject.setVertexBufferObject(index, vbo);
 
-	bindVertexBuffer(vbo);
+	bindVertexArray(renderObject.vao);
+	bindBuffer(GL_ARRAY_BUFFER, vbo);
 
 	std::unique_ptr<ObjectWrapper> objectWrapper = (&model)->getObjectWrapper(meshId);
 	glBufferData(GL_ARRAY_BUFFER, objectWrapper->getVerticesCount() * 4 * sizeof(float), &objectWrapper->getVertices()->at(0).x,
@@ -105,8 +194,8 @@ void Renderer::loadMesh(unsigned int renderObjectId, unsigned int index, ModelWr
 		renderObject.count = objectWrapper->getIndicies()->size() * 3;
 		renderObject.type = objectWrapper->getIndiciesType();
 		renderObject.indicies = objectWrapper->getIndiciesOffset();
-		glGenBuffers(1, &indexBuffer);
-		renderObject.addBufferObject(indexBuffer);
+		indexBuffer = genBuffer();
+		renderObject.setIndexBufferObject(index, indexBuffer);
 		bindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, objectWrapper->getIndicies()->size() * sizeof(objectWrapper->getIndicies()->at(0).x) * 3,
 				&objectWrapper->getIndicies()->at(0).x, GL_STATIC_DRAW);
@@ -117,13 +206,30 @@ void Renderer::loadMesh(unsigned int renderObjectId, unsigned int index, ModelWr
 	}
 
 	bindVertexArray(renderObject.vao);
-	bindVertexBuffer(vbo);
+	bindBuffer(GL_ARRAY_BUFFER, vbo);
 	glEnableVertexAttribArray(index);
 	glVertexAttribPointer(index, 4, GL_FLOAT, GL_FALSE, 0, 0);
 	if (renderObject.indexedDraw) {
 		bindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
 	}
+}
 
+void Renderer::loadVertexArray(unsigned int renderObjectId, unsigned int index, size_t size, float* vertexArray, size_t vertexCount) {
+	RenderObject& renderObject = getRenderObject(renderObjectId);
+	unsigned int vbo = genBuffer();
+	renderObject.setVertexBufferObject(index, vbo);
+	bindBuffer(GL_ARRAY_BUFFER, vbo);
+
+	glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(float), vertexArray, GL_STATIC_DRAW);
+
+	if (renderObject.start == 0 && renderObject.count == 0) { //Assume uninitialized
+		renderObject.count = vertexCount;
+	}
+
+	bindVertexArray(renderObject.vao);
+	bindBuffer(GL_ARRAY_BUFFER, vbo);
+	glEnableVertexAttribArray(index);
+	glVertexAttribPointer(index, size, GL_FLOAT, GL_FALSE, 0, static_cast<const void *>(0));
 }
 
 void Renderer::draw(unsigned int renderObjectId) {
@@ -135,3 +241,49 @@ void Renderer::draw(unsigned int renderObjectId) {
 		glDrawArrays(renderObject.mode, renderObject.start, renderObject.count);
 	}
 }
+
+void Renderer::deleteVertexArrays() {
+	for (auto i : vertexArrayObjectInstances) {
+		if (i.second > 0) {
+			glDeleteVertexArrays(1, &i.first);
+		}
+	}
+	vertexArrayObjectInstances.clear();
+}
+
+void Renderer::deleteBuffers() {
+	for (auto i : bufferObjectInstances) {
+		if (i.second > 0) {
+			glDeleteBuffers(1, &i.first);
+		}
+	}
+	bufferObjectInstances.clear();
+}
+
+void Renderer::deleteRenderObjects() {
+	for (auto i : renderObjects) {
+		deleteRenderObject(i.first);
+	}
+}
+
+void Renderer::logRenderObject(unsigned int renderObjectId, string name) {
+	RenderObject& renderObject = getRenderObject(renderObjectId);
+	cout << "---" << endl;
+	cout << name << " [RenderObject]: [@" << &renderObject << "]" << endl;
+	cout << "RenderObject.vao: " << renderObject.vao << "( current: " << currentVertexArrayObject << ")\n";
+	cout << "RenderObject.indexedDraw: " << boolalpha << renderObject.indexedDraw << "\n";
+	cout << "RenderObject.start: " << renderObject.start << "\n";
+	cout << "RenderObject.count: " << renderObject.count << "\n";
+	cout << "RenderObject.type: " << renderObject.type << "\n";
+	cout << "RenderObject.indicies: " << renderObject.indicies << "\n";
+	for (auto i : renderObject.vertexBufferObjects) {
+		cout << "RenderObject.vertexBufferObjects[index(" << i.first << ")]: " << i.second << "\n";
+	}
+	for (auto i : renderObject.indexBufferObjects) {
+		cout << "RenderObject.indexBufferObjects[index(" << i.first << ")]: " << i.second << "\n";
+	}
+	cout << "---" << endl;
+}
+
+}
+
