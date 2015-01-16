@@ -32,10 +32,9 @@ struct Model {
 	std::vector<Object> objects;
 };
 
-template<class objectType>
 class ObjectWrapper {
 public:
-	ObjectWrapper(objectType* o) :
+	ObjectWrapper(Object* o) :
 			object(o) {
 
 	}
@@ -45,11 +44,11 @@ public:
 	virtual std::string* getObjectName() {
 		return &object->name;
 	}
-	virtual int* getVerticesCount() {
-		return &object->count;
+	virtual int getVerticesCount() {
+		return object->count;
 	}
-	virtual int* getLineSmoothing() {
-		return &object->lineSmoothing;
+	virtual int getLineSmoothing() {
+		return object->lineSmoothing;
 	}
 	virtual std::vector<glm::vec4>* getVertices() {
 		return &object->vertices;
@@ -63,6 +62,12 @@ public:
 	virtual std::vector<glm::uvec3>* getIndicies() {
 		return &object->indicies;
 	}
+	virtual gl::GLenum getIndiciesType() {
+		return gl::GL_UNSIGNED_INT;
+	}
+	virtual const void* getIndiciesOffset() {
+		return static_cast<const void*>(0);
+	}
 	virtual std::vector<glm::uvec3>* getTextureIndicies() {
 		return &object->textureIndicies;
 	}
@@ -71,18 +76,13 @@ public:
 	}
 
 private:
-	objectType* object;
+	Object* object;
 };
 
-template<class modelType, class objectType, template<class > class objectWrapperType>
-class ModelWrapper: private MemManager<objectWrapperType<objectType> > {
+class ModelWrapper {
 public:
-	ModelWrapper(modelType* model) {
+	ModelWrapper(Model* model) {
 		ModelWrapper::model = model;
-		ModelWrapper::objectWrapper = new objectWrapperType<objectType>*[*getObjectCount()];
-		for (auto i = 0; i < *getObjectCount(); i++) {
-			objectWrapper[i] = MemManager<objectWrapperType<objectType> >::construct(getObject(i));
-		}
 	}
 	virtual ~ModelWrapper() {
 	}
@@ -99,16 +99,15 @@ public:
 	virtual int* getLoadedState() {
 		return &model->loaded;
 	}
-	virtual objectType* getObject(int id) {
+	virtual Object* getObject(int id) {
 		return &model->objects[id];
 	}
-	virtual objectWrapperType<objectType>* getObjectWrapper(int id) {
-		return objectWrapper[id];
+	virtual std::unique_ptr<ObjectWrapper> getObjectWrapper(int id) {
+		return std::unique_ptr<ObjectWrapper>(new ObjectWrapper(getObject(id)));
 	}
 
 private:
-	modelType* model;
-	objectWrapperType<objectType>** objectWrapper;
+	Model* model;
 };
 
 class ModelLoader: private FileLoader {
