@@ -10,8 +10,6 @@
 
 using namespace std;
 
-map<unsigned int, Model> ModelLoader::models;
-
 ModelLoader::ModelLoader() :
 		FileLoader() {
 
@@ -54,6 +52,7 @@ unsigned int ModelLoader::load(const string& name, unsigned int id) {
 		close();
 		return -2;
 	}
+
 	close();
 	model.loaded = true;
 	models[id] = model;

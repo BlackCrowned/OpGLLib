@@ -8,13 +8,17 @@
 #ifndef OPGLLIB_FILELOADER_H_
 #define OPGLLIB_FILELOADER_H_
 
-#include <OpGLLib/internal.h>
-#include <OpGLLib/Allocators.h>
+#include <OpGLLib/MemManager.h>
+#include <fstream>
+#include <string>
+#include <sstream>
 
-class FileLoader : FileAllocator<std::fstream>{
+class FileLoader {
 public:
 	FileLoader();
 	FileLoader(std::string name, std::ios::openmode openmode = std::ios::in);
+	FileLoader(FileLoader const& other) = delete;
+	FileLoader(FileLoader&& other);
 	~FileLoader();
 
 	std::fstream *open(std::string name, std::ios::openmode openmode = std::ios::in);
