@@ -84,3 +84,7 @@ fstream *FileLoader::getFile() {
 string FileLoader::getFileType() {
 	return fileType;
 }
+
+FileLoader::operator bool() {
+	return file->good();
+}

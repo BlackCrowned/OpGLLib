@@ -33,6 +33,8 @@ public:
 	std::fstream *getFile();
 	std::string getFileType();
 
+	operator bool();
+
 private:
 	std::fstream *file;
 	std::string fileType;
