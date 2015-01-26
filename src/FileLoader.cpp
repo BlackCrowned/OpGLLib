@@ -67,6 +67,16 @@ const char *FileLoader::toCString() {
 	return cStr;
 }
 
+shared_ptr<char> FileLoader::toCString__() {
+	const string &string = toString();
+	shared_ptr<char> cStr(new char[string.length() + 1], OpGLLib::default_delete<char>());
+
+	string.copy(cStr.get(), string.length());
+	cStr.get()[string.length()] = '\0';
+
+	return cStr;
+}
+
 fstream *FileLoader::getFile() {
 	return file;
 }
