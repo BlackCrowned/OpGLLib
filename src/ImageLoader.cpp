@@ -122,12 +122,12 @@ Image2D<OpGLLib::Types::BYTE> Bitmap::getImage() {
 			*height > 0 ? static_cast<size_t>(*height) : static_cast<size_t>(-*height), imageData);
 }
 
-Bitmap loadBMP(std::string file) {
-	FileLoader fileLoader(file);
-	if (!fileLoader) {
+Bitmap loadBMP(std::string filename) {
+	fstream file(filename, std::ios::in);
+	if (!file) {
 		throw "Can't open file!";
 	}
-	std::shared_ptr<char> cStr = shared_ptr<char>(const_cast<char*>(fileLoader.toCString()), OpGLLib::default_delete<char[]>());
+	std::shared_ptr<char> cStr = OpGLLib::file::dataSharedPtr(file);
 
 	Bitmap bitmap(cStr);
 
