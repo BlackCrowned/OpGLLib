@@ -16,6 +16,8 @@
 #include <OpGLLib/Transformation.h>
 #include <OpGLLib/Debug.h>
 
+namespace OpGLLib {
+
 class OpGLLib {
 public:
 	OpGLLib();
@@ -40,5 +42,7 @@ private:
 	std::chrono::time_point<std::chrono::system_clock> lastFrame;
 	std::deque<std::chrono::milliseconds> frameDuration;
 };
+
+}
 
 #endif /* OPGLLIB_OPGLLIB_H_ */
