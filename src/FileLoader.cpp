@@ -19,6 +19,7 @@ FileLoader::FileLoader(string name, ios::openmode openmode) {
 
 FileLoader::FileLoader(FileLoader&& other) {
 	file = other.file;
+	other.file = nullptr;
 	fileType = std::move(other.fileType);
 }
 
