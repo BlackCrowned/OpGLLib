@@ -19,21 +19,24 @@ struct Dimensions {
 
 template<class T> using tvec4 = glm::detail::tvec4<T, glm::precision::highp>;
 
+template<class T>
 class Image {
 public:
-	typedef void dataType;
+	typedef T dataType;
 	typedef tvec4<dataType> vectorType;
-	Image(Dimensions dimensions, std::shared_ptr<void> data, Dimensions offset = {0, 1});
+	Image(Dimensions dimensions, std::shared_ptr<vectorType> data, Dimensions offset = {0, 1});
 	Image(Image const& other) = default;
 	Image(Image && other) = default;
+	template<class U> Image(Image<U> const& i);
+	template<class U> Image(Image<U>&& i);
 	~Image() = default;
 
-	Image& operator =(Image other);
+	template<class U> Image<T>& operator =(Image<U> other);
 
-	std::shared_ptr<void> getData();
+	std::shared_ptr<vectorType> getData();
 private:
 	Dimensions dimensions;
-	std::shared_ptr<void> data;
+	std::shared_ptr<vectorType> data;
 	Dimensions offset;
 };
 

@@ -6,6 +6,34 @@
  */
 
 namespace ImageLoader {
+template<class T>Image<T>::Image(Dimensions dimensions, std::shared_ptr<vectorType> data, Dimensions offset) :
+		dimensions(dimensions), data(data), offset(offset) {
+
+}
+
+template<class T> auto Image<T>::getData() -> std::shared_ptr<vectorType>{
+	return data;
+}
+
+template<class T> template<class U> Image<T>::Image(Image<U> const& i) {
+	dimensions = i.dimensions;
+	data = i.data;
+	offset = i.offset;
+}
+
+template<class T> template<class U> Image<T>::Image(Image<U>&& i) {
+	dimensions = std::move(i.dimensions);
+	data = std::move(i.data);
+	offset = std::move(i.offset);
+}
+
+template<class T> template<class U> Image<T>& Image<T>::operator =(Image<U> other) {
+	swap(dimensions, other.dimensions);
+	swap(data, other.data);
+	swap(offset, other.offset);
+	return *this;
+}
+
 template<class T> Image1D<T>::Image1D(size_t width) :
 		dimensions( { width, 1 }), data(new vectorType[width], OpGLLib::default_delete<vectorType[]>()), offset( { 0, 1 }) {
 }
