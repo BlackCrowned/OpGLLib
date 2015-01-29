@@ -11,26 +11,27 @@
 using namespace std;
 
 namespace ImageLoader {
-Image::Image(Dimensions dimensions, shared_ptr<void> data, Dimensions offset) :
-		dimensions(dimensions), data(data), offset(offset) {
+Bitmap::Bitmap() {
 
 }
 
-shared_ptr<void> Image::getData() {
-	return data;
+Bitmap::Bitmap(char* ptr) {
+	loadBitmap(ptr);
+}
+Bitmap::Bitmap(std::string filename) {
+	loadBitmap(filename);
 }
 
-Image& Image::operator =(Image other) {
-	swap(dimensions, other.dimensions);
-	swap(data, other.data);
-	swap(offset, other.offset);
-	return *this;
+Bitmap::~Bitmap() {
+
 }
 
-Bitmap::Bitmap(std::shared_ptr<char> address) :
-		address(address) {
-	ptr = address.get();
+bool Bitmap::loadBitmap(char* ptr) {
 	signature = ptr;
+	if (signature.data != 19778) {
+		std::cerr << "Wrong signature: Expected 19778 got " << signature.data << "!" << std::endl;
+		return false;
+	}
 	fileSize = ptr + 0x2;
 	offset = ptr + 0xA;
 	headerSize = ptr + 0xE;
@@ -111,10 +112,17 @@ Bitmap::Bitmap(std::shared_ptr<char> address) :
 		ImageDataOffset = 32;
 		maxHeight > 0 ? currentHeight-- : currentHeight++;
 	}
+	return true;
 }
 
-Bitmap::~Bitmap() {
-
+bool Bitmap::loadBitmap(std::string filename) {
+	fstream file(filename, std::ios::in);
+	if (!file) {
+		std::cerr << "Failed to open file: " << filename << "!" << std::endl;
+		return false;
+	}
+	char *ptr = OpGLLib::file::dataPtr(file);
+	return loadBitmap(ptr);
 }
 
 Image2D<OpGLLib::Types::BYTE> Bitmap::getImage() {
@@ -122,16 +130,26 @@ Image2D<OpGLLib::Types::BYTE> Bitmap::getImage() {
 			*height > 0 ? static_cast<size_t>(*height) : static_cast<size_t>(-*height), imageData);
 }
 
+Dimensions Bitmap::getDimensions() {
+	return {getWidth(), getHeight()};
+}
+
+size_t Bitmap::getWidth() {
+	return width.data;
+}
+
+size_t Bitmap::getHeight() {
+	return (height.data > 0 ? height.data : -height.data);
+}
+
+size_t Bitmap::getBitCount() {
+	return bitCount.data;
+}
+
 Bitmap loadBMP(std::string filename) {
-	fstream file(filename, std::ios::in);
-	if (!file) {
-		throw "Can't open file!";
-	}
-	std::shared_ptr<char> cStr = OpGLLib::file::dataSharedPtr(file);
+	Bitmap bitmap(filename);
 
-	Bitmap bitmap(cStr);
-
-	cout << "Loaded [" << *bitmap.width << "|" << *bitmap.height << "] " << bitmap.bitCount.data << "-Bit Bitmap" << endl;
+	cout << "Loaded [" << bitmap.getWidth() << "|" << bitmap.getHeight() << "] " << bitmap.getBitCount() << "-Bit Bitmap" << endl;
 
 	return bitmap;
 }

@@ -133,13 +133,21 @@ struct Bitmask {
 
 class Bitmap {
 public:
-	Bitmap(std::shared_ptr<char> address);
+	Bitmap();
+	Bitmap(char* ptr);
+	Bitmap(std::string filename);
 	Bitmap(Bitmap const& other) = delete;
 	Bitmap(Bitmap&& other) = default;
 	~Bitmap();
+	bool loadBitmap(char* data);
+	bool loadBitmap(std::string filename);
 
 	Image2D<OpGLLib::Types::BYTE> getImage();
-
+	Dimensions getDimensions();
+	size_t getWidth();
+	size_t getHeight();
+	size_t getBitCount();
+private:
 	OpGLLib::Types::WORD<> signature;
 	OpGLLib::Types::DWORD<> fileSize;
 	OpGLLib::Types::DWORD<> headerSize;
@@ -154,9 +162,6 @@ public:
 	OpGLLib::Types::DWORD<> clrImportant;
 	Bitmask bitmask;
 	ColorTable colorTable;
-private:
-	std::shared_ptr<char> address;
-	char* ptr;
 	std::shared_ptr<tvec4<OpGLLib::Types::BYTE> > imageData;
 };
 
