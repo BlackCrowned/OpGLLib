@@ -57,6 +57,11 @@ public:
 	bool bindBuffer(gl::GLenum target, unsigned int buffer);
 	bool deleteBuffer(unsigned int buffer);
 
+	unsigned int genTexture();
+	unsigned int manageTexture(unsigned int texture);
+	bool bindTexture(unsigned int texture);
+	bool deleteTexture(unsigned int texture);
+
 	void genRenderObject(unsigned int id);
 	void deleteRenderObject(unsigned int id);
 	RenderObject& getRenderObject(unsigned int id);
