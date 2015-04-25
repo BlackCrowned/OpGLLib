@@ -33,59 +33,40 @@ public:
 
 	template<class U> Image<T>& operator =(Image<U> other);
 
+	Dimensions getDimensions();
 	std::shared_ptr<vectorType> getData();
-private:
+protected:
 	Dimensions dimensions;
 	std::shared_ptr<vectorType> data;
 	Dimensions offset;
 };
 
 template<class T>
-class Image1D {
+class Image1D : public Image<T>{
 public:
-	typedef T dataType;
-	typedef tvec4<dataType> vectorType;
-
 	Image1D(size_t width);
 	template<class U> Image1D(size_t width, std::shared_ptr<U> data, Dimensions offset = {0, 1});
-	Image1D(Image1D<T> const& other) = default;
-	Image1D(Image1D<T> && other) = default;
+	Image1D(Image1D<T> const& other);
+	Image1D(Image1D<T> && other);
 	~Image1D() = default;
 
-	Image1D<T>& operator =(Image1D<T> other);
+	template<class U> Image1D<T>& operator =(Image1D<U> other);
 	tvec4<T>& operator [](size_t x);
 	tvec4<T>& operator ()(size_t x = 0);
-
-	std::shared_ptr<vectorType> getData();
-
-private:
-	Dimensions dimensions;
-	std::shared_ptr<vectorType> data;
-	Dimensions offset;
 };
 
 template<class T>
-class Image2D {
+class Image2D : public Image<T>{
 public:
-	typedef T dataType;
-	typedef tvec4<dataType> vectorType;
-
 	Image2D(size_t width, size_t height);
 	template<class U> Image2D(size_t width, size_t height, std::shared_ptr<U> data, Dimensions offset = {0, 1});
-	Image2D(Image2D<T> const& other) = default;
-	Image2D(Image2D<T> && other) = default;
+	Image2D(Image2D<T> const& other);
+	Image2D(Image2D<T> && other);
 	~Image2D() = default;
 
-	Image2D<T>& operator =(Image2D<T> other);
+	template<class U> Image2D<T>& operator =(Image2D<U> other);
 	Image1D<T> operator [](size_t x);
 	tvec4<T>& operator ()(size_t x = 0, size_t y = 0);
-
-	std::shared_ptr<vectorType> getData();
-
-private:
-	Dimensions dimensions;
-	std::shared_ptr<vectorType> data;
-	Dimensions offset;
 };
 
 enum Compression {
