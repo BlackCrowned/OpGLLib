@@ -3,6 +3,8 @@
 using namespace std;
 using namespace gl;
 
+namespace OpGLLib {
+
 OpGLLib::OpGLLib() {
 #ifndef RElEASE
 	_debug.enableLogging();
@@ -82,4 +84,5 @@ chrono::milliseconds OpGLLib::getFrameTime(int range) {
 float OpGLLib::getFrameRate(int range) {
 	int frameTime = getFrameTime(range).count();
 	return frameTime == 0 ? 1 : 1000.0f / frameTime;
+}
 }

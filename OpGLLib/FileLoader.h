@@ -8,10 +8,12 @@
 #ifndef OPGLLIB_FILELOADER_H_
 #define OPGLLIB_FILELOADER_H_
 
-#include <OpGLLib/MemManager.h>
+#include <OpGLLib/OpGLLibDef.h>
+#include <iostream>
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <memory>
 
 class FileLoader {
 public:
@@ -26,13 +28,27 @@ public:
 
 	const std::string toString();
 	const char *toCString();
+	std::shared_ptr<char> toCString__();
 
 	std::fstream *getFile();
 	std::string getFileType();
+
+	operator bool();
 
 private:
 	std::fstream *file;
 	std::string fileType;
 };
+
+namespace OpGLLib {
+namespace file {
+size_t size(std::fstream& file);
+
+char* dataPtr(std::fstream& file);
+std::shared_ptr<char> dataSharedPtr(std::fstream& file);
+std::string dataString(std::fstream& file);
+}
+}
+
 
 #endif /* OPGLLIB_FILELOADER_H_ */

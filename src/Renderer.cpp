@@ -243,7 +243,7 @@ void Renderer::draw(unsigned int renderObjectId) {
 }
 
 void Renderer::deleteVertexArrays() {
-	for (auto i : vertexArrayObjectInstances) {
+	for (auto& i : vertexArrayObjectInstances) {
 		if (i.second > 0) {
 			glDeleteVertexArrays(1, &i.first);
 		}
@@ -252,7 +252,7 @@ void Renderer::deleteVertexArrays() {
 }
 
 void Renderer::deleteBuffers() {
-	for (auto i : bufferObjectInstances) {
+	for (auto& i : bufferObjectInstances) {
 		if (i.second > 0) {
 			glDeleteBuffers(1, &i.first);
 		}
@@ -261,9 +261,10 @@ void Renderer::deleteBuffers() {
 }
 
 void Renderer::deleteRenderObjects() {
-	for (auto i : renderObjects) {
-		deleteRenderObject(i.first);
+	for (auto& i : renderObjects) {
+		delete renderObjects[i.first];
 	}
+	renderObjects.clear();
 }
 
 void Renderer::logRenderObject(unsigned int renderObjectId, string name) {
