@@ -103,3 +103,97 @@ unsigned int LoadShaders::GetProgram(int id) {
 
 	return programs[id];
 }
+
+//////////////////////////////////////
+
+map<int, vector<unsigned int> > OpGLLib::gl::Shaders::shaders;
+map<int, unsigned int>  OpGLLib::gl::Shaders::programs;
+
+unsigned int OpGLLib::gl::Shaders::loadShader(GLenum type, const string shader, int id) {
+	fstream file(shader, std::ios::in | std::ios::binary);
+	if (!file) {
+		return -1;
+	}
+	const char *fileData = OpGLLib::files::dataPtr(file);
+	file.close();
+
+	unsigned int shaderObj = glCreateShader(type);
+
+	cout << "Compiling shader: '" << shader << "'(" << shaderObj << ")...";
+
+	glShaderSource(shaderObj, 1, &fileData, NULL);
+	glCompileShader(shaderObj);
+	delete[] fileData;
+
+	int status;
+
+	glGetShaderiv(shaderObj, GL_COMPILE_STATUS, &status);
+
+	if (status == false) {
+		cerr << endl << "Failed to compile shader:" << endl;
+
+		int infoLogLength = 0;
+		glGetShaderiv(shaderObj, GL_INFO_LOG_LENGTH, &infoLogLength);
+		char *infoLog = new char[infoLogLength];
+
+		glGetShaderInfoLog(shaderObj, infoLogLength, NULL, infoLog);
+		cerr << infoLog << endl;
+
+		delete[] infoLog;
+		return -2;
+	} else {
+		cout << "Done" << endl;
+	}
+
+	shaders[id].push_back(shaderObj);
+
+	return shaderObj;
+}
+
+unsigned int OpGLLib::gl::Shaders::createProgram(int id) {
+	unsigned int program = glCreateProgram();
+
+	cout << "Creating program: '" << program << "':" << endl;
+
+	for (auto i : shaders[id]) {
+		i--;
+		cout << "Attaching shader: '" << shaders[id][i] << "'...";
+		glAttachShader(program, shaders[id][i]);
+		cout << "Done" << endl;
+	};
+
+	cout << "Linking program: '" << program << "'...";
+	glLinkProgram(program);
+
+	int status;
+	glGetProgramiv(program, GL_LINK_STATUS, &status);
+
+	if (status == false) {
+		cerr << endl << "Failed to link program:" << endl;
+
+		int infoLogLength;
+		char *infoLog;
+		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLogLength);
+		infoLog = new char[infoLogLength];
+		glGetProgramInfoLog(program, infoLogLength, NULL, infoLog);
+		cout << infoLog << endl;
+		delete[] infoLog;
+		return -2;
+	} else {
+		cout << "Done" << endl;
+	}
+
+	for (auto i : shaders[id]) {
+		i--;
+		glDetachShader(program, shaders[id][i]);
+	}
+
+	programs[id] = program;
+
+	return program;
+}
+
+unsigned int OpGLLib::gl::Shaders::getProgram(int id) {
+
+	return programs[id];
+}

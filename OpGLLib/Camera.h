@@ -8,9 +8,12 @@
 #ifndef OPGLLIB_CAMERA_H_
 #define OPGLLIB_CAMERA_H_
 
+#define INCLUDE_GLM
 #include <OpGLLib/internal.h>
-#include <OpGLLib/Debug.h>
 
+#include <stack>
+
+namespace OpGLLib {
 class Camera {
 public:
 	Camera();
@@ -48,5 +51,6 @@ private:
 
 	std::stack<Camera> stateStack;
 };
+}
 
 #endif /* OPGLLIB_CAMERA_H_ */

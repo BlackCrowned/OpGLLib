@@ -10,6 +10,7 @@
 
 using namespace std;
 
+namespace OpGLLib {
 namespace ImageLoader {
 Bitmap::Bitmap() {
 
@@ -121,7 +122,7 @@ bool Bitmap::loadBitmap(std::string filename) {
 		std::cerr << "Failed to open file: " << filename << "!" << std::endl;
 		return false;
 	}
-	char *ptr = OpGLLib::file::dataPtr(file);
+	char *ptr = OpGLLib::files::dataPtr(file);
 	return loadBitmap(ptr);
 }
 
@@ -154,4 +155,5 @@ Bitmap loadBMP(std::string filename) {
 	return bitmap;
 }
 
+}
 }

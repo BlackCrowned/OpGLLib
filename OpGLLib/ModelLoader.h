@@ -8,9 +8,14 @@
 #ifndef OPGLLIB_MODELLOADER_H_
 #define OPGLLIB_MODELLOADER_H_
 
+#define INCLUDE_GLM
+#define INCLUDE_GLBINDING
 #include <OpGLLib/internal.h>
+
 #include <OpGLLib/FileLoader.h>
-#include <OpGLLib/Debug.h>
+
+#include <regex>
+#include <map>
 
 struct Object {
 	std::string name = "";
@@ -110,7 +115,7 @@ private:
 	Model* model;
 };
 
-class ModelLoader: private FileLoader {
+class ModelLoader: private OpGLLib::FileLoader {
 public:
 	ModelLoader();
 	ModelLoader(const std::string& name, unsigned int id);

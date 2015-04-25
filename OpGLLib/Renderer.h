@@ -8,9 +8,15 @@
 #ifndef OPGLLIB_RENDERER_H_
 #define OPGLLIB_RENDERER_H_
 
+#define INCLUDE_GML
+#define INCLUDE_GLBINDING
 #include <OpGLLib/internal.h>
+
 #include <OpGLLib/ModelLoader.h>
 
+#include <map>
+
+namespace OpGLLib {
 namespace Renderer {
 class Renderer;
 
@@ -85,6 +91,7 @@ private:
 	std::map<unsigned int, RenderObject*> renderObjects;
 };
 
+}
 }
 
 #endif /* OPGLLIB_RENDERER_H_ */

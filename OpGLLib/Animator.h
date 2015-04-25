@@ -8,11 +8,14 @@
 #ifndef OPGLLIB_ANIMATOR_H_
 #define OPGLLIB_ANIMATOR_H_
 
+#define INCLUDE_GLM
 #include <OpGLLib/internal.h>
+
 #include <OpGLLib/Callbacks.h>
 #include <OpGLLib/Transformation.h>
-#include <OpGLLib/Debug.h>
 
+namespace OpGLLib {
+namespace gl{
 enum AnimationAttributeTypes {
 	translate, scale, rotate, orient
 };
@@ -171,5 +174,9 @@ private:
 template class AnimationAttribute<glm::vec3> ;
 
 using AnimationAttributeV3 = AnimationAttribute<glm::vec3>;
+}
+}
+
+
 
 #endif /* OPGLLIB_ANIMATOR_H_ */

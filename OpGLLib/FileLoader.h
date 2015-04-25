@@ -15,6 +15,7 @@
 #include <sstream>
 #include <memory>
 
+namespace OpGLLib {
 class FileLoader {
 public:
 	FileLoader();
@@ -40,8 +41,7 @@ private:
 	std::string fileType;
 };
 
-namespace OpGLLib {
-namespace file {
+namespace files {
 size_t size(std::fstream& file);
 
 char* dataPtr(std::fstream& file);
@@ -49,6 +49,5 @@ std::shared_ptr<char> dataSharedPtr(std::fstream& file);
 std::string dataString(std::fstream& file);
 }
 }
-
 
 #endif /* OPGLLIB_FILELOADER_H_ */

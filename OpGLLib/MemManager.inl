@@ -4,6 +4,7 @@
  * @tparam T Type of object
  */
 
+namespace OpGLLib {
 /*!
  * @brief Default constructor
  */
@@ -313,7 +314,7 @@ MemManager<T>::Block::~Block() {
 template<class T>
 auto MemManager<T>::Block::operator =(Block&& other) -> Block& {
 	if (this != &other) {
-		Block tmp(std::forward<Block>(other));
+		Block tmp(std::forward < Block > (other));
 		std::swap(size, tmp.size);
 		std::swap(empty, tmp.empty);
 		std::swap(full, tmp.full);
@@ -439,3 +440,5 @@ int MemManager<T>::nextAvailableBlock() {
 	}
 	return -1;
 }
+}
+

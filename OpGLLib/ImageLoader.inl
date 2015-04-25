@@ -5,6 +5,7 @@
  *      Author: Michael
  */
 
+namespace OpGLLib{
 namespace ImageLoader {
 template<class T> Image<T>::Image(Dimensions dimensions, std::shared_ptr<vectorType> data, Dimensions offset) :
 		dimensions(dimensions), data(data), offset(offset) {
@@ -109,5 +110,6 @@ template<class T> tvec4<T>& Image2D<T>::operator ()(size_t x, size_t y) {
 	return (*this)[x][y];
 }
 
+}
 }
 

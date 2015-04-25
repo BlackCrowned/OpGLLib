@@ -8,9 +8,12 @@
 #ifndef OPGLLIB_IMAGELOADER_H_
 #define OPGLLIB_IMAGELOADER_H_
 
+#define INCLUDE_GLM
 #include <OpGLLib/internal.h>
+
 #include <OpGLLib/FileLoader.h>
 
+namespace OpGLLib {
 namespace ImageLoader {
 
 struct Dimensions {
@@ -154,6 +157,9 @@ Bitmap loadBMP(std::string file);
 
 template class ImageLoader::Image1D<float>;
 template class ImageLoader::Image2D<float>;
+}
+
+
 
 #include <OpGLLib/ImageLoader.inl>
 

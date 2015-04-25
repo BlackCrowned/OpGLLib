@@ -8,8 +8,12 @@
 #ifndef OPGLLIB_MATRICES_H_
 #define OPGLLIB_MATRICES_H_
 
+#define INCLUDE_GLM
 #include <OpGLLib/internal.h>
 
+#include <stack>
+
+namespace OpGLLib {
 class Matrices {
 public:
 	Matrices();
@@ -96,5 +100,6 @@ private:
 
 	std::stack<Matrices> stateStack;
 };
+}
 
 #endif /* OPGLLIB_MATRICES_H_ */

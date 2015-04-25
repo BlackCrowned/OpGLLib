@@ -6,7 +6,6 @@
  */
 
 #include <OpGLLib/ModelLoader.h>
-#include <regex>
 
 using namespace std;
 

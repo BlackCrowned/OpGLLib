@@ -9,6 +9,7 @@
 
 using namespace std;
 
+namespace OpGLLib {
 FileLoader::FileLoader() {
 	file = new fstream();
 }
@@ -90,26 +91,28 @@ FileLoader::operator bool() {
 	return file->good();
 }
 
-namespace OpGLLib {
-namespace file {
+namespace files {
 size_t size(std::fstream& file) {
 	//Save current get pointer
 	size_t const& currg = file.tellg();
 	//Get file size
-	file.seekg(0, std::ios::end);
+	file.seekg(0, file.end);
 	size_t const& size = file.tellg();
 	//Reset to previous get pointer
-	file.seekg(currg, std::ios::beg);
+	file.seekg(currg, file.beg);
 	return size;
 }
 
 char *dataPtr(std::fstream& file) {
 	//Get file size
-	size_t const& size = file::size(file);
+	size_t const& size = files::size(file);
 	//Allocate memory
 	char* buf = new char[size + 1];
 	//Read data
+	file.seekg(0, file.beg);
 	file.read(buf, size);
+	//Add terminating Null-Byte
+	buf[file.gcount()] = '\0';
 	//Return buffer
 	return buf;
 }

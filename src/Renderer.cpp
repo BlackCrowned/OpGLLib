@@ -10,6 +10,7 @@
 using namespace std;
 using namespace gl;
 
+namespace OpGLLib {
 namespace Renderer {
 
 RenderObject::RenderObject(Renderer* renderer, GLenum mode, size_t start, size_t count, bool indexedDraw, GLenum type,
@@ -286,5 +287,6 @@ void Renderer::logRenderObject(unsigned int renderObjectId, string name) {
 	cout << "---" << endl;
 }
 
+}
 }
 

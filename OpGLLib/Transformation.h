@@ -8,11 +8,17 @@
 #ifndef OPGLLIB_TRANSFORMATION_H_
 #define OPGLLIB_TRANSFORMATION_H_
 
+#define INCLUDE_GLM
 #include <OpGLLib/internal.h>
+
 #include <OpGLLib/Matrices.h>
 #include <OpGLLib/Perspective.h>
 #include <OpGLLib/Camera.h>
 
+#include <iostream>
+
+namespace OpGLLib {
+namespace gl {
 enum MultiplicationOrder {
 	SRT = 0x1, RST = 0x2, RTS = 0x4, STR = 0x8, TSR = 0x10, TRS = 0x20,
 };
@@ -25,8 +31,8 @@ public:
 	void setTransformationMatrix(glm::mat4 transformationMatrix);
 	void resetTransformationMatrix();
 	void updateTransformationMatrix(MultiplicationOrder = SRT);
-	glm::mat4 getTransformationMatrix(bool noCameraTransform = false, bool noPerspectiveTransform = false,
-			bool noOrientationTransform = false);
+	glm::mat4 getTransformationMatrix(bool noCameraTransform = false, bool noPerspectiveTransform = false, bool noOrientationTransform =
+			false);
 
 	Matrices & matrices = static_cast<Matrices &>(*this);
 	Camera & camera = static_cast<Camera &>(*this);
@@ -74,5 +80,7 @@ private:
 
 	std::stack<glm::mat4> matrixStack;
 };
+}
+}
 
 #endif /* OPGLLIB_TRANSFORMATION_H_ */

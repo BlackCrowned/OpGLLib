@@ -12,33 +12,44 @@ OpGLLib::OpGLLib() {
 }
 
 OpGLLib::OpGLLib(glbinding::ContextHandle context) {
-	setContext(context);
+	_setContext(context);
 #ifndef RElEASE
 	_debug.enableLogging();
 #endif
 }
 
-void OpGLLib::setContext(glbinding::ContextHandle context) {
+void OpGLLib::_setContext(glbinding::ContextHandle context) {
 	glbinding::Binding::useContext(context);
 }
 
-void OpGLLib::enableCulling(GLenum CullFace, GLenum FrontFace) {
+glbinding::ContextHandle gl::Context::currentContext;
+
+void gl::Context::setContext(glbinding::ContextHandle context) {
+	glbinding::Binding::useContext(context);
+	currentContext = context;
+}
+
+glbinding::ContextHandle gl::Context::getCurrentContext() {
+	return currentContext;
+}
+
+void gl::States::enableCulling(GLenum CullFace, GLenum FrontFace) {
 	glEnable(GL_CULL_FACE);
 	glCullFace(CullFace);
 	glFrontFace(FrontFace);
 }
 
-void OpGLLib::disableCulling() {
+void gl::States::disableCulling() {
 	glDisable(GL_CULL_FACE);
 }
 
-void OpGLLib::enableDepthTest(GLboolean DepthMasc, GLenum DepthFunc) {
+void gl::States::enableDepthTest(GLboolean DepthMasc, GLenum DepthFunc) {
 	glEnable(GL_DEPTH_TEST);
 	glDepthMask(DepthMasc);
 	glDepthFunc(DepthFunc);
 }
 
-void OpGLLib::disableDepthTest() {
+void gl::States::disableDepthTest() {
 	glDisable(GL_DEPTH_TEST);
 }
 
