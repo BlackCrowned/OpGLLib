@@ -175,7 +175,7 @@ RenderObject& Renderer::getRenderObject(unsigned int id) {
 	return *renderObjects[id];
 }
 
-void Renderer::loadMesh(unsigned int renderObjectId, unsigned int index, ModelWrapper&& model, size_t meshId) {
+void Renderer::loadMesh(unsigned int renderObjectId, unsigned int index, ModelBase& model, size_t meshId) {
 	RenderObject& renderObject = getRenderObject(renderObjectId);
 	unsigned int vbo = 0, indexBuffer = 0;
 	vbo = genBuffer();
@@ -184,25 +184,25 @@ void Renderer::loadMesh(unsigned int renderObjectId, unsigned int index, ModelWr
 	bindVertexArray(renderObject.vao);
 	bindBuffer(GL_ARRAY_BUFFER, vbo);
 
-	std::unique_ptr<ObjectWrapper> objectWrapper = (&model)->getObjectWrapper(meshId);
-	glBufferData(GL_ARRAY_BUFFER, objectWrapper->getVerticesCount() * 4 * sizeof(float), &objectWrapper->getVertices()->at(0).x,
+	ObjectBase& object = model.getObject(meshId);
+	glBufferData(GL_ARRAY_BUFFER, object.getVerticesCount() * 4 * sizeof(float), &object.getVertices().at(0).x,
 			GL_STATIC_DRAW);
 
-	if (objectWrapper->getIndicies()->size() > 0) {
+	if (object.getIndicies().size() > 0) {
 		renderObject.indexedDraw = true;
 		renderObject.start = 0;
-		renderObject.count = objectWrapper->getIndicies()->size() * 3;
-		renderObject.type = objectWrapper->getIndiciesType();
-		renderObject.indicies = objectWrapper->getIndiciesOffset();
+		renderObject.count = object.getIndicies().size() * 3;
+		renderObject.type = object.getIndiciesType();
+		renderObject.indicies = object.getIndiciesOffset();
 		indexBuffer = genBuffer();
 		renderObject.setIndexBufferObject(index, indexBuffer);
 		bindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, objectWrapper->getIndicies()->size() * sizeof(objectWrapper->getIndicies()->at(0).x) * 3,
-				&objectWrapper->getIndicies()->at(0).x, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, object.getIndicies().size() * sizeof(object.getIndicies().at(0).x) * 3,
+				&object.getIndicies().at(0).x, GL_STATIC_DRAW);
 	} else {
 		renderObject.indexedDraw = false;
 		renderObject.start = 0;
-		renderObject.count = objectWrapper->getVerticesCount();
+		renderObject.count = object.getVerticesCount();
 	}
 
 	bindVertexArray(renderObject.vao);

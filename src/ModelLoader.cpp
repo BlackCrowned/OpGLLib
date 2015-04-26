@@ -9,6 +9,64 @@
 
 using namespace std;
 
+ObjectBase::~ObjectBase() {
+
+}
+
+ModelBase::~ModelBase() {
+
+}
+
+std::string& Object::getName() {
+	return name;
+}
+int Object::getVerticesCount() {
+	return count;
+}
+int Object::getLineSmoothing() {
+	return lineSmoothing;
+}
+std::vector<glm::vec4>& Object::getVertices() {
+	return vertices;
+}
+std::vector<glm::vec2>& Object::getTextureVertices() {
+	return textureVertices;
+}
+std::vector<glm::vec3>& Object::getNormals() {
+	return normals;
+}
+std::vector<glm::uvec3>& Object::getIndicies() {
+	return indicies;
+}
+gl::GLenum Object::getIndiciesType() {
+	return gl::GL_UNSIGNED_INT;
+}
+const void* Object::getIndiciesOffset() {
+	return static_cast<const void*>(0);
+}
+std::vector<glm::uvec3>& Object::getTextureIndicies() {
+	return textureIndicies;
+}
+std::vector<glm::uvec3>& Object::getNormalIndicies() {
+	return normalIndicies;
+}
+
+std::string& Model::getName() {
+	return name;
+}
+unsigned int Model::getId() {
+	return id;
+}
+int Model::getObjectCount() {
+	return count;
+}
+int Model::getLoadedState() {
+	return loaded;
+}
+Object& Model::getObject(int id) {
+	return objects[id];
+}
+
 ModelLoader::ModelLoader() :
 		FileLoader() {
 
