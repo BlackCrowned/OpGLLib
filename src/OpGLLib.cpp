@@ -22,17 +22,6 @@ void OpGLLib::_setContext(glbinding::ContextHandle context) {
 	glbinding::Binding::useContext(context);
 }
 
-glbinding::ContextHandle gl::Context::currentContext;
-
-void gl::Context::setContext(glbinding::ContextHandle context) {
-	glbinding::Binding::useContext(context);
-	currentContext = context;
-}
-
-glbinding::ContextHandle gl::Context::getCurrentContext() {
-	return currentContext;
-}
-
 void gl::States::enableCulling(GLenum CullFace, GLenum FrontFace) {
 	glEnable(GL_CULL_FACE);
 	glCullFace(CullFace);

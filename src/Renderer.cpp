@@ -13,10 +13,9 @@ using namespace gl;
 namespace OpGLLib {
 namespace Renderer {
 
-RenderObject::RenderObject(Renderer* renderer, GLenum mode, size_t start, size_t count, bool indexedDraw, GLenum type,
-		const void* indicies) {
-	RenderObject::renderer = renderer;
-	RenderObject::vao = RenderObject::renderer->genVertexArray();
+RenderObject::RenderObject(gl::CState cState, GLenum mode, size_t start, size_t count, bool indexedDraw, GLenum type,
+		const void* indicies) : cState(cState){
+	RenderObject::vao = RenderObject::cState.genVertexArray();
 	RenderObject::mode = mode;
 	RenderObject::start = start;
 	RenderObject::count = count;
@@ -26,12 +25,12 @@ RenderObject::RenderObject(Renderer* renderer, GLenum mode, size_t start, size_t
 }
 
 RenderObject::~RenderObject() {
-	renderer->deleteVertexArray(vao);
+	cState.deleteVertexArray(vao);
 	for (auto i : vertexBufferObjects) {
-		renderer->deleteBuffer(i.second);
+		cState.deleteBuffer(i.second);
 	}
 	for (auto i : indexBufferObjects) {
-		renderer->deleteBuffer(i.second);
+		cState.deleteBuffer(i.second);
 	}
 	vao = 0;
 	vertexBufferObjects.clear();
@@ -40,39 +39,39 @@ RenderObject::~RenderObject() {
 
 void RenderObject::setVertexBufferObject(unsigned int index, unsigned int buffer) {
 	if (vertexBufferObjects.count(index) > 0) {
-		renderer->deleteBuffer(vertexBufferObjects[index]);
+		cState.deleteBuffer(vertexBufferObjects[index]);
 	}
 	vertexBufferObjects[index] = buffer;
 }
 
 void RenderObject::setIndexBufferObject(unsigned int index, unsigned int buffer) {
 	if (indexBufferObjects.count(index) > 0) {
-		renderer->deleteBuffer(indexBufferObjects[index]);
+		cState.deleteBuffer(indexBufferObjects[index]);
 	}
 	indexBufferObjects[index] = buffer;
 }
 
 unsigned int RenderObject::getVertexBufferObject(unsigned int index) {
 	if (vertexBufferObjects.count(index) == 0) {
-		vertexBufferObjects[index] = renderer->genBuffer();
+		vertexBufferObjects[index] = cState.genBuffer();
 	}
 	return vertexBufferObjects[index];
 }
 
 unsigned int RenderObject::getIndexBufferObject(unsigned int index) {
 	if (indexBufferObjects.count(index) == 0) {
-		indexBufferObjects[index] = renderer->genBuffer();
+		indexBufferObjects[index] = cState.genBuffer();
 	}
 	return indexBufferObjects[index];
 }
 
 void RenderObject::enableVertexAttribArray(unsigned int index) {
-	renderer->bindVertexArray(vao);
+	cState.bindVertexArray(vao);
 	glEnableVertexAttribArray(index);
 }
 
 void RenderObject::disableVertexAttribArray(unsigned int index) {
-	renderer->bindVertexArray(vao);
+	cState.bindVertexArray(vao);
 	glDisableVertexAttribArray(index);
 }
 
@@ -161,7 +160,7 @@ bool Renderer::deleteBuffer(unsigned int buffer) {
 }
 
 void Renderer::genRenderObject(unsigned int id) {
-	renderObjects[id] = new RenderObject(this, GL_TRIANGLES, 0, 0);
+	renderObjects[id] = new RenderObject(gl::CState(gl::Context::getCurrentContext()), GL_TRIANGLES, 0, 0);
 }
 
 void Renderer::deleteRenderObject(unsigned int id) {

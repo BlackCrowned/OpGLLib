@@ -13,6 +13,8 @@
 #include <OpGLLib/internal.h>
 
 #include <OpGLLib/ModelLoader.h>
+#include <OpGLLib/Context.h>
+#include <OpGLLib/State.h>
 
 #include <map>
 
@@ -22,8 +24,8 @@ class Renderer;
 
 class RenderObject {
 public:
-	RenderObject(Renderer* renderer, gl::GLenum mode, size_t start, size_t count, bool indexedDraw = false, gl::GLenum type =
-			gl::GL_UNSIGNED_SHORT, const void* indicies = 0);
+	RenderObject(gl::CState cState, ::gl::GLenum mode, size_t start, size_t count, bool indexedDraw = false, ::gl::GLenum type =
+			::gl::GL_UNSIGNED_SHORT, const void* indicies = 0);
 	RenderObject(RenderObject const& other);
 	~RenderObject();
 
@@ -37,12 +39,12 @@ public:
 	friend class Renderer;
 private:
 	unsigned int vao;
-	Renderer* renderer;
-	gl::GLenum mode;
+	gl::CState cState;
+	::gl::GLenum mode;
 	size_t start;
 	size_t count;
 	bool indexedDraw;
-	gl::GLenum type;
+	::gl::GLenum type;
 	const void* indicies;
 	std::map<unsigned int, unsigned int> vertexBufferObjects;
 	std::map<unsigned int, unsigned int> indexBufferObjects;
@@ -60,7 +62,7 @@ public:
 
 	unsigned int genBuffer();
 	unsigned int manageBuffer(unsigned int buffer);
-	bool bindBuffer(gl::GLenum target, unsigned int buffer);
+	bool bindBuffer(::gl::GLenum target, unsigned int buffer);
 	bool deleteBuffer(unsigned int buffer);
 
 	unsigned int genTexture();
@@ -76,7 +78,6 @@ public:
 	void loadVertexArray(unsigned int renderObjectId, unsigned int index, size_t size, float* vertexArray, size_t vertexCount);
 
 	void draw(unsigned int renderObjectId);
-
 
 	void logRenderObject(unsigned int renderObjectId, std::string name = "");
 private:

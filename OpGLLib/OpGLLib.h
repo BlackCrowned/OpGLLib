@@ -50,13 +50,6 @@ private:
 };
 
 namespace gl {
-class Context {
-public:
-	static void setContext(glbinding::ContextHandle context);
-	static glbinding::ContextHandle getCurrentContext();
-private:
-	static glbinding::ContextHandle currentContext;
-};
 namespace States {
 void enableCulling(::gl::GLenum CullFace = ::gl::GL_BACK, ::gl::GLenum FrontFace = ::gl::GL_CCW);
 void disableCulling();
