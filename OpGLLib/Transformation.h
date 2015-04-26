@@ -18,7 +18,6 @@
 #include <iostream>
 
 namespace OpGLLib {
-namespace gl {
 enum MultiplicationOrder {
 	SRT = 0x1, RST = 0x2, RTS = 0x4, STR = 0x8, TSR = 0x10, TRS = 0x20,
 };
@@ -80,7 +79,6 @@ private:
 
 	std::stack<glm::mat4> matrixStack;
 };
-}
 }
 
 #endif /* OPGLLIB_TRANSFORMATION_H_ */

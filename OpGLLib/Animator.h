@@ -15,7 +15,6 @@
 #include <OpGLLib/Transformation.h>
 
 namespace OpGLLib {
-namespace gl{
 enum AnimationAttributeTypes {
 	translate, scale, rotate, orient
 };
@@ -174,7 +173,6 @@ private:
 template class AnimationAttribute<glm::vec3> ;
 
 using AnimationAttributeV3 = AnimationAttribute<glm::vec3>;
-}
 }
 
 

@@ -10,7 +10,6 @@
 using namespace std;
 
 namespace OpGLLib{
-namespace gl{
 void detail::addCallback(Animator*& animator, glm::mat4*& matrix, AnimationObject& animationObject) {
 	animator->animate(matrix, animationObject);
 }
@@ -398,7 +397,6 @@ float Animator::interpolate(chrono::time_point<chrono::system_clock> startTime, 
 	}
 
 	return interpolatedProgress;
-}
 }
 }
 
