@@ -12,6 +12,9 @@ using namespace gl;
 
 namespace OpGLLib {
 namespace gl{
+
+std::map<glbinding::ContextHandle, State::data> State::contextDependantData;
+
 unsigned int State::genVertexArray(glbinding::ContextHandle context) {
 	unsigned int vao;
 	glGenVertexArrays(1, &vao);
