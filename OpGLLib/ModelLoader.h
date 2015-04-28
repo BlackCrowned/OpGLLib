@@ -49,8 +49,8 @@ public:
 	ObjectBase& operator=(ObjectBase const& other) = default;
 
 	virtual std::string& getName() = 0;
-	virtual int getVerticesCount() = 0;
-	virtual int getLineSmoothing() = 0;
+	virtual int& getVerticesCount() = 0;
+	virtual int& getLineSmoothing() = 0;
 	virtual std::vector<glm::vec4>& getVertices() = 0;
 	virtual std::vector<glm::vec2>& getTextureVertices() = 0;
 	virtual std::vector<glm::vec3>& getNormals() = 0;
@@ -59,6 +59,18 @@ public:
 	virtual const void* getIndiciesOffset() = 0;
 	virtual std::vector<glm::uvec3>& getTextureIndicies() = 0;
 	virtual std::vector<glm::uvec3>& getNormalIndicies() = 0;
+
+	virtual void setName(std::string) = 0;
+	virtual void setVerticesCount(int) = 0;
+	virtual void setLineSmoothing(int) = 0;
+	virtual void setVertices(std::vector<glm::vec4>) = 0;
+	virtual void setTextureVertices(std::vector<glm::vec2>) = 0;
+	virtual void setNormals(std::vector<glm::vec3>) = 0;
+	virtual void setIndicies(std::vector<glm::uvec3>) = 0;
+	virtual void setIndiciesType(gl::GLenum) = 0;
+	virtual void setIndiciesOffset(const void* ) = 0;
+	virtual void setTextureIndicies(std::vector<glm::uvec3>) = 0;
+	virtual void setNormalIndicies(std::vector<glm::uvec3>) = 0;
 };
 
 class ModelBase {
@@ -72,9 +84,17 @@ public:
 
 	virtual std::string& getName() = 0;
 	virtual unsigned int getId() = 0;
-	virtual int getObjectCount() = 0;
-	virtual int getLoadedState() = 0;
-	virtual ObjectBase& getObject(int id) = 0;
+	virtual int& getObjectCount() = 0;
+	virtual int& getLoadedState() = 0;
+	virtual std::shared_ptr<ObjectBase> getObject(int id) = 0;
+
+	virtual void setName(std::string) = 0;
+	virtual void setId(unsigned int) = 0;
+	virtual void setObjectCount(int) = 0;
+	virtual void setLoadedState(int) = 0;
+	virtual void setObject(int, std::shared_ptr<ObjectBase>) = 0;
+
+	virtual void addObject(std::shared_ptr<ObjectBase>) = 0;
 };
 
 class Object: public ObjectBase {
@@ -87,8 +107,8 @@ public:
 	Object& operator=(Object const& other) = default;
 
 	std::string& getName();
-	int getVerticesCount();
-	int getLineSmoothing();
+	int& getVerticesCount();
+	int& getLineSmoothing();
 	std::vector<glm::vec4>& getVertices();
 	std::vector<glm::vec2>& getTextureVertices();
 	std::vector<glm::vec3>& getNormals();
@@ -98,8 +118,19 @@ public:
 	std::vector<glm::uvec3>& getTextureIndicies();
 	std::vector<glm::uvec3>& getNormalIndicies();
 
+	void setName(std::string);
+	void setVerticesCount(int);
+	void setLineSmoothing(int);
+	void setVertices(std::vector<glm::vec4>);
+	void setTextureVertices(std::vector<glm::vec2>);
+	void setNormals(std::vector<glm::vec3>);
+	void setIndicies(std::vector<glm::uvec3>);
+	void setIndiciesType(gl::GLenum);
+	void setIndiciesOffset(const void* );
+	void setTextureIndicies(std::vector<glm::uvec3>);
+	void setNormalIndicies(std::vector<glm::uvec3>);
+
 private:
-	friend class ModelLoader;
 	std::string name = "";
 	int count = 0;
 	int lineSmoothing = 0;
@@ -122,16 +153,23 @@ public:
 
 	std::string& getName();
 	unsigned int getId();
-	int getObjectCount();
-	int getLoadedState();
-	Object& getObject(int id);
+	int& getObjectCount();
+	int& getLoadedState();
+	std::shared_ptr<ObjectBase> getObject(int id);
+
+	void setName(std::string);
+	void setId(unsigned int);
+	void setObjectCount(int);
+	void setLoadedState(int);
+	void setObject(int, std::shared_ptr<ObjectBase>);
+
+	void addObject(std::shared_ptr<ObjectBase>);
 private:
-	friend class ModelLoader;
 	std::string name = "";
 	unsigned int id = 0;
 	int count = 0;
 	int loaded = false;
-	std::vector<Object> objects;
+	std::vector<std::shared_ptr<ObjectBase> > objects;
 };
 
 
@@ -143,12 +181,12 @@ public:
 
 	unsigned int reserve(const std::string& name, unsigned int id);
 	unsigned int load(const std::string& name, unsigned int id);
-	unsigned int unload(const std::string& name, unsigned int id);
+	unsigned int unload(unsigned int id);
 
-	Model &getModel(unsigned int id);
+	std::shared_ptr<ModelBase> getModel(unsigned int id);
 private:
-	Model parseObj(const std::string& name, unsigned int id);
-	std::map<unsigned int, Model> models;
+	void parseObj(std::shared_ptr<ModelBase>& model, const std::string& name, unsigned int id);
+	std::map<unsigned int, std::shared_ptr<ModelBase> > models;
 };
 
 #endif /* OPGLLIB_MODELLOADER_H_ */

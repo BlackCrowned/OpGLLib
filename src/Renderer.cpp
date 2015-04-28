@@ -184,7 +184,7 @@ void Renderer::loadMesh(unsigned int renderObjectId, unsigned int index, ModelBa
 	bindVertexArray(renderObject.vao);
 	bindBuffer(GL_ARRAY_BUFFER, vbo);
 
-	ObjectBase& object = model.getObject(meshId);
+	ObjectBase& object = *model.getObject(meshId);
 	glBufferData(GL_ARRAY_BUFFER, object.getVerticesCount() * 4 * sizeof(float), &object.getVertices().at(0).x,
 			GL_STATIC_DRAW);
 
