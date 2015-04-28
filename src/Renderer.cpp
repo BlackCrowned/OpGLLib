@@ -175,7 +175,7 @@ RenderObject& Renderer::getRenderObject(unsigned int id) {
 	return *renderObjects[id];
 }
 
-void Renderer::loadMesh(unsigned int renderObjectId, unsigned int index, ModelBase& model, size_t meshId) {
+void Renderer::loadMesh(unsigned int renderObjectId, unsigned int index, std::shared_ptr<ModelBase> model, size_t meshId) {
 	RenderObject& renderObject = getRenderObject(renderObjectId);
 	unsigned int vbo = 0, indexBuffer = 0;
 	vbo = genBuffer();
@@ -184,7 +184,7 @@ void Renderer::loadMesh(unsigned int renderObjectId, unsigned int index, ModelBa
 	bindVertexArray(renderObject.vao);
 	bindBuffer(GL_ARRAY_BUFFER, vbo);
 
-	ObjectBase& object = *model.getObject(meshId);
+	ObjectBase& object = *model->getObject(meshId);
 	glBufferData(GL_ARRAY_BUFFER, object.getVerticesCount() * 4 * sizeof(float), &object.getVertices().at(0).x,
 			GL_STATIC_DRAW);
 

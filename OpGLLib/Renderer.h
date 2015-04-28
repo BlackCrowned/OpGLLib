@@ -74,7 +74,7 @@ public:
 	void deleteRenderObject(unsigned int id);
 	RenderObject& getRenderObject(unsigned int id);
 
-	void loadMesh(unsigned int renderObjectId, unsigned int index, ModelBase& model, size_t meshId);
+	void loadMesh(unsigned int renderObjectId, unsigned int index, std::shared_ptr<ModelBase> model, size_t meshId);
 	void loadVertexArray(unsigned int renderObjectId, unsigned int index, size_t size, float* vertexArray, size_t vertexCount);
 
 	void draw(unsigned int renderObjectId);
