@@ -19,6 +19,60 @@
 #include <map>
 
 namespace OpGLLib {
+
+namespace gl {
+
+class Render {
+public:
+	Render();
+	~Render();
+
+	unsigned int setVertexBufferObject(unsigned int vbo);
+	//unsigned int setVertexBufferObject();
+	void bindVertexBufferObject();
+
+	template<class containerT> void setVertexBuffer(unsigned int buffer, containerT data, ::gl::GLenum type);
+
+	template<class containerT> void setIndexBuffer(unsigned int buffer, containerT data, ::gl::GLenum type);
+
+	void bindBuffer(::gl::GLenum target, unsigned int& buffer);
+
+	void setVertexAttribute(unsigned int index, unsigned int vertexBuffer, ::gl::GLboolean normalize = ::gl::GL_FALSE, size_t stride = 0,
+			const void* offset = 0, int start = 0);
+	void setVertexAttribute(unsigned int index, unsigned int vertexBuffer, unsigned int indexBuffer, ::gl::GLboolean normalize =
+			::gl::GL_FALSE, size_t stride = 0, const void* offset = 0, const void* indicies = 0);
+
+	void enableVertexAttribute(unsigned int index);
+	void disableVertexAttribute(unsigned int index);
+
+	void updateDrawSettings(::gl::GLenum mode);
+	void updateDrawSettings(int first, int count);
+	void updateDrawSettings(int count, ::gl::GLenum type, const void* indicies);
+	void updateDrawSettings(bool indexedDraw);
+
+	void draw();
+private:
+	unsigned int _vertexBufferObject;
+	struct BufferSettings {
+		int vertexCount = 0;
+		int vectorLength = 0;
+		int valueSize = 0;
+		::gl::GLenum valueType;
+	};
+	std::map<size_t, BufferSettings> _bufferSettings;
+	struct DrawSettings {
+		::gl::GLenum mode = ::gl::GL_TRIANGLES;
+		bool indexedDraw = false;
+		int first = 0;
+		int count = 0;
+		int indiciesCount = 0;
+		::gl::GLenum indiciesType;
+		const void* indicies = 0;
+	};
+	DrawSettings _drawSettings;
+
+};
+}
 namespace Renderer {
 class Renderer;
 
@@ -94,5 +148,7 @@ private:
 
 }
 }
+
+#include <OpGLLib/Renderer.h>
 
 #endif /* OPGLLIB_RENDERER_H_ */

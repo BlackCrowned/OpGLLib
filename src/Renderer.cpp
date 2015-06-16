@@ -11,10 +11,120 @@ using namespace std;
 using namespace gl;
 
 namespace OpGLLib {
+
+namespace gl {
+Render::Render() :
+		_vertexBufferObject(0), _bufferSettings(), _drawSettings() {
+
+}
+
+Render::~Render() {
+
+}
+
+unsigned int Render::setVertexBufferObject(unsigned int vbo) {
+	_vertexBufferObject = vbo;
+	return vbo;
+}
+
+void Render::bindVertexBufferObject() {
+	/*CODE HERE*/
+}
+
+void Render::bindBuffer(::gl::GLenum target, unsigned int& buffer) {
+	/* CODE HERE*/
+}
+
+void Render::setVertexAttribute(unsigned int index, unsigned int vertexBuffer, ::gl::GLboolean normalize, size_t stride, const void* offset,
+		int start) {
+
+	//Bind VBO
+	bindVertexBufferObject();
+	//Bind Vertex Buffer
+	bindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+
+	//Enable Array and set data
+	glEnableVertexAttribArray(index);
+	glVertexAttribPointer(index, _bufferSettings[vertexBuffer].vectorLength, _bufferSettings[vertexBuffer].valueType, normalize, stride,
+			offset);
+
+	//Update Draw details
+	updateDrawSettings(0, _bufferSettings[vertexBuffer].vertexCount);
+}
+
+void Render::setVertexAttribute(unsigned int index, unsigned int vertexBuffer, unsigned int indexBuffer, ::gl::GLboolean normalize,
+		size_t stride, const void* offset, const void* indicies) {
+
+	//Bind VBO
+	bindVertexBufferObject();
+	//Bind Vertex Buffer
+	bindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+
+	//Enable Array and set data
+	glEnableVertexAttribArray(index);
+	glVertexAttribPointer(index, _bufferSettings[vertexBuffer].vectorLength, _bufferSettings[vertexBuffer].valueType, normalize, stride,
+			offset);
+
+	//Bind Index Buffer
+	bindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+
+	//Update Draw details
+	updateDrawSettings(_bufferSettings[indexBuffer].vertexCount * _bufferSettings[indexBuffer].vectorLength,
+			_bufferSettings[indexBuffer].valueType, indicies);
+}
+
+void Render::enableVertexAttribute(unsigned int index) {
+	bindVertexBufferObject();
+
+	glEnableVertexAttribArray(index);
+}
+
+void Render::disableVertexAttribute(unsigned int index) {
+	bindVertexBufferObject();
+
+	glDisableVertexAttribArray(index);
+}
+
+void Render::updateDrawSettings(GLenum mode) {
+	_drawSettings.mode = mode;
+}
+
+void Render::updateDrawSettings(int first, int count) {
+	_drawSettings.indexedDraw = false;
+	_drawSettings.first = first;
+	_drawSettings.count = count;
+}
+
+void Render::updateDrawSettings(int count, GLenum type, const void* indicies) {
+	_drawSettings.indexedDraw = true;
+	_drawSettings.indiciesCount = count;
+	_drawSettings.indiciesType = type;
+	_drawSettings.indicies = indicies;
+}
+
+void Render::updateDrawSettings(bool indexedDraw) {
+	_drawSettings.indexedDraw = indexedDraw;
+}
+
+void Render::draw() {
+	//Bind VBO
+	bindVertexBufferObject();
+
+	//Draw
+	if (_drawSettings.indexedDraw) {
+		glDrawElements(_drawSettings.mode, _drawSettings.indiciesCount, _drawSettings.indiciesType, _drawSettings.indicies);
+	}
+	else {
+		glDrawArrays(_drawSettings.mode, _drawSettings.first, _drawSettings.count);
+	}
+}
+
+}
+
 namespace Renderer {
 
-RenderObject::RenderObject(gl::CState cState, GLenum mode, size_t start, size_t count, bool indexedDraw, GLenum type,
-		const void* indicies) : cState(cState){
+RenderObject::RenderObject(gl::CState cState, GLenum mode, size_t start, size_t count, bool indexedDraw, GLenum type, const void* indicies) :
+		cState(cState) {
 	RenderObject::vao = RenderObject::cState.genVertexArray();
 	RenderObject::mode = mode;
 	RenderObject::start = start;
@@ -185,8 +295,7 @@ void Renderer::loadMesh(unsigned int renderObjectId, unsigned int index, std::sh
 	bindBuffer(GL_ARRAY_BUFFER, vbo);
 
 	ObjectBase& object = *model->getObject(meshId);
-	glBufferData(GL_ARRAY_BUFFER, object.getVerticesCount() * 4 * sizeof(float), &object.getVertices().at(0).x,
-			GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, object.getVerticesCount() * 4 * sizeof(float), &object.getVertices().at(0).x, GL_STATIC_DRAW);
 
 	if (object.getIndicies().size() > 0) {
 		renderObject.indexedDraw = true;
