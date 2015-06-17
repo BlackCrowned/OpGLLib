@@ -14,7 +14,7 @@ namespace OpGLLib {
 
 namespace gl {
 Render::Render() :
-		_vertexBufferObject(0), _bufferSettings(), _drawSettings() {
+		_vertexArrayObject(State::genVertexArray()), _bufferSettings(), _drawSettings() {
 
 }
 
@@ -22,24 +22,28 @@ Render::~Render() {
 
 }
 
-unsigned int Render::setVertexBufferObject(unsigned int vbo) {
-	_vertexBufferObject = vbo;
-	return vbo;
+unsigned int Render::setVertexArrayObject(unsigned int vao) {
+	State::deleteVertexArray(_vertexArrayObject);
+	if (vao == 0) {
+		vao = State::genVertexArray();
+	}
+	_vertexArrayObject = vao;
+	return vao;
 }
 
-void Render::bindVertexBufferObject() {
-	/*CODE HERE*/
+void Render::bindVertexArrayObject() {
+	State::bindVertexArray(_vertexArrayObject);
 }
 
 void Render::bindBuffer(::gl::GLenum target, unsigned int& buffer) {
-	/* CODE HERE*/
+	State::bindBuffer(target, buffer);
 }
 
 void Render::setVertexAttribute(unsigned int index, unsigned int vertexBuffer, ::gl::GLboolean normalize, size_t stride, const void* offset,
 		int start) {
 
-	//Bind VBO
-	bindVertexBufferObject();
+	//Bind VAO
+	bindVertexArrayObject();
 	//Bind Vertex Buffer
 	bindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 
@@ -55,8 +59,8 @@ void Render::setVertexAttribute(unsigned int index, unsigned int vertexBuffer, :
 void Render::setVertexAttribute(unsigned int index, unsigned int vertexBuffer, unsigned int indexBuffer, ::gl::GLboolean normalize,
 		size_t stride, const void* offset, const void* indicies) {
 
-	//Bind VBO
-	bindVertexBufferObject();
+	//Bind VAO
+	bindVertexArrayObject();
 	//Bind Vertex Buffer
 	bindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 
@@ -74,13 +78,13 @@ void Render::setVertexAttribute(unsigned int index, unsigned int vertexBuffer, u
 }
 
 void Render::enableVertexAttribute(unsigned int index) {
-	bindVertexBufferObject();
+	bindVertexArrayObject();
 
 	glEnableVertexAttribArray(index);
 }
 
 void Render::disableVertexAttribute(unsigned int index) {
-	bindVertexBufferObject();
+	bindVertexArrayObject();
 
 	glDisableVertexAttribArray(index);
 }
@@ -107,8 +111,8 @@ void Render::updateDrawSettings(bool indexedDraw) {
 }
 
 void Render::draw() {
-	//Bind VBO
-	bindVertexBufferObject();
+	//Bind VAO
+	bindVertexArrayObject();
 
 	//Draw
 	if (_drawSettings.indexedDraw) {

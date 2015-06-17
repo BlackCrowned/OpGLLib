@@ -7,10 +7,14 @@
 
 namespace OpGLLib {
 namespace gl {
-template<class containerT> void Render::setVertexBuffer(unsigned int buffer, containerT data, ::gl::GLenum type) {
-	//Binding Buffers
-	bindVertexBufferObject();
-	bindBuffer(::gl::GL_ARRAY_BUFFER, buffer);
+
+template<class containerT> unsigned int Render::setBuffer(::gl::GLenum target, containerT& data, ::gl::GLenum type, ::gl::GLenum usage) {
+	//Bind VAO
+	bindVertexArrayObject();
+
+	//Creating and binding buffer
+	unsigned int buffer = State::genBuffer();
+	bindBuffer(target, buffer);
 
 	//Saving Buffer Settings
 	_bufferSettings[buffer].vertexCount = data.size();
@@ -19,23 +23,17 @@ template<class containerT> void Render::setVertexBuffer(unsigned int buffer, con
 	_bufferSettings[buffer].valueType = type;
 
 	//Copying data into buffer
-	::gl::glBufferData(::gl::GL_ARRAY_BUFFER, data.size() * data[0].length() * sizeof(data[0][0]), &data[0][0], ::gl::GL_STATIC_DRAW);
+	::gl::glBufferData(target, data.size() * data[0].length() * sizeof(data[0][0]), &data[0][0], usage);
+
+	return buffer;
 }
 
-template<class containerT> void Render::setIndexBuffer(unsigned int buffer, containerT data, ::gl::GLenum type) {
-	//Binding Buffers
-	bindVertexBufferObject();
-	bindBuffer(::gl::GL_ELEMENT_ARRAY_BUFFER, buffer);
+template<class containerT> unsigned int Render::setVertexBuffer(containerT& data, ::gl::GLenum type, ::gl::GLenum usage) {
+	return setBuffer(::gl::GL_ARRAY_BUFFER, data, type, usage);
+}
 
-	//Saving Buffer Settings
-	_bufferSettings[buffer].vertexCount = data.size();
-	_bufferSettings[buffer].vectorLength = data[0].length();
-	_bufferSettings[buffer].valueSize = sizeof(data[0][0]);
-	_bufferSettings[buffer].valueType = type;
-
-	//Copying data into buffer
-	::gl::glBufferData(::gl::GL_ELEMENT_ARRAY_BUFFER, data.size() * data[0].length() * sizeof(data[0][0]), &data[0][0],
-			::gl::GL_STATIC_DRAW);
+template<class containerT> unsigned int Render::setIndexBuffer(containerT& data, ::gl::GLenum type, ::gl::GLenum usage) {
+	return setBuffer(::gl::GL_ELEMENT_ARRAY_BUFFER, data, type, usage);
 }
 }
 }

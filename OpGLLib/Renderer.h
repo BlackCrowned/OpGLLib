@@ -27,13 +27,16 @@ public:
 	Render();
 	~Render();
 
-	unsigned int setVertexBufferObject(unsigned int vbo);
-	//unsigned int setVertexBufferObject();
-	void bindVertexBufferObject();
+	unsigned int setVertexArrayObject(unsigned int vao = 0);
 
-	template<class containerT> void setVertexBuffer(unsigned int buffer, containerT data, ::gl::GLenum type);
+	void bindVertexArrayObject();
 
-	template<class containerT> void setIndexBuffer(unsigned int buffer, containerT data, ::gl::GLenum type);
+	template<class containerT> unsigned int setBuffer(::gl::GLenum target, containerT& data, ::gl::GLenum type, ::gl::GLenum usage =
+			::gl::GL_STATIC_DRAW);
+
+	template<class containerT> unsigned int setVertexBuffer(containerT& data, ::gl::GLenum type, ::gl::GLenum usage = ::gl::GL_STATIC_DRAW);
+
+	template<class containerT> unsigned int setIndexBuffer(containerT& data, ::gl::GLenum type, ::gl::GLenum usage = ::gl::GL_STATIC_DRAW);
 
 	void bindBuffer(::gl::GLenum target, unsigned int& buffer);
 
@@ -52,7 +55,7 @@ public:
 
 	void draw();
 private:
-	unsigned int _vertexBufferObject;
+	unsigned int _vertexArrayObject;
 	struct BufferSettings {
 		int vertexCount = 0;
 		int vectorLength = 0;
@@ -149,6 +152,6 @@ private:
 }
 }
 
-#include <OpGLLib/Renderer.h>
+#include <OpGLLib/Renderer.inl>
 
 #endif /* OPGLLIB_RENDERER_H_ */
