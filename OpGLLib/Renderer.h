@@ -55,6 +55,7 @@ public:
 
 	void draw();
 private:
+	glbinding::ContextHandle _context;
 	unsigned int _vertexArrayObject;
 	struct BufferSettings {
 		int vertexCount = 0;

@@ -14,29 +14,37 @@ namespace OpGLLib {
 
 namespace gl {
 Render::Render() :
-		_vertexArrayObject(State::genVertexArray()), _bufferSettings(), _drawSettings() {
+		_context(glbinding::getCurrentContext()), _vertexArrayObject(State::genVertexArray()), _bufferSettings(), _drawSettings() {
 
 }
 
 Render::~Render() {
+	//Delete VAO
+	State::deleteVertexArray(_vertexArrayObject, _context);
 
+	//Delete Buffers
+	for (auto i : _bufferSettings) {
+		State::deleteBuffer(i.first, _context);
+	}
+
+	//Automatic destruction of other objects
 }
 
 unsigned int Render::setVertexArrayObject(unsigned int vao) {
-	State::deleteVertexArray(_vertexArrayObject);
+	State::deleteVertexArray(_vertexArrayObject, _context);
 	if (vao == 0) {
-		vao = State::genVertexArray();
+		vao = State::genVertexArray(_context);
 	}
 	_vertexArrayObject = vao;
 	return vao;
 }
 
 void Render::bindVertexArrayObject() {
-	State::bindVertexArray(_vertexArrayObject);
+	State::bindVertexArray(_vertexArrayObject, _context);
 }
 
 void Render::bindBuffer(::gl::GLenum target, unsigned int& buffer) {
-	State::bindBuffer(target, buffer);
+	State::bindBuffer(target, buffer, _context);
 }
 
 void Render::setVertexAttribute(unsigned int index, unsigned int vertexBuffer, ::gl::GLboolean normalize, size_t stride, const void* offset,
@@ -117,8 +125,7 @@ void Render::draw() {
 	//Draw
 	if (_drawSettings.indexedDraw) {
 		glDrawElements(_drawSettings.mode, _drawSettings.indiciesCount, _drawSettings.indiciesType, _drawSettings.indicies);
-	}
-	else {
+	} else {
 		glDrawArrays(_drawSettings.mode, _drawSettings.first, _drawSettings.count);
 	}
 }
