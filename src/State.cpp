@@ -13,24 +13,80 @@ using namespace gl;
 namespace OpGLLib {
 namespace gl{
 
+std::map<unsigned int, State::VertexArrayObjectData> _vertexArrayObjectInstances;
 std::map<unsigned int, int> _bufferObjectInstances;
 std::map<glbinding::ContextHandle, State::data> State::contextDependantData;
 
-unsigned int State::genVertexArray(glbinding::ContextHandle context) {
+unsigned int State::genVertexArray() {
+	//Use current context
+	glbinding::ContextHandle context = Context::getCurrentContext();
+
+	//Generate VAO
 	unsigned int vao;
 	glGenVertexArrays(1, &vao);
+
+	//Manage VAO
+	return manageVertexArray(vao, context);
+}
+
+unsigned int State::genVertexArray(glbinding::ContextHandle context) {
+	//Save current context
+	glbinding::ContextHandle curContext = Context::getCurrentContext();
+
+	//Switch to selected context
+	Context::setContext(context);
+
+	//Generate VAO
+	unsigned int vao;
+	glGenVertexArrays(1, &vao);
+
+	//Return to previous context
+	Context::setContext(curContext);
+
+	//Manage VAO
 	return manageVertexArray(vao, context);
 }
 
 unsigned int State::manageVertexArray(unsigned int vao, glbinding::ContextHandle context) {
-	if (getData(context).vertexArrayObjectInstances[vao] < 0) {
-		getData(context).vertexArrayObjectInstances[vao] = 0;
+	//TODO: *maybe* unnecessary error checking
+	if (_vertexArrayObjectInstances[vao].instances < 0) {
+		_vertexArrayObjectInstances[vao].instances = 0;
 	}
-	getData(context).vertexArrayObjectInstances[vao]++;
+
+	//Use current context if 'context' wasn't specified
+	if (context == 0) {
+		context = Context::getCurrentContext();
+	}
+
+	//Only set context for newly managed VAO
+	if (_vertexArrayObjectInstances[vao].context == 0) {
+		_vertexArrayObjectInstances[vao].context = context;
+	}
+
+	//Compare both contexts
+	if (_vertexArrayObjectInstances[vao].context != context) {
+		std::cerr << "State::mangeVertexArray: Contexts don't match!" << std::endl;
+		return 0;
+	}
+
+	//Manage VAO
+	_vertexArrayObjectInstances[vao].instances++;
 	return vao;
 }
 
-bool State::bindVertexArray(unsigned int vao, glbinding::ContextHandle context) {
+bool State::bindVertexArray(unsigned int vao) {
+	glbinding::ContextHandle context;
+
+	//Check if VAO is managed and has context information
+	if (_vertexArrayObjectInstances.count(vao) > 0 && _vertexArrayObjectInstances[vao].context != 0) {
+		return bindVertexArray(vao, _vertexArrayObjectInstances[vao].context);
+	}
+	//If not use current context instead
+	else {
+		context = Context::getCurrentContext();
+	}
+
+	//Bind VAO
 	if (getData(context).currentVertexArrayObject == vao) {
 		glBindVertexArray(vao);
 		return false;
@@ -39,18 +95,85 @@ bool State::bindVertexArray(unsigned int vao, glbinding::ContextHandle context) 
 		getData(context).currentVertexArrayObject = vao;
 		return true;
 	}
+
 }
 
-bool State::deleteVertexArray(unsigned int vao, glbinding::ContextHandle context) {
-	if (getData(context).vertexArrayObjectInstances[vao] == 0) {
-		return false;
+bool State::bindVertexArray(unsigned int vao, glbinding::ContextHandle context) {
+	bool ret;
+	//Save current context
+	glbinding::ContextHandle curContext = Context::getCurrentContext();
+
+	//Switch to specified context
+	Context::setContext(context);
+
+	if (getData(context).currentVertexArrayObject == vao) {
+		glBindVertexArray(vao);
+		ret = false;
+	} else {
+		glBindVertexArray(vao);
+		getData(context).currentVertexArrayObject = vao;
+		ret = true;
 	}
-	getData(context).vertexArrayObjectInstances[vao]--;
-	if (getData(context).vertexArrayObjectInstances[vao] == 0) {
+
+	//Return to previous context
+	Context::setContext(curContext);
+
+	return ret;
+}
+
+bool State::deleteVertexArray(unsigned int vao) {
+	//Check if VAO is managed | If not: Delete anyways and return
+	if (_vertexArrayObjectInstances[vao].instances == 0) {
+		glDeleteVertexArrays(1, &vao);
+		return true;
+	}
+
+	//Check if VAO has context information
+	if (_vertexArrayObjectInstances[vao].context != 0) {
+		return deleteVertexArray(vao, _vertexArrayObjectInstances[vao].context);
+	}
+	//If not use current context instead
+
+	//Decrease VAO count
+	_vertexArrayObjectInstances[vao].instances--;
+
+	//Check if this VAO is used elsewhere
+	if (_vertexArrayObjectInstances[vao].instances == 0) {
 		glDeleteVertexArrays(1, &vao);
 		return true;
 	}
 	return false;
+}
+
+bool State::deleteVertexArray(unsigned int vao, glbinding::ContextHandle context) {
+	bool ret = false;
+
+	//Save current context
+	glbinding::ContextHandle curContext = Context::getCurrentContext();
+
+	//Switch to specified context
+	Context::setContext(context);
+
+	//Check if VAO is managed | If not: Delete anyways and return with previous context
+	if (_vertexArrayObjectInstances[vao].instances == 0) {
+		glDeleteVertexArrays(1, &vao);
+		Context::setContext(curContext);
+		return true;
+	}
+
+	//Decrease VAO count
+	_vertexArrayObjectInstances[vao].instances--;
+
+	//Check if this VAO is used elsewhere
+	if (_vertexArrayObjectInstances[vao].instances == 0) {
+		glDeleteVertexArrays(1, &vao);
+		ret = true;
+	}
+
+	//Switch to previous context
+	Context::setContext(curContext);
+
+	return ret;
 }
 
 unsigned int State::genBuffer() {

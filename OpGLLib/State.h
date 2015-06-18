@@ -20,10 +20,13 @@ namespace gl {
 class State {
 public:
 	State() = delete;
-	static unsigned int genVertexArray(glbinding::ContextHandle = 0);
+	static unsigned int genVertexArray();
+	static unsigned int genVertexArray(glbinding::ContextHandle);
 	static unsigned int manageVertexArray(unsigned int vao, glbinding::ContextHandle = 0);
-	static bool bindVertexArray(unsigned int vao, glbinding::ContextHandle = 0);
-	static bool deleteVertexArray(unsigned int vao, glbinding::ContextHandle = 0);
+	static bool bindVertexArray(unsigned int vao);
+	static bool bindVertexArray(unsigned int vao, glbinding::ContextHandle);
+	static bool deleteVertexArray(unsigned int vao);
+	static bool deleteVertexArray(unsigned int vao, glbinding::ContextHandle);
 
 	static unsigned int genBuffer();
 	static unsigned int manageBuffer(unsigned int buffer);
@@ -34,13 +37,18 @@ public:
 //	static unsigned int manageTexture(unsigned int texture);
 //	static bool bindTexture(unsigned int texture);
 //	static bool deleteTexture(unsigned int texture);
+
+	struct VertexArrayObjectData {
+		int instances = 0;
+		glbinding::ContextHandle context = 0;
+	};
 private:
 	struct data {
 		unsigned int currentVertexArrayObject = 0;
 		unsigned int currentBufferObject = 0;
-		std::map<unsigned int, int> vertexArrayObjectInstances;
-		std::map<unsigned int, int> bufferObjectInstances;
+
 	};
+	static std::map<unsigned int, VertexArrayObjectData> _vertexArrayObjectInstances;
 	static std::map<unsigned int, int> _bufferObjectInstances;
 	static std::map<glbinding::ContextHandle, data> contextDependantData;
 	static data& getData();
