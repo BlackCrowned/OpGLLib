@@ -207,9 +207,10 @@ bool State::bindBuffer(GLenum target, unsigned int buffer) {
 
 bool State::deleteBuffer(unsigned int buffer) {
 	//FIXME: Check if this buffer is still bound to an openGL-Context
-	//Check if this buffer is managed by OpGLLib
+	//Check if buffer is managed | If not: Delete anyways and return
 	if (_bufferObjectInstances[buffer] == 0) {
-		return false;
+		glDeleteBuffers(1, &buffer);
+		return true;
 	}
 
 	//Decrease buffer count
