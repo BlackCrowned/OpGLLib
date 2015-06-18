@@ -24,7 +24,7 @@ Render::~Render() {
 
 	//Delete Buffers
 	for (auto i : _bufferSettings) {
-		State::deleteBuffer(i.first, _context);
+		State::deleteBuffer(i.first);
 	}
 
 	//Automatic destruction of other objects
@@ -44,7 +44,7 @@ void Render::bindVertexArrayObject() {
 }
 
 void Render::bindBuffer(::gl::GLenum target, unsigned int& buffer) {
-	State::bindBuffer(target, buffer, _context);
+	State::bindBuffer(target, buffer);
 }
 
 void Render::setVertexAttribute(unsigned int index, unsigned int vertexBuffer, ::gl::GLboolean normalize, size_t stride, const void* offset,

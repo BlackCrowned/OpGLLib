@@ -13,6 +13,7 @@ using namespace gl;
 namespace OpGLLib {
 namespace gl{
 
+std::map<unsigned int, int> _bufferObjectInstances;
 std::map<glbinding::ContextHandle, State::data> State::contextDependantData;
 
 unsigned int State::genVertexArray(glbinding::ContextHandle context) {
@@ -52,21 +53,25 @@ bool State::deleteVertexArray(unsigned int vao, glbinding::ContextHandle context
 	return false;
 }
 
-unsigned int State::genBuffer(glbinding::ContextHandle context) {
+unsigned int State::genBuffer() {
 	unsigned int buffer;
 	glGenBuffers(1, &buffer);
-	return manageBuffer(buffer, context);
+	return manageBuffer(buffer);
 }
 
-unsigned int State::manageBuffer(unsigned int buffer, glbinding::ContextHandle context) {
-	if (getData(context).bufferObjectInstances[buffer] < 0) {
-		getData(context).bufferObjectInstances[buffer] = 0;
+unsigned int State::manageBuffer(unsigned int buffer) {
+	if (_bufferObjectInstances[buffer] < 0) {
+		_bufferObjectInstances[buffer] = 0;
 	}
-	getData(context).bufferObjectInstances[buffer]++;
+	_bufferObjectInstances[buffer]++;
 	return buffer;
 }
 
-bool State::bindBuffer(GLenum target, unsigned int buffer, glbinding::ContextHandle context) {
+bool State::bindBuffer(GLenum target, unsigned int buffer) {
+	//Read current Context
+	glbinding::ContextHandle context = Context::getCurrentContext();
+
+	//Bind buffers and save context dependent settings	//TODO: Only change buffers when needed
 	if (getData(context).currentBufferObject == buffer) {
 		glBindBuffer(target, buffer);
 		return false;
@@ -77,12 +82,18 @@ bool State::bindBuffer(GLenum target, unsigned int buffer, glbinding::ContextHan
 	}
 }
 
-bool State::deleteBuffer(unsigned int buffer, glbinding::ContextHandle context) {
-	if (getData(context).bufferObjectInstances[buffer] == 0) {
+bool State::deleteBuffer(unsigned int buffer) {
+	//FIXME: Check if this buffer is still bound to an openGL-Context
+	//Check if this buffer is managed by OpGLLib
+	if (_bufferObjectInstances[buffer] == 0) {
 		return false;
 	}
-	getData().bufferObjectInstances[buffer]--;
-	if (getData(context).bufferObjectInstances[buffer] == 0) {
+
+	//Decrease buffer count
+	_bufferObjectInstances[buffer]--;
+
+	//Check if this buffer is used elsewhere
+	if (_bufferObjectInstances[buffer] == 0) {
 		glDeleteBuffers(1, &buffer);
 		return true;
 	}
@@ -125,19 +136,19 @@ bool CState::deleteVertexArray(unsigned int vao) {
 }
 
 unsigned int CState::genBuffer() {
-	return State::genBuffer(context);
+	return State::genBuffer();
 }
 
 unsigned int CState::manageBuffer(unsigned int buffer) {
-	return State::manageBuffer(buffer, context);
+	return State::manageBuffer(buffer);
 }
 
 bool CState::bindBuffer(GLenum target, unsigned int buffer) {
-	return State::bindBuffer(target, buffer, context);
+	return State::bindBuffer(target, buffer);
 }
 
 bool CState::deleteBuffer(unsigned int buffer) {
-	return State::deleteBuffer(buffer, context);
+	return State::deleteBuffer(buffer);
 }
 
 }

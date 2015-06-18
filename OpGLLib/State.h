@@ -25,10 +25,10 @@ public:
 	static bool bindVertexArray(unsigned int vao, glbinding::ContextHandle = 0);
 	static bool deleteVertexArray(unsigned int vao, glbinding::ContextHandle = 0);
 
-	static unsigned int genBuffer(glbinding::ContextHandle = 0);
-	static unsigned int manageBuffer(unsigned int buffer, glbinding::ContextHandle = 0);
-	static bool bindBuffer(::gl::GLenum target, unsigned int buffer, glbinding::ContextHandle = 0);
-	static bool deleteBuffer(unsigned int buffer, glbinding::ContextHandle = 0);
+	static unsigned int genBuffer();
+	static unsigned int manageBuffer(unsigned int buffer);
+	static bool bindBuffer(::gl::GLenum target, unsigned int buffer);
+	static bool deleteBuffer(unsigned int buffer);
 
 //	static unsigned int genTexture();
 //	static unsigned int manageTexture(unsigned int texture);
@@ -41,6 +41,7 @@ private:
 		std::map<unsigned int, int> vertexArrayObjectInstances;
 		std::map<unsigned int, int> bufferObjectInstances;
 	};
+	static std::map<unsigned int, int> _bufferObjectInstances;
 	static std::map<glbinding::ContextHandle, data> contextDependantData;
 	static data& getData();
 	static data& getData(glbinding::ContextHandle);
