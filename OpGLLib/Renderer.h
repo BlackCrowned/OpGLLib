@@ -15,6 +15,7 @@
 #include <OpGLLib/ModelLoader.h>
 #include <OpGLLib/Context.h>
 #include <OpGLLib/State.h>
+#include <OpGLLib/Data.h>
 
 #include <map>
 

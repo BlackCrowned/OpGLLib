@@ -7,6 +7,10 @@
 
 namespace OpGLLib {
 
+template<class T> Data::BufferSettings::BufferSettings(T* addr) {
+	vertexSettings = Data::getVertexSettings(addr);
+}
+
 template<class T> void Data::setVertexSettings(T* addr, std::shared_ptr<VertexSettings> vertexSettings) {
 	//Check for existing vertexSettings with key 'addr'
 	if (_vertexSettings.count(reinterpret_cast<void*>(addr)) > 0) {

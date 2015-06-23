@@ -12,6 +12,9 @@ namespace OpGLLib {
 std::map<void*, std::shared_ptr<Data::VertexSettings>> Data::_vertexSettings;
 std::map<unsigned int, std::shared_ptr<Data::BufferSettings>> Data::_bufferSettings;
 
+Data::BufferSettings::BufferSettings(std::shared_ptr<VertexSettings>& vertexSettings) {
+	Data::BufferSettings::vertexSettings = vertexSettings;
+}
 
 void Data::setBufferSettings(unsigned int buffer, std::shared_ptr<BufferSettings> bufferSettings) {
 	//Check for existing bufferSettings with key 'buffer'

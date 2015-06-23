@@ -32,6 +32,8 @@ public:
 
 	class BufferSettings {
 	public:
+		template<class T>BufferSettings(T* addr);
+		BufferSettings(std::shared_ptr<VertexSettings>&);
 		std::shared_ptr<VertexSettings> vertexSettings;
 	};
 

@@ -57,10 +57,16 @@ void Render::setVertexAttribute(unsigned int index, unsigned int vertexBuffer, :
 
 	//Enable Array and set data
 	glEnableVertexAttribArray(index);
-	glVertexAttribPointer(index, _bufferSettings[vertexBuffer].vectorLength, _bufferSettings[vertexBuffer].valueType, normalize, stride,
+	//TODO
+	std::shared_ptr<Data::VertexSettings> vertexSettings = Data::getBufferSettings(vertexBuffer)->vertexSettings;
+	glVertexAttribPointer(index, vertexSettings->vectorLength, vertexSettings->valueType, normalize, stride,
 			offset);
+//	glVertexAttribPointer(index, _bufferSettings[vertexBuffer].vectorLength, _bufferSettings[vertexBuffer].valueType, normalize, stride,
+//				offset);
 
 	//Update Draw details
+	//TODO
+	updateDrawSettings(0, vertexSettings->vertexCount);
 	updateDrawSettings(0, _bufferSettings[vertexBuffer].vertexCount);
 }
 
@@ -74,15 +80,23 @@ void Render::setVertexAttribute(unsigned int index, unsigned int vertexBuffer, u
 
 	//Enable Array and set data
 	glEnableVertexAttribArray(index);
-	glVertexAttribPointer(index, _bufferSettings[vertexBuffer].vectorLength, _bufferSettings[vertexBuffer].valueType, normalize, stride,
+	//TODO
+	std::shared_ptr<Data::VertexSettings> vertexSettings = Data::getBufferSettings(vertexBuffer)->vertexSettings;
+	glVertexAttribPointer(index, vertexSettings->vectorLength, vertexSettings->valueType, normalize, stride,
 			offset);
+//	glVertexAttribPointer(index, _bufferSettings[vertexBuffer].vectorLength, _bufferSettings[vertexBuffer].valueType, normalize, stride,
+//				offset);
 
 	//Bind Index Buffer
 	bindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
 
 	//Update Draw details
-	updateDrawSettings(_bufferSettings[indexBuffer].vertexCount * _bufferSettings[indexBuffer].vectorLength,
-			_bufferSettings[indexBuffer].valueType, indicies);
+	//TODO
+	std::shared_ptr<Data::VertexSettings> indexSettings = Data::getBufferSettings(indexBuffer)->vertexSettings;
+	updateDrawSettings(indexSettings->vertexCount * indexSettings->vectorLength,
+			indexSettings->valueType, indicies);
+//	updateDrawSettings(_bufferSettings[indexBuffer].vertexCount * _bufferSettings[indexBuffer].vectorLength,
+//			_bufferSettings[indexBuffer].valueType, indicies);
 }
 
 void Render::enableVertexAttribute(unsigned int index) {
