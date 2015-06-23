@@ -13,8 +13,8 @@ using namespace gl;
 namespace OpGLLib {
 namespace gl{
 
-std::map<unsigned int, State::VertexArrayObjectData> _vertexArrayObjectInstances;
-std::map<unsigned int, int> _bufferObjectInstances;
+std::map<unsigned int, State::VertexArrayObjectData> State::_vertexArrayObjectInstances;
+std::map<unsigned int, int> State::_bufferObjectInstances;
 std::map<glbinding::ContextHandle, State::data> State::contextDependantData;
 
 unsigned int State::genVertexArray() {
