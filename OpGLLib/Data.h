@@ -12,6 +12,8 @@
 #define INCLUDE_GLBINDING
 #include <OpGLLib/internal.h>
 
+#include <OpGLLib/GLTypes.h>
+
 #include <map>
 #include <memory>
 

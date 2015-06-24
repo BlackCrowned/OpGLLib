@@ -34,8 +34,9 @@ template<class containerT> void Data::setVertexSettings(containerT& data, ::gl::
 	std::shared_ptr<VertexSettings> vertexSettings(new VertexSettings());
 	vertexSettings->vertexCount = data.size();
 	vertexSettings->vectorLength = data[0].length();
-	vertexSettings->valueSize = sizeof(data[0][0]);
-	vertexSettings->valueType = type;
+	vertexSettings->valueSize = sizeof(data[0].x);
+	//vertexSettings->valueType = type;
+	vertexSettings->valueType = gl::GLTypes::getType<decltype(data[0].x)>();
 
 	//Store vertexSettings with key 'addr'
 	_vertexSettings[addr] = vertexSettings;
