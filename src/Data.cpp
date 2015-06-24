@@ -26,6 +26,16 @@ void Data::setBufferSettings(unsigned int buffer, std::shared_ptr<BufferSettings
 	_bufferSettings[buffer] = bufferSettings;
 }
 
+void Data::setBufferSettings(unsigned int buffer, std::shared_ptr<VertexSettings> vertexSettings) {
+	//Check for existing bufferSettings with key 'buffer'
+	if (_bufferSettings.count(buffer) > 0) {
+		return;
+	}
+
+	//Create bufferSettings and store it with key 'buffer'
+	_bufferSettings[buffer] = std::shared_ptr<BufferSettings>(new BufferSettings(vertexSettings));
+}
+
 auto Data::getBufferSettings(unsigned int buffer) -> std::shared_ptr<BufferSettings>{
 	//Check if bufferSettings with key 'buffer' exists
 	if (_bufferSettings.count(buffer) == 0) {

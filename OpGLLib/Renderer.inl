@@ -21,13 +21,8 @@ template<class containerT> unsigned int Render::setBuffer(::gl::GLenum target, c
 //	_bufferSettings[buffer].vectorLength = data[0].length();
 //	_bufferSettings[buffer].valueSize = sizeof(data[0][0]);
 //	_bufferSettings[buffer].valueType = type;
-	std::shared_ptr<Data::VertexSettings> vertexSettings(new Data::VertexSettings());
-	vertexSettings->vertexCount = data.size();
-	vertexSettings->vectorLength = data[0].length();
-	vertexSettings->valueSize = sizeof(data[0][0]);
-	vertexSettings->valueType = type;
-	Data::setVertexSettings(&data[0][0], vertexSettings);
-	Data::setBufferSettings(buffer, std::shared_ptr<Data::BufferSettings>(new Data::BufferSettings(vertexSettings)));
+	Data::setVertexSettings(data, type);
+	Data::setBufferSettings(buffer, &data[0][0]);
 
 	//Copying data into buffer
 	::gl::glBufferData(target, data.size() * data[0].length() * sizeof(data[0][0]), &data[0][0], usage);

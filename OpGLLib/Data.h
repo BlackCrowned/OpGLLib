@@ -38,12 +38,19 @@ public:
 	};
 
 	template<class T>static std::shared_ptr<VertexSettings> getVertexSettings(T* addr);
+
 	static std::shared_ptr<BufferSettings> getBufferSettings(unsigned int buffer);
 
+
 	template<class T>static void setVertexSettings(T* addr, std::shared_ptr<VertexSettings> vertexSettings);
+	template<class containerT> static void setVertexSettings(containerT& data, ::gl::GLenum type);
+
 	static void setBufferSettings(unsigned int buffer, std::shared_ptr<BufferSettings> bufferSettings);
+	static void setBufferSettings(unsigned int buffer, std::shared_ptr<VertexSettings> vertexSettings);
+	template<class T>static void setBufferSettings(unsigned int buffer, T* addr);
 
 	template<class T>static void deleteVertexSettings(T* addr);
+
 	static void deleteBufferSettings(unsigned int buffer);
 
 private:

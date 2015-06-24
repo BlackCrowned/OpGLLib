@@ -21,6 +21,30 @@ template<class T> void Data::setVertexSettings(T* addr, std::shared_ptr<VertexSe
 	_vertexSettings[reinterpret_cast<void*>(addr)] = vertexSettings;
 }
 
+template<class containerT> void Data::setVertexSettings(containerT& data, ::gl::GLenum type) {
+	//Extract addr
+	void* addr = reinterpret_cast<void*>(&data[0][0]);
+
+	//Check for existing vertexSettings with key 'addr'
+	if (_vertexSettings.count(reinterpret_cast<void*>(addr)) > 0) {
+		return;
+	}
+
+	//Create vertexSettings and set values
+	std::shared_ptr<VertexSettings> vertexSettings(new VertexSettings());
+	vertexSettings->vertexCount = data.size();
+	vertexSettings->vectorLength = data[0].length();
+	vertexSettings->valueSize = sizeof(data[0][0]);
+	vertexSettings->valueType = type;
+
+	//Store vertexSettings with key 'addr'
+	_vertexSettings[addr] = vertexSettings;
+}
+
+template<class T> void Data::setBufferSettings(unsigned int buffer, T* addr) {
+	return setBufferSettings(buffer, getVertexSettings(addr));
+}
+
 template<class T> auto Data::getVertexSettings(T* addr) -> std::shared_ptr<VertexSettings> {
 	//Check if vertexSettings with key 'addr' exist
 	if (_vertexSettings.count(reinterpret_cast<void*>(addr)) == 0) {
