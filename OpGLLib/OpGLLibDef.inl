@@ -28,7 +28,7 @@ namespace Types {
 }
 
 template<class retType = unsigned char, class dataType = unsigned short> retType bitAccess(int ExtractBits, dataType data, int n,
-		Types::Endianness Endian = Types::Endianness::LITTLE_ENDIAN) {
+		Types::Endianness Endian) {
 	if (Endian == Types::Endianness::LITTLE_ENDIAN) {
 		return static_cast<retType>((data & (((1 << ExtractBits) - 1) << (n * ExtractBits))) >> (n * ExtractBits));
 	} else {
@@ -39,7 +39,7 @@ template<class retType = unsigned char, class dataType = unsigned short> retType
 }
 
 template<class retType = unsigned char, class dataType = unsigned short, int ExtractBits = sizeof(retType)> retType bitAccess(dataType data,
-		int n, Types::Endianness Endian = Types::Endianness::LITTLE_ENDIAN) {
+		int n, Types::Endianness Endian) {
 	if (Endian == Types::Endianness::LITTLE_ENDIAN) {
 		constexpr dataType bitmask = (1 << ExtractBits) - 1;
 		return static_cast<retType>((data & (bitmask << (n * ExtractBits))) >> (n * ExtractBits));
@@ -51,7 +51,7 @@ template<class retType = unsigned char, class dataType = unsigned short, int Ext
 }
 
 template<class retType = unsigned char, class dataType = unsigned short, int ExtractBits = sizeof(retType), int n = 0> retType bitAccess(
-		dataType data, Types::Endianness Endian = Types::Endianness::LITTLE_ENDIAN) {
+		dataType data, Types::Endianness Endian) {
 	if (Endian == Types::Endianness::LITTLE_ENDIAN) {
 		constexpr dataType bitmask = (1 << ExtractBits) - 1;
 		constexpr dataType shiftAmount = n * ExtractBits;
