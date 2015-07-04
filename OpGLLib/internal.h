@@ -1,5 +1,6 @@
 #ifdef INCLUDE_GLBINDING
 #include <glbinding/gl/gl.h>
+#include <glbinding/glbinding_api.h>
 #undef INCLUDE_GLBINDING
 #endif
 
