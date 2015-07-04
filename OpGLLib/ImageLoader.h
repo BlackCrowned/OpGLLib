@@ -40,6 +40,7 @@ public:
 	template<class U> Image<T>& operator=(Image<U> other);
 
 	std::vector<dataType>& get();
+	Dimensions getDimensions();
 
 	void reset(Dimensions dimensions, std::vector<dataType>& data);
 

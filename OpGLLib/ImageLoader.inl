@@ -39,6 +39,10 @@ template<class T> auto Image<T>::get() -> std::vector<dataType>&{
 	return _data;
 }
 
+template<class T> Dimensions Image<T>::getDimensions() {
+	return _dimensions;
+}
+
 template<class T> void Image<T>::reset(Dimensions dimensions, std::vector<dataType>& data) {
 	_dimensions = std::move(dimensions);
 	_data = data;
