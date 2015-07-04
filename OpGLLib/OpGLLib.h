@@ -18,6 +18,7 @@
 #include <OpGLLib/Camera.h>
 #include <OpGLLib/Transformation.h>
 #include <OpGLLib/Debug.h>
+#include <OpGLLib/Context.h>
 
 #include <chrono>
 #include <deque>

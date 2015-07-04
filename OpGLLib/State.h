@@ -14,6 +14,7 @@
 #include <OpGLLib/Context.h>
 
 #include <map>
+#include <iostream>
 
 namespace OpGLLib {
 namespace gl {

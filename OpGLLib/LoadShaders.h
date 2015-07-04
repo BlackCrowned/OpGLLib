@@ -13,6 +13,7 @@
 
 #include <OpGLLib/FileLoader.h>
 #include <map>
+#include <vector>
 
 class LoadShaders: public OpGLLib::FileLoader {
 public:
