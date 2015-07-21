@@ -23,7 +23,7 @@ template<class T> Texture2D::Texture2D(ImageLoader::Image<T>& image, ::gl::GLenu
 
 template<class T> void Texture2D::setData(ImageLoader::Image<T>& image, int mipmap, int internalFormat, ::gl::GLenum format) {
 	//Bind Texture
-	bind();
+	bindTexture();
 
 	//Upload ImageData
 	ImageLoader::Dimensions dimensions = image.getDimensions();
@@ -33,7 +33,7 @@ template<class T> void Texture2D::setData(ImageLoader::Image<T>& image, int mipm
 
 template<class T> void Texture2D::texParameteri(::gl::GLenum pname, T param) {
 	//Bind Texture
-	bind();
+	bindTexture();
 
 	//Set Texture Parameter
 	::gl::glTexParameteri(_target, pname, static_cast<int>(param));
@@ -41,7 +41,7 @@ template<class T> void Texture2D::texParameteri(::gl::GLenum pname, T param) {
 
 template<class T> void Texture2D::texParameterf(::gl::GLenum pname, T param) {
 	//Bind Texture
-	bind();
+	bindTexture();
 
 	//Set Texture Parameter
 	::gl::glTexParameterf(_target, pname, static_cast<float>(param));
@@ -49,7 +49,7 @@ template<class T> void Texture2D::texParameterf(::gl::GLenum pname, T param) {
 
 template<class T> void Texture2D::texParameterfv(::gl::GLenum pname, T params) {
 	//Bind Texture
-	bind();
+	bindTexture();
 
 	//Set Texture Parameter
 	::gl::glTexParameterfv(_target, pname, static_cast<float const*>(params));
@@ -57,7 +57,7 @@ template<class T> void Texture2D::texParameterfv(::gl::GLenum pname, T params) {
 
 template<class T> void Texture2D::texParameteriv(::gl::GLenum pname, T params) {
 	//Bind Texture
-	bind();
+	bindTexture();
 
 	//Set Texture Parameter
 	::gl::glTexParameteriv(_target, pname, static_cast<int const*>(params));
@@ -65,7 +65,7 @@ template<class T> void Texture2D::texParameteriv(::gl::GLenum pname, T params) {
 
 template<class T> void Texture2D::texParameterIiv(::gl::GLenum pname, T params) {
 	//Bind Texture
-	bind();
+	bindTexture();
 
 	//Set Texture Parameter
 	::gl::glTexParameterIiv(_target, pname, static_cast<int const*>(params));
@@ -73,7 +73,7 @@ template<class T> void Texture2D::texParameterIiv(::gl::GLenum pname, T params) 
 
 template<class T> void Texture2D::texParameterIuiv(::gl::GLenum pname, T params) {
 	//Bind Texture
-	bind();
+	bindTexture();
 
 	//Set Texture Parameter
 	::gl::glTexParameterIuiv(_target, pname, static_cast<unsigned int const*>(params));

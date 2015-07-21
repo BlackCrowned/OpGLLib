@@ -33,7 +33,7 @@ public:
 
 	unsigned int getId();
 
-	void bind();
+	void bindTexture();
 
 	void generateMipmap();
 

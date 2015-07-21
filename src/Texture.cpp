@@ -33,14 +33,14 @@ unsigned int Texture2D::getId() {
 	return _id;
 }
 
-void Texture2D::bind() {
+void Texture2D::bindTexture() {
 	//Bind Texture as target
 	::gl::glBindTexture(_target, _id);
 }
 
 void Texture2D::generateMipmap() {
 	//Bind Texture
-	bind();
+	bindTexture();
 
 	//Generate Mipmap
 	::gl::glGenerateMipmap(_target);
