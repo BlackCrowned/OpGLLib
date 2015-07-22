@@ -7,11 +7,10 @@
 
 #include <OpGLLib/State.h>
 
-
 using namespace gl;
 
 namespace OpGLLib {
-namespace gl{
+namespace gl {
 
 std::map<unsigned int, State::VertexArrayObjectData> State::_vertexArrayObjectInstances;
 std::map<unsigned int, int> State::_bufferObjectInstances;
@@ -224,6 +223,54 @@ bool State::deleteBuffer(unsigned int buffer) {
 	return false;
 }
 
+unsigned int State::genTexture() {
+	unsigned int texture;
+	glGenTextures(1, &texture);
+	return manageTexture(texture);
+}
+
+unsigned int State::manageTexture(unsigned int texture) {
+	if (_textureInstances[texture] < 0) {
+		_textureInstances[texture] = 0;
+	}
+	_textureInstances[texture]++;
+	return texture;
+}
+
+bool State::bindTexture(GLenum target, unsigned int texture) {
+	//Read current Context
+	glbinding::ContextHandle context = Context::getCurrentContext();
+
+	//Bind texture and save context dependent settings	//TODO: Only change texture when needed
+	if (getData(context).currentTexture == texture) {
+		glBindTexture(target, texture);
+		return false;
+	} else {
+		glBindTexture(target, texture);
+		getData(context).currentTexture = texture;
+		return true;
+	}
+}
+
+bool State::deleteTexture(unsigned int texture) {
+	//FIXME: Check if this texture is still bound to an openGL-Context
+	//Check if texture is managed | If not: Delete anyways and return
+	if (_textureInstances[texture] == 0) {
+		glDeleteTextures(1, &texture);
+		return true;
+	}
+
+	//Decrease texture count
+	_textureInstances[texture]--;
+
+	//Check if this texture is used elsewhere
+	if (_textureInstances[texture] == 0) {
+		glDeleteTextures(1, &texture);
+		return true;
+	}
+	return false;
+}
+
 State::data& State::getData(glbinding::ContextHandle context) {
 	if (context == 0) {
 		return getData();
@@ -235,7 +282,8 @@ State::data& State::getData() {
 	return getData(OpGLLib::gl::Context::getCurrentContext());
 }
 
-CState::CState(glbinding::ContextHandle context) : context(context){
+CState::CState(glbinding::ContextHandle context) :
+		context(context) {
 
 }
 

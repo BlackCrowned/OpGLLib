@@ -34,10 +34,10 @@ public:
 	static bool bindBuffer(::gl::GLenum target, unsigned int buffer);
 	static bool deleteBuffer(unsigned int buffer);
 
-//	static unsigned int genTexture();
-//	static unsigned int manageTexture(unsigned int texture);
-//	static bool bindTexture(unsigned int texture);
-//	static bool deleteTexture(unsigned int texture);
+	static unsigned int genTexture();
+	static unsigned int manageTexture(unsigned int texture);
+	static bool bindTexture(::gl::GLenum target, unsigned int texture);
+	static bool deleteTexture(unsigned int texture);
 
 	struct VertexArrayObjectData {
 		int instances = 0;
@@ -47,10 +47,11 @@ private:
 	struct data {
 		unsigned int currentVertexArrayObject = 0;
 		unsigned int currentBufferObject = 0;
-
+		unsigned int currentTexture = 0;
 	};
 	static std::map<unsigned int, VertexArrayObjectData> _vertexArrayObjectInstances;
 	static std::map<unsigned int, int> _bufferObjectInstances;
+	static std::map<unsigned int, int> _textureInstances;
 	static std::map<glbinding::ContextHandle, data> contextDependantData;
 	static data& getData();
 	static data& getData(glbinding::ContextHandle);
