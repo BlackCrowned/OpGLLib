@@ -12,7 +12,6 @@
 #define INCLUDE_GLBINDING
 #include <OpGLLib/internal.h>
 
-#include <OpGLLib/LoadShaders.h>
 #include <OpGLLib/Matrices.h>
 #include <OpGLLib/Perspective.h>
 #include <OpGLLib/Camera.h>
