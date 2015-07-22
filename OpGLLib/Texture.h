@@ -13,6 +13,7 @@
 
 #include <OpGLLib/ImageLoader.h>
 #include <OpGLLib/GLTypes.h>
+#include <OpGLLib/State.h>
 
 #include <type_traits>
 

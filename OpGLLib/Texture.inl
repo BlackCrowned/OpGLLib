@@ -12,7 +12,7 @@ namespace gl {
 template<class T> Texture2D::Texture2D(ImageLoader::Image<T>& image, ::gl::GLenum target, int mipmap, int internalFormat,
 		::gl::GLenum format) {
 	//Create GLTexture
-	::gl::glGenTextures(1, &_id);
+	_id = State::genTexture();
 
 	//Set target
 	setTarget(target);

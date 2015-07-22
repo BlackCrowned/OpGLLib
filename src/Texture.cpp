@@ -13,7 +13,7 @@ namespace gl {
 
 Texture2D::Texture2D() {
 	//Create GLTexture
-	::gl::glGenTextures(1, &_id);
+	_id = State::genTexture();
 
 	//Set default target
 	_target = ::gl::GL_TEXTURE_2D;
@@ -21,7 +21,7 @@ Texture2D::Texture2D() {
 
 Texture2D::~Texture2D() {
 	//Delete GLTexture
-	::gl::glDeleteTextures(1, &_id);
+	State::deleteTexture(_id);
 }
 
 void Texture2D::setTarget(::gl::GLenum target) {
@@ -35,7 +35,7 @@ unsigned int Texture2D::getId() {
 
 void Texture2D::bindTexture() {
 	//Bind Texture as target
-	::gl::glBindTexture(_target, _id);
+	State::bindTexture(_target, _id);
 }
 
 void Texture2D::generateMipmap() {
