@@ -49,15 +49,6 @@ private:
 	std::deque<std::chrono::milliseconds> frameDuration;
 };
 
-namespace gl {
-namespace States {
-void enableCulling(::gl::GLenum CullFace = ::gl::GL_BACK, ::gl::GLenum FrontFace = ::gl::GL_CCW);
-void disableCulling();
-void enableDepthTest(::gl::GLboolean DepthMasc = ::gl::GL_TRUE, ::gl::GLenum DepthFunc = ::gl::GL_LEQUAL);
-void disableDepthTest();
-}
-}
-
 }
 
 #endif /* OPGLLIB_OPGLLIB_H_ */

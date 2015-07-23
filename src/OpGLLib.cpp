@@ -22,26 +22,6 @@ void OpGLLib::_setContext(glbinding::ContextHandle context) {
 	glbinding::Binding::useContext(context);
 }
 
-void gl::States::enableCulling(GLenum CullFace, GLenum FrontFace) {
-	glEnable(GL_CULL_FACE);
-	glCullFace(CullFace);
-	glFrontFace(FrontFace);
-}
-
-void gl::States::disableCulling() {
-	glDisable(GL_CULL_FACE);
-}
-
-void gl::States::enableDepthTest(GLboolean DepthMasc, GLenum DepthFunc) {
-	glEnable(GL_DEPTH_TEST);
-	glDepthMask(DepthMasc);
-	glDepthFunc(DepthFunc);
-}
-
-void gl::States::disableDepthTest() {
-	glDisable(GL_DEPTH_TEST);
-}
-
 chrono::milliseconds OpGLLib::getFrameTime(int range) {
 	chrono::time_point<chrono::system_clock> now = chrono::system_clock::now();
 	chrono::milliseconds duration = chrono::duration_cast<chrono::milliseconds>(now.time_since_epoch() - lastFrame.time_since_epoch());
