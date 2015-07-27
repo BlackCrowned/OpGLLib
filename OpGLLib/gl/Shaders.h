@@ -12,6 +12,7 @@
 #include <OpGLLib/internal.h>
 
 #include <OpGLLib/FileLoader.h>
+#include <OpGLLib/Logging.h>
 
 #include <deque>
 

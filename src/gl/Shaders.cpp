@@ -34,6 +34,7 @@ void GLSLProgram::compileShader(GLenum type, std::string const shader) {
 	fstream file(shader, std::ios::in | std::ios::binary);
 	if (!file) {
 		//FIXME: ERROR CHECKING
+		LOG("Failed to open file: " + shader, LoggingLevel::unrecoverableError);
 		return;
 	}
 	const char *fileData = OpGLLib::files::dataPtr(file);
@@ -54,14 +55,14 @@ void GLSLProgram::compileShader(GLenum type, std::string const shader) {
 	glGetShaderiv(shaderObj, GL_COMPILE_STATUS, &status);
 
 	if (status == false) {
-		cerr << endl << "Failed to compile shader:" << endl;
+		LOG("Failed to compile shader: ", LoggingLevel::unrecoverableError);
 
 		int infoLogLength = 0;
 		glGetShaderiv(shaderObj, GL_INFO_LOG_LENGTH, &infoLogLength);
 		char *infoLog = new char[infoLogLength];
 
 		glGetShaderInfoLog(shaderObj, infoLogLength, NULL, infoLog);
-		cerr << infoLog << endl;
+		LOG_MESSAGE(infoLog, LoggingLevel::unrecoverableError);
 
 		delete[] infoLog;
 		//FIXME: ERROR CHECKING
@@ -88,14 +89,15 @@ void GLSLProgram::linkShaders() {
 	glGetProgramiv(_id, GL_LINK_STATUS, &status);
 
 	if (status == false) {
-		cerr << endl << "Failed to link program:" << endl;
+		LOG("Failed to link program: ", LoggingLevel::unrecoverableError);
 
 		int infoLogLength;
-		char *infoLog;
 		glGetProgramiv(_id, GL_INFO_LOG_LENGTH, &infoLogLength);
-		infoLog = new char[infoLogLength];
+		char *infoLog = new char[infoLogLength];
+
 		glGetProgramInfoLog(_id, infoLogLength, NULL, infoLog);
-		cout << infoLog << endl;
+		LOG_MESSAGE(infoLog, LoggingLevel::unrecoverableError);
+
 		delete[] infoLog;
 		//FIXME: ERROR CHECKING
 		return;
