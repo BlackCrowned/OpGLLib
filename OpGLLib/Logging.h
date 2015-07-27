@@ -17,6 +17,10 @@
 
 namespace OpGLLib {
 
+/* Define macros for easy logging */
+#define LOGN(msg, loggingLevel) notify(std::string(__PRETTY_FUNCTION__) + std::string(": ") + msg, loggingLevel)
+#define LOG(msg, loggingLevel) ::OpGLLib::detail::_logger.log(std::string(__PRETTY_FUNCTION__) + std::string(": ") + msg, loggingLevel)
+#define LOG_MESSAGE(msg, loggingLevel) ::OpGLLib::detail::_logger.log(msg, loggingLevel)
 
 enum LoggingLevel {
 	debug = 0, notice, warning, recoverableError, unrecoverableError, fatalError
