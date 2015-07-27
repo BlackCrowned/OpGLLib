@@ -34,7 +34,7 @@ template<class ...ArgsT> void Subject<ArgsT...>::removeObserver(std::shared_ptr<
 template<class ...ArgsT> void Subject<ArgsT...>::notify(ArgsT... args) {
 	//Notify all registered observers
 	for (auto it = _observers.begin(); it != _observers.end(); it++) {
-		(*it)->notify(args...);
+		(*it)->onNotify(args...);
 	}
 }
 

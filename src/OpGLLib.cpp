@@ -3,5 +3,3 @@
 namespace OpGLLib {
 
 }
-
-}
