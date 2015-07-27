@@ -12,6 +12,7 @@
 #include <OpGLLib/internal.h>
 
 #include <OpGLLib/FileLoader.h>
+#include <OpGLLib/OpGLLibDef.h>
 
 #include <lodePNG/lodepng.h>
 

@@ -8,7 +8,7 @@
 #ifndef OPGLLIB_FILELOADER_H_
 #define OPGLLIB_FILELOADER_H_
 
-#include <OpGLLib/OpGLLibDef.h>
+#include <OpGLLib/DefaultDelete.h>
 #include <iostream>
 #include <fstream>
 #include <string>
