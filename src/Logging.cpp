@@ -9,7 +9,15 @@
 
 namespace OpGLLib {
 
-Logging::LoggingLevel Logging::_loggingLevel = Logging::LoggingLevel::debug;
+Logging::Logging() :
+		_loggingLevel(LoggingLevel::debug) {
+
+}
+
+Logging::Logging(LoggingLevel loggingLevel) :
+		_loggingLevel(loggingLevel) {
+
+}
 
 void Logging::log(std::string const& msg, LoggingLevel loggingLevel) {
 	//Only log relevant data
@@ -24,6 +32,7 @@ void Logging::log(std::string const& msg, LoggingLevel loggingLevel) {
 		break;
 	case LoggingLevel::recoverableError:
 	case LoggingLevel::unrecoverableError:
+	case LoggingLevel::fatalError:
 		std::cerr << msg << std::endl;
 		break;
 	default:
@@ -33,6 +42,10 @@ void Logging::log(std::string const& msg, LoggingLevel loggingLevel) {
 
 void Logging::setLoggingLevel(LoggingLevel loggingLevel) {
 	_loggingLevel = loggingLevel;
+}
+
+void Logging::onNotify(std::string const& msg, int loggingLevel) {
+	log(msg, (LoggingLevel) loggingLevel);
 }
 
 }
