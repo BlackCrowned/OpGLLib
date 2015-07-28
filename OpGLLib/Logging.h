@@ -15,12 +15,19 @@
 #include <string>
 #include <iostream>
 
-namespace OpGLLib {
-
 /* Define macros for easy logging */
+#undef LOGN
+#undef LOG
+#undef LOG_MESSAGE
+#undef LOG_DEBUG
+#undef LOG_DEBUG_F
 #define LOGN(msg, loggingLevel) notify(std::string(__PRETTY_FUNCTION__) + std::string(": ") + msg, loggingLevel)
 #define LOG(msg, loggingLevel) ::OpGLLib::detail::_logger.log(std::string(__PRETTY_FUNCTION__) + std::string(": ") + msg, loggingLevel)
 #define LOG_MESSAGE(msg, loggingLevel) ::OpGLLib::detail::_logger.log(msg, loggingLevel)
+#define LOG_DEBUG(msg) ::OpGLLib::detail::_logger.log(std::string(__PRETTY_FUNCTION__) + std::string(": ") + msg, ::OpGLLib::LoggingLevel::debug)
+#define LOG_DEBUG_F ::OpGLLib::detail::_logger.log(std::string(__PRETTY_FUNCTION__), ::OpGLLib::LoggingLevel::debug)
+
+namespace OpGLLib {
 
 enum LoggingLevel {
 	debug = 0, notice, warning, recoverableError, unrecoverableError, fatalError
