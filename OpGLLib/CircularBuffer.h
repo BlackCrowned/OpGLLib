@@ -16,6 +16,52 @@
 
 namespace OpGLLib {
 
+template<class T>
+class CircularBufferIterator {
+public:
+	//Iterator requirements
+	typedef T value_type;
+	typedef std::size_t size_type;
+	typedef std::ptrdiff_t difference_type;
+
+	typedef T* pointer;
+	typedef T& reference;
+
+	typedef const reference const_reference;
+	typedef std::input_iterator_tag iterator_category;
+
+	CircularBufferIterator(pointer array, difference_type head, difference_type tail, size_type capacity, difference_type pos);
+	CircularBufferIterator(CircularBufferIterator<T> const& other) = default;
+
+	~CircularBufferIterator() = default;
+
+
+	CircularBufferIterator<T>& operator=(CircularBufferIterator<T> const& other) = default;
+
+	reference operator *();
+	const_reference operator *() const;
+
+	CircularBufferIterator<T>& operator ++() noexcept;
+	CircularBufferIterator<T> operator ++(int) noexcept;
+
+	void swap(CircularBufferIterator<T>& other) noexcept;
+
+
+	//InputIterator requirements
+
+	bool operator ==(CircularBufferIterator<T> const& other) const noexcept;
+	bool operator !=(CircularBufferIterator<T> const& other) const noexcept;
+
+private:
+	pointer _array;
+	difference_type _head;
+	difference_type _tail;
+
+	size_type _capacity;
+
+	difference_type _pos;
+};
+
 template<class T, class allocator = std::allocator<T>>
 class CircularBuffer {
 public:
@@ -31,6 +77,12 @@ public:
 	typedef T* pointer;
 	typedef const pointer const_pointer;
 
+	typedef CircularBufferIterator<T> iterator;
+	typedef const iterator const_iterator;
+
+	typedef std::reverse_iterator<iterator> reverse_iterator;
+	typedef const std::reverse_iterator<iterator> const_reverse_iterator;
+
 	CircularBuffer();
 	CircularBuffer(size_type size, bool auto_resize = false);
 	CircularBuffer(CircularBuffer<T, allocator> const& other);
@@ -45,6 +97,24 @@ public:
 	//TODO: INITLIST
 
 	void auto_resize(bool auto_resize) noexcept;
+
+	//Iterators
+
+	iterator begin();
+	const_iterator begin() const;
+	const_iterator cbegin() const;
+
+	iterator end();
+	const_iterator end() const;
+	const_iterator cend() const;
+
+	reverse_iterator rbegin();
+	const_reverse_iterator rbegin() const;
+	const_reverse_iterator crbegin() const;
+
+	reverse_iterator rend();
+	const_reverse_iterator rend() const;
+	const_reverse_iterator crend() const;
 
 	//Element access
 
@@ -79,15 +149,21 @@ public:
 
 	void clear();
 
-	void push_front(value_type value);
+	void push_front(value_type const& value);
+	void push_front(value_type&& value);
 	template<class ...ArgsT> void emplace_front(ArgsT&&... args);
 	void pop_front();
 
-	void push_back(value_type value);
+	void push_back(value_type const& value);
+	void push_back(value_type&& value);
 	template<class ...ArgsT> void emplace_back(ArgsT&&... args);
 	void pop_back();
 
 	void swap(CircularBuffer<T, allocator>& other);
+
+	//Allocator
+
+	allocator_type get_allocator() const noexcept;
 
 private:
 	void _outOfRangeCheck(size_type pos) const;
@@ -98,7 +174,7 @@ private:
 	void _increaseTail(difference_type n = 1);
 	void _decreaseTail(difference_type n = 1);
 
-	void _boundsCheck(difference_type n);
+	bool _boundsCheck(difference_type n);
 
 	template<class ...ArgsT> void _resize(size_type count, ArgsT&&... args);
 
