@@ -10,8 +10,9 @@
 
 #include <OpGLLib/internal.h>
 
+#include <OpGLLib/CircularBuffer.h>
+
 #include <chrono>
-#include <deque>
 
 namespace OpGLLib {
 namespace Time {
@@ -30,8 +31,7 @@ public:
 	float getFrameRate();
 private:
 	std::chrono::time_point<std::chrono::system_clock> _lastFrame;
-	std::deque<std::chrono::milliseconds> _frameCache;
-	size_t _cacheSize;
+	OpGLLib::CircularBuffer<std::chrono::milliseconds> _frameCache;
 };
 
 }

@@ -12,12 +12,12 @@ namespace OpGLLib {
 namespace Time {
 
 FrameTime::FrameTime() :
-		_lastFrame(std::chrono::system_clock::now()), _cacheSize(1000) {
+		_lastFrame(std::chrono::system_clock::now()), _frameCache(120) {
 
 }
 
 FrameTime::FrameTime(size_t cacheSize) :
-		_lastFrame(std::chrono::system_clock::now()), _cacheSize(cacheSize) {
+		_lastFrame(std::chrono::system_clock::now()), _frameCache(cacheSize) {
 
 }
 
@@ -26,10 +26,9 @@ FrameTime::~FrameTime() {
 }
 
 void FrameTime::setCacheSize(size_t size) {
-	_cacheSize = size;
-
-	//Reset _frameCache
-	_frameCache.clear();
+	//Create new _frameCache with new size
+	decltype(_frameCache) newCache(size);
+	_frameCache.swap(newCache);
 }
 
 void FrameTime::update() {
@@ -42,11 +41,6 @@ void FrameTime::update() {
 
 	//Set now to _lastFrame
 	_lastFrame = now;
-
-	//Limit _frameCache to cacheSize
-	if (_frameCache.size() >= _cacheSize && _frameCache.size() > 0) {
-		_frameCache.pop_back();
-	}
 
 	//Add frameTime to _frameCache
 	_frameCache.push_front(frameTime);
