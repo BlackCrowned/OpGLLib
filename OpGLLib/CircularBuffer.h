@@ -10,9 +10,12 @@
 
 #include <OpGLLib/internal.h>
 
+#include <OpGLLib/Modulo.h>
+
 #include <memory>
 #include <stdexcept>
 #include <limits>
+#include <type_traits>
 
 namespace OpGLLib {
 
@@ -27,14 +30,15 @@ public:
 	typedef T* pointer;
 	typedef T& reference;
 
+	typedef const pointer const_pointer;
 	typedef const reference const_reference;
+
 	typedef std::input_iterator_tag iterator_category;
 
 	CircularBufferIterator(pointer array, difference_type head, difference_type tail, size_type capacity, difference_type pos);
 	CircularBufferIterator(CircularBufferIterator<T> const& other) = default;
 
 	~CircularBufferIterator() = default;
-
 
 	CircularBufferIterator<T>& operator=(CircularBufferIterator<T> const& other) = default;
 
@@ -46,11 +50,13 @@ public:
 
 	void swap(CircularBufferIterator<T>& other) noexcept;
 
-
 	//InputIterator requirements
 
 	bool operator ==(CircularBufferIterator<T> const& other) const noexcept;
 	bool operator !=(CircularBufferIterator<T> const& other) const noexcept;
+
+	pointer operator ->();
+	const_pointer operator ->() const;
 
 private:
 	pointer _array;
@@ -83,7 +89,7 @@ public:
 	typedef std::reverse_iterator<iterator> reverse_iterator;
 	typedef const std::reverse_iterator<iterator> const_reverse_iterator;
 
-	CircularBuffer();
+	CircularBuffer() = delete;
 	CircularBuffer(size_type size, bool auto_resize = false);
 	CircularBuffer(CircularBuffer<T, allocator> const& other);
 	~CircularBuffer();
@@ -145,6 +151,12 @@ public:
 
 	void reserve(size_type new_cap);
 
+	template<class Q = T>
+	typename std::enable_if<std::is_nothrow_move_constructible<Q>::value, void>::type shrink_to_fit();
+
+	template<class Q = T>
+	typename std::enable_if<!std::is_nothrow_move_constructible<Q>::value, void>::type shrink_to_fit();
+
 	//Modifiers
 
 	void clear();
@@ -177,6 +189,11 @@ private:
 	bool _boundsCheck(difference_type n);
 
 	template<class ...ArgsT> void _resize(size_type count, ArgsT&&... args);
+
+	void _reallocate(size_type new_cap);
+
+	template<class Q = T>
+	typename std::enable_if<std::is_nothrow_move_constructible<Q>::value, void>::type _reallocate(size_type new_cap);
 
 	size_type _capacity;
 	allocator_type _allocator;

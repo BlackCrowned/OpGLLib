@@ -15,12 +15,12 @@ CircularBufferIterator<T>::CircularBufferIterator(pointer array, difference_type
 
 template<class T>
 auto CircularBufferIterator<T>::operator *() -> reference {
-	return _array[(_head + _pos) % _capacity];
+	return _array[mod(_head + _pos, _capacity)];
 }
 
 template<class T>
 auto CircularBufferIterator<T>::operator *() const -> const_reference {
-	return _array[(_head + _pos) % _capacity];
+	return _array[mod(_head + _pos, _capacity)];
 }
 
 template<class T>
@@ -58,9 +58,14 @@ bool CircularBufferIterator<T>::operator !=(CircularBufferIterator<T> const& oth
 	return !operator==(other);
 }
 
-template<class T, class allocator>
-CircularBuffer<T, allocator>::CircularBuffer() :
-		_capacity(0), _allocator(), _array(nullptr), _head(-1), _tail(0), _size(0), _auto_resize(false) {
+template<class T>
+auto CircularBufferIterator<T>::operator ->() -> pointer {
+	return _array + mod(_head + _pos, _capacity);
+}
+
+template<class T>
+auto CircularBufferIterator<T>::operator ->() const -> const_pointer {
+	return _array + mod(_head + _pos, _capacity);
 }
 
 template<class T, class allocator>
@@ -104,15 +109,17 @@ CircularBuffer<T, allocator>& CircularBuffer<T, allocator>::operator=(CircularBu
 	_array = _allocator.allocate(capacity());
 
 	//Copy content
-	for (size_type i = 0; i < other.size(); i++) {
-		emplace_back(other[i]);
+	for (auto it = begin(); it != end(); it++) {
+		emplace_back(*it);
 	}
+	return *this;
 }
 
 template<class T, class allocator>
 CircularBuffer<T, allocator>& CircularBuffer<T, allocator>::operator =(CircularBuffer<T, allocator> && other) {
 	//Simply swap content
 	swap(other);
+	return *this;
 }
 
 template<class T, class allocator>
@@ -194,24 +201,24 @@ template<class T, class allocator>
 auto CircularBuffer<T, allocator>::at(size_type pos) -> reference {
 	//Check bounds
 	_outOfRangeCheck(pos);
-	return _array[(_head + pos) % capacity()];
+	return _array[mod(_head + pos, capacity())];
 }
 
 template<class T, class allocator>
 auto CircularBuffer<T, allocator>::at(size_type pos) const -> const_reference {
 	//Check bounds
 	_outOfRangeCheck(pos);
-	return _array[(_head + pos) % capacity()];
+	return _array[mod(_head + pos, capacity())];
 }
 
 template<class T, class allocator>
 auto CircularBuffer<T, allocator>::operator [](size_type pos) -> reference {
-	return _array[(_head + pos) % capacity()];
+	return _array[mod(_head + pos, capacity())];
 }
 
 template<class T, class allocator>
 auto CircularBuffer<T, allocator>::operator [](size_type pos) const -> const_reference {
-	return _array[(_head + pos) % capacity()];
+	return _array[mod(_head + pos, capacity())];
 }
 
 template<class T, class allocator>
@@ -226,12 +233,12 @@ auto CircularBuffer<T, allocator>::front() const -> const_reference {
 
 template<class T, class allocator>
 auto CircularBuffer<T, allocator>::back() -> reference {
-	return _array[(_tail - 1) % capacity()];
+	return _array[mod(_tail - 1, capacity())];
 }
 
 template<class T, class allocator>
 auto CircularBuffer<T, allocator>::back() const -> const_reference {
-	return _array[(_tail - 1) % capacity()];
+	return _array[mod(_tail - 1, capacity())];
 }
 
 template<class T, class allocator>
@@ -267,20 +274,22 @@ auto CircularBuffer<T, allocator>::capacity() const noexcept -> size_type {
 template<class T, class allocator>
 void CircularBuffer<T, allocator>::reserve(size_type new_cap) {
 	if (new_cap > capacity()) {
-		//Check wether max_size is reached
-		_lengthErrorCheck(new_cap);
-
-		//Construct new CircularBuffer with requested_size
-		CircularBuffer<T, allocator> new_cb(new_cap, _auto_resize);
-
-		//Copy/Move current content to new CircularBuffer
-		for (auto it = begin(); it != end(); it++) {
-			new_cb.emplace_back(std::move(*it));
-		}
-
-		//Swap current and new CircularBuffer
-		swap(new_cb);
+		//Reallocate storage
+		_reallocate(new_cap);
 	}
+}
+
+template<class T, class allocator> template<class Q>
+typename std::enable_if<std::is_nothrow_move_constructible<Q>::value, void>::type CircularBuffer<T, allocator>::shrink_to_fit() {
+	//Only shrink if neccessary
+	if (size() < capacity()) {
+		_reallocate(size());
+	}
+}
+
+template<class T, class allocator> template<class Q>
+typename std::enable_if<!std::is_nothrow_move_constructible<Q>::value, void>::type CircularBuffer<T, allocator>::shrink_to_fit() {
+	//Do nothing
 }
 
 template<class T, class allocator>
@@ -355,7 +364,7 @@ void CircularBuffer<T, allocator>::swap(CircularBuffer<T, allocator>& other) {
 }
 
 template<class T, class allocator>
-auto CircularBuffer<T, allocator>::get_allocator() const noexcept -> allocator_type{
+auto CircularBuffer<T, allocator>::get_allocator() const noexcept -> allocator_type {
 	return _allocator;
 }
 
@@ -379,25 +388,25 @@ void CircularBuffer<T, allocator>::_lengthErrorCheck(size_type new_cap) const {
 
 template<class T, class allocator>
 void CircularBuffer<T, allocator>::_increaseHead(difference_type n) {
-	_head = (_head + n) % capacity();
+	_head = mod(_head + n, capacity());
 	_size -= n;
 }
 
 template<class T, class allocator>
 void CircularBuffer<T, allocator>::_decreaseHead(difference_type n) {
-	_head = (_head - n) % capacity();
+	_head = mod(_head - n, capacity());
 	_size += n;
 }
 
 template<class T, class allocator>
 void CircularBuffer<T, allocator>::_increaseTail(difference_type n) {
-	_tail = (_tail + n) % capacity();
+	_tail = mod(_tail + n, capacity());
 	_size += n;
 }
 
 template<class T, class allocator>
 void CircularBuffer<T, allocator>::_decreaseTail(difference_type n) {
-	_tail = (_tail - n) % capacity();
+	_tail = mod(_tail - n, capacity());
 	_size -= n;
 }
 
@@ -438,6 +447,41 @@ void CircularBuffer<T, allocator>::_resize(size_type count, ArgsT&& ... args) {
 			emplace_back(std::forward<ArgsT>(args)...);
 		}
 	}
+}
+
+template<class T, class allocator>
+void CircularBuffer<T, allocator>::_reallocate(size_type new_cap) {
+	//Check wether max_size is reached
+	_lengthErrorCheck(new_cap);
+
+	//Construct new CircularBuffer with requested_size
+	CircularBuffer<T, allocator> new_cb(new_cap, _auto_resize);
+
+	//Copy current content to new CircularBuffer
+	for (auto it = begin(); it != end(); it++) {
+		new_cb.emplace_back(*it);
+	}
+
+	//Swap current and new CircularBuffer
+	swap(new_cb);
+}
+
+template<class T, class allocator> template<class Q>
+typename std::enable_if<std::is_nothrow_move_constructible<Q>::value, void>::type CircularBuffer<T, allocator>::_reallocate(
+		size_type new_cap) {
+	//Check wether max_size is reached
+	_lengthErrorCheck(new_cap);
+
+	//Construct new CircularBuffer with requested_size
+	CircularBuffer<T, allocator> new_cb(new_cap, _auto_resize);
+
+	//Move current content to new CircularBuffer
+	for (auto it = begin(); it != end(); it++) {
+		new_cb.emplace_back(std::move(*it));
+	}
+
+	//Swap current and new CircularBuffer
+	swap(new_cb);
 }
 
 }
