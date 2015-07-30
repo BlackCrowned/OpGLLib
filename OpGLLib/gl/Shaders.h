@@ -13,6 +13,8 @@
 
 #include <OpGLLib/FileLoader.h>
 #include <OpGLLib/Logging.h>
+#include <OpGLLib/Exception.h>
+#include <OpGLLib/OpGLLib.h>
 
 #include <deque>
 
@@ -20,13 +22,14 @@ namespace OpGLLib {
 namespace gl {
 namespace Shaders {
 
-class GLSLProgram {
+class GLSLProgram: public OpGLLibBase, public Observer::LoggingSubject {
 public:
 	GLSLProgram();
-	GLSLProgram(std::string const vertexShader, std::string const fragmentShader);
+	GLSLProgram(OpGLLibBase* pointer);
+	GLSLProgram(OpGLLibBase* pointer, std::string const vertexShader, std::string const& fragmentShader);
 	~GLSLProgram();
 
-	void compileShader(::gl::GLenum type, std::string const shader);
+	void compileShader(::gl::GLenum type, std::string const& shader);
 	void linkShaders();
 	void useProgram();
 

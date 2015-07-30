@@ -16,10 +16,21 @@ namespace Shaders {
 
 GLSLProgram::GLSLProgram() :
 		_id(0) {
-
+	//Use default logger
+	addObserver(getLogger());
 }
 
-GLSLProgram::GLSLProgram(std::string const vertexShader, std::string const fragmentShader) {
+GLSLProgram::GLSLProgram(OpGLLibBase* pointer) :
+		OpGLLibBase(pointer), _id(0) {
+	//Use default logger
+	addObserver(getLogger());
+}
+
+GLSLProgram::GLSLProgram(OpGLLibBase* pointer, std::string const vertexShader, std::string const& fragmentShader) :
+		OpGLLibBase(pointer) {
+	//Use default logger
+	addObserver(getLogger());
+
 	compileShader(GL_VERTEX_SHADER, vertexShader);
 	compileShader(GL_FRAGMENT_SHADER, fragmentShader);
 	linkShaders();
@@ -29,15 +40,16 @@ GLSLProgram::~GLSLProgram() {
 	glDeleteProgram(_id);
 }
 
-void GLSLProgram::compileShader(GLenum type, std::string const shader) {
+void GLSLProgram::compileShader(GLenum type, std::string const& shader) {
 	//Load file into memory
 	fstream file(shader, std::ios::in | std::ios::binary);
 	if (!file) {
-		//FIXME: ERROR CHECKING
-		LOG("Failed to open file: " + shader, LoggingLevel::unrecoverableError);
-		return;
+		//Return if unrecoverable
+		if (!UnableToOpenFileException(this, shader).handle()) {
+			return;
+		}
 	}
-	const char *fileData = OpGLLib::files::dataPtr(file);
+	const char *fileData = files::dataPtr(file);
 	file.close();
 
 	//Create ShaderObj
@@ -55,18 +67,16 @@ void GLSLProgram::compileShader(GLenum type, std::string const shader) {
 	glGetShaderiv(shaderObj, GL_COMPILE_STATUS, &status);
 
 	if (status == false) {
-		LOG("Failed to compile shader: ", LoggingLevel::unrecoverableError);
-
 		int infoLogLength = 0;
 		glGetShaderiv(shaderObj, GL_INFO_LOG_LENGTH, &infoLogLength);
-		char *infoLog = new char[infoLogLength];
+		std::shared_ptr<char> infoLog(new char[infoLogLength]);
 
-		glGetShaderInfoLog(shaderObj, infoLogLength, NULL, infoLog);
-		LOG_MESSAGE(infoLog, LoggingLevel::unrecoverableError);
+		glGetShaderInfoLog(shaderObj, infoLogLength, NULL, infoLog.get());
 
-		delete[] infoLog;
-		//FIXME: ERROR CHECKING
-		return;
+		//Return if unrecoverable
+		if (!CompileException(this, shader, infoLog).handle()) {
+			return;
+		}
 	}
 
 	_shaders.push_back(shaderObj);
@@ -82,7 +92,7 @@ void GLSLProgram::linkShaders() {
 	};
 
 	//Linking program
-	glLinkProgram (_id);
+	glLinkProgram(_id);
 
 	//Error checking
 	int status;
@@ -93,14 +103,14 @@ void GLSLProgram::linkShaders() {
 
 		int infoLogLength;
 		glGetProgramiv(_id, GL_INFO_LOG_LENGTH, &infoLogLength);
-		char *infoLog = new char[infoLogLength];
+		std::shared_ptr<char> infoLog(new char[infoLogLength]);
 
-		glGetProgramInfoLog(_id, infoLogLength, NULL, infoLog);
-		LOG_MESSAGE(infoLog, LoggingLevel::unrecoverableError);
+		glGetProgramInfoLog(_id, infoLogLength, NULL, infoLog.get());
 
-		delete[] infoLog;
-		//FIXME: ERROR CHECKING
-		return;
+		//Return if unrecoverable
+		if (!LinkException(this, infoLog).handle()) {
+			//Dont return to allow detaching shaders
+		}
 	}
 
 	//Detach each shaderObj
