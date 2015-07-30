@@ -16,16 +16,24 @@
 #include <iostream>
 
 /* Define macros for easy logging */
+//Undefines
 #undef LOGN
+#undef LOGN_MESSAGE
+#undef LOGN_DEBUG
+#undef LOGN_DEBUG_F
 #undef LOG
 #undef LOG_MESSAGE
 #undef LOG_DEBUG
 #undef LOG_DEBUG_F
-#define LOGN(msg, loggingLevel) notify(std::string(__PRETTY_FUNCTION__) + std::string(": ") + msg, loggingLevel)
-#define LOG(msg, loggingLevel) ::OpGLLib::detail::_logger.log(std::string(__PRETTY_FUNCTION__) + std::string(": ") + msg, loggingLevel)
+//Defines
+#define LOGN_MESSAGE(msg, loggingLevel) notify(msg, loggingLevel)
+#define LOGN(msg, loggingLevel) LOGN_MESSAGE(std::string(__PRETTY_FUNCTION__) + std::string(": ") + msg, loggingLevel)
+#define LOGN_DEBUG(msg) LOGN(msg, ::OpGLLib::LoggingLevel::debug)
+#define LOGN_DEBUG_F LOGN_MESSAGE(std::string(__PRETTY_FUNCTION__), ::OpGLLib::LoggingLevel::debug)
 #define LOG_MESSAGE(msg, loggingLevel) ::OpGLLib::detail::_logger.log(msg, loggingLevel)
-#define LOG_DEBUG(msg) ::OpGLLib::detail::_logger.log(std::string(__PRETTY_FUNCTION__) + std::string(": ") + msg, ::OpGLLib::LoggingLevel::debug)
-#define LOG_DEBUG_F ::OpGLLib::detail::_logger.log(std::string(__PRETTY_FUNCTION__), ::OpGLLib::LoggingLevel::debug)
+#define LOG(msg, loggingLevel) LOG_MESSAGE(std::string(__PRETTY_FUNCTION__) + std::string(": ") + msg, loggingLevel)
+#define LOG_DEBUG(msg) LOG(msg, ::OpGLLib::LoggingLevel::debug)
+#define LOG_DEBUG_F LOG_MESSAGE(std::string(__PRETTY_FUNCTION__), ::OpGLLib::LoggingLevel::debug)
 
 namespace OpGLLib {
 
