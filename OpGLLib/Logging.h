@@ -37,11 +37,18 @@
 
 namespace OpGLLib {
 
-enum LoggingLevel {
+enum class LoggingLevel {
 	debug = 0, notice, warning, recoverableError, unrecoverableError, fatalError
 };
 
-class Logging: public Observer::Observer<std::string const&, int> {
+namespace Observer {
+
+typedef Observer<std::string const&, LoggingLevel> LoggingObserver;
+typedef Subject<std::string const&, LoggingLevel> LoggingSubject;
+
+}
+
+class Logging: public Observer::LoggingObserver {
 public:
 	Logging();
 	Logging(LoggingLevel loggingLevel);
@@ -52,7 +59,7 @@ public:
 	void setLoggingLevel(LoggingLevel loggingLevel);
 
 protected:
-	virtual void onNotify(std::string const& msg, int loggingLevel);
+	virtual void onNotify(std::string const& msg, LoggingLevel loggingLevel);
 
 private:
 	LoggingLevel _loggingLevel;

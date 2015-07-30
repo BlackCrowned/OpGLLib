@@ -44,8 +44,8 @@ void Logging::setLoggingLevel(LoggingLevel loggingLevel) {
 	_loggingLevel = loggingLevel;
 }
 
-void Logging::onNotify(std::string const& msg, int loggingLevel) {
-	log(msg, (LoggingLevel) loggingLevel);
+void Logging::onNotify(std::string const& msg, LoggingLevel loggingLevel) {
+	log(msg, loggingLevel);
 }
 
 }
