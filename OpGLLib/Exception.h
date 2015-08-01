@@ -17,7 +17,7 @@
 namespace OpGLLib {
 
 enum class ExceptionType {
-	UNABLE_TO_OPEN_FILE, GL_SHADERS_COMPILE_EXCEPTION, GL_SHADERS_LINK_EXCEPTION
+	OPENFILE_EXCEPTION, GL_SHADERS_COMPILE_EXCEPTION, GL_SHADERS_LINK_EXCEPTION
 };
 
 class Exception: public OpGLLibBase, public Observer::LoggingSubject {
@@ -31,10 +31,10 @@ public:
 	virtual bool handle() = 0;
 };
 
-class UnableToOpenFileException: public Exception {
+class OpenFileException: public Exception {
 public:
-	UnableToOpenFileException(OpGLLibBase* pointer, std::string const& file);
-	virtual ~UnableToOpenFileException() = default;
+	OpenFileException(OpGLLibBase* pointer, std::string const& file);
+	virtual ~OpenFileException() = default;
 
 	virtual ExceptionType what();
 	virtual std::string toString();

@@ -15,20 +15,20 @@ Exception::Exception(OpGLLibBase* pointer) :
 	addObserver(getLogger());
 }
 
-UnableToOpenFileException::UnableToOpenFileException(OpGLLibBase* pointer, std::string const& file) :
+OpenFileException::OpenFileException(OpGLLibBase* pointer, std::string const& file) :
 		Exception(pointer), _file(file) {
 
 }
 
-ExceptionType UnableToOpenFileException::what() {
-	return ExceptionType::UNABLE_TO_OPEN_FILE;
+ExceptionType OpenFileException::what() {
+	return ExceptionType::OPENFILE_EXCEPTION;
 }
 
-std::string UnableToOpenFileException::toString() {
+std::string OpenFileException::toString() {
 	return "Unable to open file: " + _file;
 }
 
-bool UnableToOpenFileException::handle() {
+bool OpenFileException::handle() {
 	notify(toString(), LoggingLevel::unrecoverableError);
 
 	//Assume unrecoverable

@@ -45,7 +45,7 @@ void GLSLProgram::compileShader(GLenum type, std::string const& shader) {
 	fstream file(shader, std::ios::in | std::ios::binary);
 	if (!file) {
 		//Return if unrecoverable
-		if (!UnableToOpenFileException(this, shader).handle()) {
+		if (!OpenFileException(this, shader).handle()) {
 			return;
 		}
 	}
