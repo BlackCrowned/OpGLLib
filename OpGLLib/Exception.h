@@ -45,40 +45,6 @@ private:
 	std::string const& _file;
 };
 
-namespace gl {
-namespace Shaders {
-
-class CompileException: public Exception {
-public:
-	CompileException(OpGLLibBase* pointer, std::string const& shader, std::shared_ptr<char> const& infoLog);
-	virtual ~CompileException() = default;
-
-	virtual ExceptionType what();
-	virtual std::string toString();
-
-	virtual bool handle();
-
-private:
-	std::string const& _shader;
-	std::shared_ptr<char> const& _infoLog;
-};
-
-class LinkException: public Exception {
-public:
-	LinkException(OpGLLibBase* pointer, std::shared_ptr<char> const& infoLog);
-	virtual ~LinkException() = default;
-
-	virtual ExceptionType what();
-	virtual std::string toString();
-
-	virtual bool handle();
-private:
-	std::shared_ptr<char> const& _infoLog;
-};
-
-}
-}
-
 namespace Observer {
 
 typedef Observer<ExceptionType> ExceptionHandlerObserver;
