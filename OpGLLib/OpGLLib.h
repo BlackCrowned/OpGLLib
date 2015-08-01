@@ -18,11 +18,17 @@ class OpGLLibBase {
 public:
 	OpGLLibBase();
 	OpGLLibBase(OpGLLibBase const* pointer);
+	OpGLLibBase(OpGLLibBase const& other) = default;
+	OpGLLibBase(OpGLLibBase&& other) = default;
 
 	void init();
 
+	void reset(OpGLLibBase const* pointer);
+
 	void setLogger(Logging&& logger);
-	std::shared_ptr<Logging> getLogger();
+	std::shared_ptr<Logging> getLogger() const;
+
+	void swap(OpGLLibBase& other);
 
 private:
 	std::shared_ptr<Logging> _logger;
