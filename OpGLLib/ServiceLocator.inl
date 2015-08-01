@@ -1,0 +1,14 @@
+/*
+ * ServiceLocator.inl
+ *
+ *  Created on: 01.08.2015
+ *      Author: mimoe
+ */
+
+namespace OpGLLib {
+
+template<class T> void ServiceLocator::registerLoggingService(T&& loggingService) {
+	_loggingService.reset(new T(std::forward<T>(loggingService)), OpGLLib::default_delete<LoggingBase>());
+}
+
+}
