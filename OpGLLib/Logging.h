@@ -11,6 +11,7 @@
 #include <OpGLLib/internal.h>
 
 #include <OpGLLib/Observer.h>
+#include <OpGLLib/ObserverFwd.h>
 
 #include <string>
 #include <iostream>
@@ -41,18 +42,28 @@ enum class LoggingLevel {
 	debug = 0, notice, warning, recoverableError, unrecoverableError, fatalError
 };
 
+class LoggingBase: public Observer::LoggingObserver {
+public:
+	LoggingBase() = default;
+	virtual ~LoggingBase() = default;
 
+	virtual void log(std::string const& msg, LoggingLevel loggingLevel) = 0;
 
+	virtual void setLoggingLevel(LoggingLevel loggingLevel) = 0;
 
-class Logging: public Observer::LoggingObserver {
+protected:
+	virtual void onNotify(std::string const& msg, LoggingLevel loggingLevel) = 0;
+};
+
+class Logging: public LoggingBase {
 public:
 	Logging();
 	Logging(LoggingLevel loggingLevel);
-	~Logging() = default;
+	virtual ~Logging() = default;
 
-	void log(std::string const& msg, LoggingLevel loggingLevel);
+	virtual void log(std::string const& msg, LoggingLevel loggingLevel);
 
-	void setLoggingLevel(LoggingLevel loggingLevel);
+	virtual void setLoggingLevel(LoggingLevel loggingLevel);
 
 protected:
 	virtual void onNotify(std::string const& msg, LoggingLevel loggingLevel);
