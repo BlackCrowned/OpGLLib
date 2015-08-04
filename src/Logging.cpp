@@ -48,4 +48,16 @@ void Logging::onNotify(std::string const& msg, LoggingLevel loggingLevel) {
 	log(msg, loggingLevel);
 }
 
+void NullLogging::log(std::string const& msg, LoggingLevel loggingLevel) {
+	//Do nothing
+}
+
+void NullLogging::setLoggingLevel(LoggingLevel loggingLevel) {
+	//Do nothing
+}
+
+void NullLogging::onNotify(std::string const& msg, LoggingLevel loggingLevel) {
+	//Do nothing
+}
+
 }

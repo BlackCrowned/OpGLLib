@@ -72,6 +72,19 @@ private:
 	LoggingLevel _loggingLevel;
 };
 
+class NullLogging: public LoggingBase {
+public:
+	NullLogging() = default;
+	virtual ~NullLogging() = default;
+
+	virtual void log(std::string const& msg, LoggingLevel loggingLevel);
+
+	virtual void setLoggingLevel(LoggingLevel loggingLevel);
+
+protected:
+	virtual void onNotify(std::string const& msg, LoggingLevel loggingLevel);
+};
+
 namespace detail {
 static Logging _logger(LoggingLevel::debug);
 }
