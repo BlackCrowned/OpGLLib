@@ -3,17 +3,20 @@
 namespace OpGLLib {
 
 OpGLLibBase::OpGLLibBase() :
-		_logger(new Logging(LoggingLevel::debug)) {
+		_serviceLocator(new ServiceLocator(), OpGLLib::default_delete<ServiceLocator>()) {
 
 }
 
 OpGLLibBase::OpGLLibBase(OpGLLibBase const* pointer) :
-		_logger(pointer->_logger) {
+		_serviceLocator(pointer->_serviceLocator) {
 
 }
 
-void OpGLLibBase::init() {
+void OpGLLibBase::reset() {
+	OpGLLibBase newBase;
 
+	//Swap with newBase
+	swap(newBase);
 }
 
 void OpGLLibBase::reset(OpGLLibBase const* pointer) {
@@ -23,16 +26,16 @@ void OpGLLibBase::reset(OpGLLibBase const* pointer) {
 	swap(newBase);
 }
 
-void OpGLLibBase::setLogger(Logging&& logger) {
-	_logger.reset(new Logging(std::forward<Logging>(logger)));
+void OpGLLibBase::setServiceLocator(ServiceLocator&& serviceLocator) {
+	_serviceLocator.reset(new ServiceLocator(std::forward<ServiceLocator>(serviceLocator)), OpGLLib::default_delete<ServiceLocator>());
 }
 
-std::shared_ptr<Logging> OpGLLibBase::getLogger() const{
-	return _logger;
+ServiceLocator& OpGLLibBase::getServiceLocator() const {
+	return *_serviceLocator;
 }
 
 void OpGLLibBase::swap(OpGLLibBase& other) {
-	std::swap(_logger, other._logger);
+	std::swap(_serviceLocator, other._serviceLocator);
 }
 
 }

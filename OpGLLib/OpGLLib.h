@@ -10,28 +10,36 @@
 
 #include <OpGLLib/internal.h>
 
-#include <OpGLLib/Logging.h>
+#include <OpGLLib/ServiceLocator.h>
+#include <OpGLLib/DefaultDelete.h>
+#include <OpGLLib/ObserverFwd.h>
 
 namespace OpGLLib {
 
-class OpGLLibBase {
+class OpGLLibBase: public Observer::LoggingSubject, public Observer::ExceptionHandlerSubject {
 public:
+	//Prevent shadowing of Subjects
+	using Observer::LoggingSubject::addObserver;
+	using Observer::LoggingSubject::notify;
+	using Observer::ExceptionHandlerSubject::addObserver;
+	using Observer::ExceptionHandlerSubject::notify;
+
 	OpGLLibBase();
 	OpGLLibBase(OpGLLibBase const* pointer);
 	OpGLLibBase(OpGLLibBase const& other) = default;
 	OpGLLibBase(OpGLLibBase&& other) = default;
+	~OpGLLibBase() = default;
 
-	void init();
-
+	void reset();
 	void reset(OpGLLibBase const* pointer);
 
-	void setLogger(Logging&& logger);
-	std::shared_ptr<Logging> getLogger() const;
+	void setServiceLocator(ServiceLocator&& serviceLocator);
+	ServiceLocator& getServiceLocator() const;
 
 	void swap(OpGLLibBase& other);
 
 private:
-	std::shared_ptr<Logging> _logger;
+	std::shared_ptr<ServiceLocator> _serviceLocator;
 };
 
 }
