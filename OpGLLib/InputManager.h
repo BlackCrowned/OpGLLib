@@ -13,7 +13,7 @@
 #include <OpGLLib/OpGLLib.h>
 #include <OpGLLib/ObserverFwd.h>
 
-#include <map>
+#include <unordered_map>
 
 namespace OpGLLib {
 
@@ -56,7 +56,7 @@ protected:
 	virtual void onNotify(KeyEvent keyEvent, Key key);
 
 private:
-	std::map<Key, KeyEvent> _keyMap;
+	std::unordered_map<Key, KeyEvent> _keyMap;
 };
 
 class NullInputManager: public InputManagerBase {
