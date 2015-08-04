@@ -11,8 +11,7 @@ namespace OpGLLib {
 
 Exception::Exception(OpGLLibBase* pointer) :
 		OpGLLibBase(pointer) {
-	//Use default logger
-	addObserver(getLogger());
+
 }
 
 OpenFileException::OpenFileException(OpGLLibBase* pointer, std::string const& file) :
@@ -29,7 +28,7 @@ std::string OpenFileException::toString() {
 }
 
 bool OpenFileException::handle() {
-	notify(toString(), LoggingLevel::unrecoverableError);
+	getServiceLocator().getLoggingService()->log(toString(), LoggingLevel::unrecoverableError);
 
 	//Assume unrecoverable
 	return false;

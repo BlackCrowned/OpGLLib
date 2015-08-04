@@ -28,8 +28,8 @@ std::string CompileException::toString() {
 }
 
 bool CompileException::handle() {
-	notify(toString(), LoggingLevel::unrecoverableError);
-	notify(_infoLog.get(), LoggingLevel::debug);
+	getServiceLocator().getLoggingService()->log(toString(), LoggingLevel::unrecoverableError);
+	getServiceLocator().getLoggingService()->log(_infoLog.get(), LoggingLevel::debug);
 
 	//This error is unrecoverable
 	return false;
@@ -49,8 +49,8 @@ std::string LinkException::toString() {
 }
 
 bool LinkException::handle() {
-	notify(toString(), LoggingLevel::unrecoverableError);
-	notify(_infoLog.get(), LoggingLevel::debug);
+	getServiceLocator().getLoggingService()->log(toString(), LoggingLevel::unrecoverableError);
+	getServiceLocator().getLoggingService()->log(_infoLog.get(), LoggingLevel::debug);
 
 	//This error is unrecoverable
 	return false;
