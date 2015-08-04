@@ -1,10 +1,12 @@
 #include <OpGLLib/OpGLLib.h>
 
+#include <OpGLLib/ServiceLocator.h>
+
 namespace OpGLLib {
 
 OpGLLibBase::OpGLLibBase() :
 		_serviceLocator(new ServiceLocator(), OpGLLib::default_delete<ServiceLocator>()) {
-
+	_serviceLocator->init(this);
 }
 
 OpGLLibBase::OpGLLibBase(OpGLLibBase const* pointer) :

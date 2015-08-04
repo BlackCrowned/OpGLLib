@@ -14,16 +14,21 @@
 #include <OpGLLib/InputManagerFwd.h>
 #include <OpGLLib/DefaultDelete.h>
 
+#include <OpGLLib/OpGLLibFwd.h>
+
 namespace OpGLLib {
 
 class ServiceLocator {
 public:
 	ServiceLocator();
+	ServiceLocator(OpGLLibBase const* pointer);
 
 	ServiceLocator(ServiceLocator const& other) = default;
 	ServiceLocator(ServiceLocator&& other) = default;
 
 	~ServiceLocator() = default;
+
+	void init(OpGLLibBase const* pointer);
 
 	void setLoggingService(std::shared_ptr<LoggingBase>&& loggingService);
 	template<class T> void setLoggingService(T&& loggingService);

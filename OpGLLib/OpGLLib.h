@@ -10,9 +10,13 @@
 
 #include <OpGLLib/internal.h>
 
-#include <OpGLLib/ServiceLocator.h>
+//#include <OpGLLib/ServiceLocator.h>
+#include <OpGLLib/Observer.h>
+#include <string>
+
 #include <OpGLLib/DefaultDelete.h>
 #include <OpGLLib/ObserverFwd.h>
+#include <OpGLLib/ServiceLocatorFwd.h>
 
 namespace OpGLLib {
 

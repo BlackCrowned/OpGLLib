@@ -8,12 +8,24 @@
 #include <OpGLLib/ServiceLocator.h>
 #include <OpGLLib/InputManager.h>
 
+#include <OpGLLib/OpGLLib.h>
+
 namespace OpGLLib {
 
 ServiceLocator::ServiceLocator() :
-		_loggingService(new NullLogging(), OpGLLib::default_delete<LoggingBase>()),
-				_inputManagerService(new NullInputManager(), OpGLLib::default_delete<InputManagerBase>()) {
+		_loggingService(), _inputManagerService() {
 
+}
+
+ServiceLocator::ServiceLocator(OpGLLibBase const* pointer) :
+		_loggingService(new NullLogging(), OpGLLib::default_delete<LoggingBase>()),
+				_inputManagerService(new NullInputManager(pointer), OpGLLib::default_delete<InputManagerBase>()) {
+
+}
+
+void ServiceLocator::init(OpGLLibBase const* pointer) {
+	_loggingService.reset(new NullLogging(), OpGLLib::default_delete<LoggingBase>());
+	_inputManagerService.reset(new NullInputManager(pointer), OpGLLib::default_delete<InputManagerBase>());
 }
 
 void ServiceLocator::setLoggingService(std::shared_ptr<LoggingBase>&& loggingService) {

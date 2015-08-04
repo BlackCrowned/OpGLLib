@@ -7,6 +7,8 @@
 
 #include <OpGLLib/Exception.h>
 
+#include <OpGLLib/ServiceLocator.h>
+
 namespace OpGLLib {
 
 Exception::Exception(OpGLLibBase* pointer) :

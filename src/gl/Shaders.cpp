@@ -7,6 +7,8 @@
 
 #include <OpGLLib/gl/Shaders.h>
 
+#include <OpGLLib/ServiceLocator.h>
+
 using namespace std;
 using namespace gl;
 
