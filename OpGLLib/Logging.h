@@ -41,12 +41,8 @@ enum class LoggingLevel {
 	debug = 0, notice, warning, recoverableError, unrecoverableError, fatalError
 };
 
-namespace Observer {
 
-typedef Observer<std::string const&, LoggingLevel> LoggingObserver;
-typedef Subject<std::string const&, LoggingLevel> LoggingSubject;
 
-}
 
 class Logging: public Observer::LoggingObserver {
 public:

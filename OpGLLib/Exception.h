@@ -45,13 +45,6 @@ private:
 	std::string const& _file;
 };
 
-namespace Observer {
-
-typedef Observer<ExceptionType> ExceptionHandlerObserver;
-typedef Subject<ExceptionType> ExceptionHandlerSubject;
-
-}
-
 //class ExceptionHandler: public Observer::ExceptionHandlerObserver, Observer::LoggingSubject {
 //public:
 //	ExceptionHandler() = default;
