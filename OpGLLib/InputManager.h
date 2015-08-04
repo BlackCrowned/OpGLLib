@@ -27,7 +27,7 @@ class InputManagerBase: public OpGLLibBase, public Observer::InputManagerObserve
 public:
 	InputManagerBase();
 	InputManagerBase(OpGLLibBase const* pointer);
-	virtual ~InputManagerBase() = 0;
+	virtual ~InputManagerBase() = default;
 
 	virtual void setKey(KeyEvent keyEvent, Key key) = 0;
 	virtual void pressKey(Key key) = 0;
