@@ -24,8 +24,8 @@ public:
 
 	~ServiceLocator() = default;
 
-	void registerLoggingService(std::shared_ptr<LoggingBase>&& loggingService);
-	template<class T> void registerLoggingService(T&& loggingService);
+	void setLoggingService(std::shared_ptr<LoggingBase>&& loggingService);
+	template<class T> void setLoggingService(T&& loggingService);
 
 	std::shared_ptr<LoggingBase> getLoggingService();
 

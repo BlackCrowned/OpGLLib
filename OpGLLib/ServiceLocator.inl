@@ -7,7 +7,7 @@
 
 namespace OpGLLib {
 
-template<class T> void ServiceLocator::registerLoggingService(T&& loggingService) {
+template<class T> void ServiceLocator::setLoggingService(T&& loggingService) {
 	_loggingService.reset(new T(std::forward<T>(loggingService)), OpGLLib::default_delete<LoggingBase>());
 }
 

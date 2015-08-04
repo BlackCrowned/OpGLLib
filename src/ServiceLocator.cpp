@@ -13,7 +13,7 @@ ServiceLocator::ServiceLocator() : _loggingService(new NullLogging(), OpGLLib::d
 
 }
 
-void ServiceLocator::registerLoggingService(std::shared_ptr<LoggingBase>&& loggingService) {
+void ServiceLocator::setLoggingService(std::shared_ptr<LoggingBase>&& loggingService) {
 	//Check if loggingService holds a pointer
 	if (loggingService.use_count()) {
 		_loggingService = std::forward<std::shared_ptr<LoggingBase>>(loggingService);
