@@ -57,22 +57,15 @@ bool LinkException::handle() {
 }
 
 GLSLProgram::GLSLProgram() :
-		_id(0) {
-	//Use default logger
-	addObserver(getLogger());
+		OpGLLibBase(), _id(0) {
 }
 
-GLSLProgram::GLSLProgram(OpGLLibBase* pointer) :
+GLSLProgram::GLSLProgram(OpGLLibBase const* pointer) :
 		OpGLLibBase(pointer), _id(0) {
-	//Use default logger
-	addObserver(getLogger());
 }
 
-GLSLProgram::GLSLProgram(OpGLLibBase* pointer, std::string const vertexShader, std::string const& fragmentShader) :
-		OpGLLibBase(pointer) {
-	//Use default logger
-	addObserver(getLogger());
-
+GLSLProgram::GLSLProgram(OpGLLibBase const* pointer, std::string const vertexShader, std::string const& fragmentShader) :
+		OpGLLibBase(pointer), _id(0) {
 	compileShader(GL_VERTEX_SHADER, vertexShader);
 	compileShader(GL_FRAGMENT_SHADER, fragmentShader);
 	linkShaders();
@@ -80,6 +73,16 @@ GLSLProgram::GLSLProgram(OpGLLibBase* pointer, std::string const vertexShader, s
 
 GLSLProgram::~GLSLProgram() {
 	glDeleteProgram(_id);
+}
+
+void GLSLProgram::reset() {
+	GLSLProgram newGLSLProgram;
+	swap(newGLSLProgram);
+}
+
+void GLSLProgram::reset(OpGLLibBase const* pointer) {
+	GLSLProgram newGLSLProgram(pointer);
+	swap(newGLSLProgram);
 }
 
 void GLSLProgram::compileShader(GLenum type, std::string const& shader) {
@@ -168,6 +171,11 @@ void GLSLProgram::useProgram() {
 
 unsigned int GLSLProgram::id() {
 	return _id;
+}
+
+void GLSLProgram::swap(GLSLProgram& other) {
+	std::swap(_shaders, other._shaders);
+	std::swap(_id, other._id);
 }
 
 }

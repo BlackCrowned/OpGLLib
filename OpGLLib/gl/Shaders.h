@@ -61,15 +61,20 @@ private:
 class GLSLProgram: public OpGLLibBase {
 public:
 	GLSLProgram();
-	GLSLProgram(OpGLLibBase* pointer);
-	GLSLProgram(OpGLLibBase* pointer, std::string const vertexShader, std::string const& fragmentShader);
+	GLSLProgram(OpGLLibBase const* pointer);
+	GLSLProgram(OpGLLibBase const* pointer, std::string const vertexShader, std::string const& fragmentShader);
 	~GLSLProgram();
+
+	void reset();
+	void reset(OpGLLibBase const* pointer);
 
 	void compileShader(::gl::GLenum type, std::string const& shader);
 	void linkShaders();
 	void useProgram();
 
 	unsigned int id();
+
+	void swap(GLSLProgram& other);
 private:
 	std::deque<unsigned int> _shaders;
 	unsigned int _id;
