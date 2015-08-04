@@ -10,9 +10,8 @@
 
 #include <OpGLLib/internal.h>
 
-#include <OpGLLib/Observer.h>
-#include <OpGLLib/Logging.h>
 #include <OpGLLib/OpGLLib.h>
+
 
 namespace OpGLLib {
 
@@ -20,7 +19,8 @@ enum class ExceptionType {
 	OPENFILE_EXCEPTION, GL_SHADERS_COMPILE_EXCEPTION, GL_SHADERS_LINK_EXCEPTION
 };
 
-class Exception: public OpGLLibBase, public Observer::LoggingSubject {
+
+class Exception: public OpGLLibBase {
 public:
 	Exception(OpGLLibBase* pointer);
 	virtual ~Exception() = default;

@@ -12,7 +12,6 @@
 #include <OpGLLib/internal.h>
 
 #include <OpGLLib/FileLoader.h>
-#include <OpGLLib/Logging.h>
 #include <OpGLLib/Exception.h>
 #include <OpGLLib/OpGLLib.h>
 
@@ -59,7 +58,7 @@ private:
  * Main class
  */
 
-class GLSLProgram: public OpGLLibBase, public Observer::LoggingSubject {
+class GLSLProgram: public OpGLLibBase {
 public:
 	GLSLProgram();
 	GLSLProgram(OpGLLibBase* pointer);
