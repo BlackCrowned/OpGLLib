@@ -7,6 +7,7 @@
 
 #include <OpGLLib/LoggingFwd.h>
 #include <OpGLLib/ExceptionFwd.h>
+#include <OpGLLib/InputManagerFwd.h>
 
 namespace OpGLLib {
 namespace Observer {
@@ -20,6 +21,8 @@ typedef Subject<std::string const&, LoggingLevel> LoggingSubject;
 typedef Observer<ExceptionType> ExceptionHandlerObserver;
 typedef Subject<ExceptionType> ExceptionHandlerSubject;
 
+typedef Observer<KeyEvent, Key> InputManagerObserver;
+typedef Subject<KeyEvent, Key> InputManagerSubject;
 
 }
 
