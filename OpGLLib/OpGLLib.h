@@ -16,13 +16,15 @@
 
 namespace OpGLLib {
 
-class OpGLLibBase: public Observer::LoggingSubject, public Observer::ExceptionHandlerSubject {
+class OpGLLibBase: public Observer::LoggingSubject, public Observer::ExceptionHandlerSubject, public Observer::InputManagerSubject {
 public:
 	//Prevent shadowing of Subjects
 	using Observer::LoggingSubject::addObserver;
 	using Observer::LoggingSubject::notify;
 	using Observer::ExceptionHandlerSubject::addObserver;
 	using Observer::ExceptionHandlerSubject::notify;
+	using Observer::InputManagerSubject::addObserver;
+	using Observer::InputManagerSubject::notify;
 
 	OpGLLibBase();
 	OpGLLibBase(OpGLLibBase const* pointer);
