@@ -11,6 +11,7 @@
 #include <OpGLLib/internal.h>
 
 #include <OpGLLib/Logging.h>
+#include <OpGLLib/InputManagerFwd.h>
 #include <OpGLLib/DefaultDelete.h>
 
 namespace OpGLLib {
@@ -29,8 +30,15 @@ public:
 
 	std::shared_ptr<LoggingBase> getLoggingService();
 
+
+	void setInputManagerService(std::shared_ptr<InputManagerBase>&& inputManagerService);
+	template<class T> void setInputManagerService(T&& inputManagerService);
+
+	std::shared_ptr<InputManagerBase> getInputManagerService();
+
 private:
 	std::shared_ptr<LoggingBase> _loggingService;
+	std::shared_ptr<InputManagerBase> _inputManagerService;
 };
 
 }
