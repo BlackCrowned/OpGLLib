@@ -20,13 +20,13 @@ template<class ...ArgsT> class Subject;
 
 template<class ...ArgsT> class Observer {
 
-friend class Subject<ArgsT...>;
+	friend class Subject<ArgsT...> ;
 public:
 	Observer() = default;
 	virtual ~Observer() = default;
 
 protected:
-	virtual void onNotify(ArgsT... args) = 0;
+	virtual void onNotify(ArgsT ... args) = 0;
 };
 
 template<class ...ArgsT> class Subject {
@@ -38,9 +38,9 @@ public:
 	void removeObserver(std::shared_ptr<Observer<ArgsT...>> observer);
 
 protected:
-	void notify(ArgsT... args);
+	void notify(ArgsT ... args);
 private:
-	std::deque<std::shared_ptr<Observer<ArgsT...>>> _observers;
+	std::deque<std::shared_ptr<Observer<ArgsT...>>>_observers;
 };
 
 }
