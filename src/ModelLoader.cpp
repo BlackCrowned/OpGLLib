@@ -82,6 +82,46 @@ std::vector<glm::uvec3>& MeshImpl<MeshType::OBJ>::indices() {
 	return _indices;
 }
 
+std::string& NullMesh::name() {
+	return _name;
+}
+
+std::vector<glm::vec3>& NullMesh::vertices() {
+	return _vertices;
+}
+
+std::vector<glm::vec3>& NullMesh::normals() {
+	return _normals;
+}
+
+std::vector<glm::vec2>& NullMesh::texCoords() {
+	return _texCoords;
+}
+
+std::vector<glm::uvec3>& NullMesh::indices() {
+	return _indices;
+}
+
+ModelLoaderBase::ModelLoaderBase() :
+		OpGLLibBase() {
+
+}
+
+ModelLoaderBase::ModelLoaderBase(OpGLLibBase const* pointer) :
+		OpGLLibBase(pointer) {
+
+}
+
+ModelLoader::ModelLoader() :
+		ModelLoaderBase() {
+
+}
+
+ModelLoader::ModelLoader(OpGLLibBase const* pointer) :
+		ModelLoaderBase(pointer) {
+
+}
+
 std::shared_ptr<Mesh> ModelLoader::load(std::string const& model) {
 	std::shared_ptr<Mesh> mesh;
 	std::string fileType = model.substr(model.find_last_of('.') + 1);
@@ -108,6 +148,21 @@ std::shared_ptr<MeshImpl<MeshType::OBJ>> ModelLoader::loadObj(std::string const&
 	mesh->setData(shapes[0]);
 
 	return mesh;
+}
+
+NullModelLoader::NullModelLoader() :
+		ModelLoaderBase() {
+
+}
+
+NullModelLoader::NullModelLoader(OpGLLibBase const* pointer) :
+		ModelLoaderBase(pointer) {
+
+}
+
+std::shared_ptr<Mesh> NullModelLoader::load(std::string const& model) {
+	//Return NullMesh
+	return std::shared_ptr<Mesh>(new NullMesh(), OpGLLib::default_delete<Mesh>());
 }
 
 }

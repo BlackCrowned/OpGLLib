@@ -13,6 +13,8 @@
 
 #include <OpGLLib/DefaultDelete.h>
 #include <OpGLLib/Logging.h>
+#include <OpGLLib/OpGLLib.h>
+#include <OpGLLib/Exception.h>
 
 #include <string>
 #include <vector>
@@ -69,15 +71,63 @@ private:
 	std::vector<glm::uvec3> _indices;
 };
 
-class ModelLoader {
+class NullMesh : public Mesh {
 public:
-	ModelLoader() = delete;
-	~ModelLoader() = delete;
+	NullMesh() = default;
+	virtual ~NullMesh() = default;
 
-	static std::shared_ptr<Mesh> load(std::string const& model);
+	virtual std::string& name();
+
+	virtual std::vector<glm::vec3>& vertices();
+	virtual std::vector<glm::vec3>& normals();
+	virtual std::vector<glm::vec2>& texCoords();
+	virtual std::vector<glm::uvec3>& indices();
+
+private:
+	std::string _name;
+	std::vector<glm::vec3> _vertices;
+	std::vector<glm::vec3> _normals;
+	std::vector<glm::vec2> _texCoords;
+	std::vector<glm::uvec3> _indices;
+};
+
+/*
+ * Required exceptions
+ */
+
+
+/*
+ * Main class
+ */
+
+class ModelLoaderBase : public OpGLLibBase {
+public:
+	ModelLoaderBase();
+	ModelLoaderBase(OpGLLibBase const* pointer);
+	virtual ~ModelLoaderBase() = default;
+
+	virtual std::shared_ptr<Mesh> load(std::string const& model) = 0;
+};
+
+class ModelLoader : public ModelLoaderBase{
+public:
+	ModelLoader();
+	ModelLoader(OpGLLibBase const* pointer);
+	virtual ~ModelLoader() = default;
+
+	virtual std::shared_ptr<Mesh> load(std::string const& model);
 
 protected:
-	static std::shared_ptr<MeshImpl<MeshType::OBJ>> loadObj(std::string const& model);
+	std::shared_ptr<MeshImpl<MeshType::OBJ>> loadObj(std::string const& model);
+};
+
+class NullModelLoader : public ModelLoaderBase {
+public:
+	NullModelLoader();
+	NullModelLoader(OpGLLibBase const* pointer);
+	virtual ~NullModelLoader() = default;
+
+	virtual std::shared_ptr<Mesh> load(std::string const& model);
 };
 
 }
