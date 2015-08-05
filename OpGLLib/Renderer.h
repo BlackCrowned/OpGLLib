@@ -12,7 +12,7 @@
 #define INCLUDE_GLBINDING
 #include <OpGLLib/internal.h>
 
-#include <OpGLLib/ModelLoader.h>
+#include <OpGLLib/gl/ModelLoader.h>
 #include <OpGLLib/Context.h>
 #include <OpGLLib/State.h>
 #include <OpGLLib/Data.h>

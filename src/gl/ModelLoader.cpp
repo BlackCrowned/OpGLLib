@@ -5,7 +5,7 @@
  *      Author: Michael
  */
 
-#include <OpGLLib/ModelLoader.h>
+#include <OpGLLib/gl/ModelLoader.h>
 
 namespace OpGLLib {
 namespace gl {
