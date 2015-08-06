@@ -12,6 +12,7 @@
 
 #include <OpGLLib/Logging.h>
 #include <OpGLLib/InputManagerFwd.h>
+#include <OpGLLib/gl/ModelLoaderFwd.h>
 #include <OpGLLib/DefaultDelete.h>
 
 #include <OpGLLib/OpGLLibFwd.h>
@@ -32,18 +33,20 @@ public:
 
 	void setLoggingService(std::shared_ptr<LoggingBase>&& loggingService);
 	template<class T> void setLoggingService(T&& loggingService);
-
 	std::shared_ptr<LoggingBase> getLoggingService();
-
 
 	void setInputManagerService(std::shared_ptr<InputManagerBase>&& inputManagerService);
 	template<class T> void setInputManagerService(T&& inputManagerService);
-
 	std::shared_ptr<InputManagerBase> getInputManagerService();
+
+	void setModelLoaderService(std::shared_ptr<gl::ModelLoaderBase>&& modelLoaderService);
+	template <class T> void setModelLoaderService(T&& modelLoaderService);
+	std::shared_ptr<gl::ModelLoaderBase> getModelLoaderService();
 
 private:
 	std::shared_ptr<LoggingBase> _loggingService;
 	std::shared_ptr<InputManagerBase> _inputManagerService;
+	std::shared_ptr<gl::ModelLoaderBase> _modelLoaderService;
 };
 
 }

@@ -7,6 +7,7 @@
 
 #include <OpGLLib/ServiceLocator.h>
 #include <OpGLLib/InputManager.h>
+#include <OpGLLib/gl/ModelLoader.h>
 
 #include <OpGLLib/OpGLLib.h>
 
@@ -56,6 +57,21 @@ void ServiceLocator::setInputManagerService(std::shared_ptr<InputManagerBase>&& 
 
 std::shared_ptr<InputManagerBase> ServiceLocator::getInputManagerService() {
 	return _inputManagerService;
+}
+
+void ServiceLocator::setModelLoaderService(std::shared_ptr<gl::ModelLoaderBase>&& modelLoaderService) {
+	//Check if modelLoaderService holds a pointer
+	if (modelLoaderService.use_count()) {
+		_modelLoaderService = std::forward<std::shared_ptr<gl::ModelLoaderBase>>(modelLoaderService);
+	}
+	//If it does not, register a null service instead
+	else {
+		_modelLoaderService.reset(new gl::NullModelLoader(), OpGLLib::default_delete<gl::ModelLoaderBase>());
+	}
+}
+
+std::shared_ptr<gl::ModelLoaderBase> ServiceLocator::getModelLoaderService() {
+	return _modelLoaderService;
 }
 
 }

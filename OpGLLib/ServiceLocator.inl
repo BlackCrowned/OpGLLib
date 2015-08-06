@@ -12,7 +12,11 @@ template<class T> void ServiceLocator::setLoggingService(T&& loggingService) {
 }
 
 template<class T> void ServiceLocator::setInputManagerService(T&& inputManagerService) {
-	_loggingService.reset(new T(std::forward<T>(inputManagerService)), OpGLLib::default_delete<InputManagerBase>());
+	_inputManagerService.reset(new T(std::forward<T>(inputManagerService)), OpGLLib::default_delete<InputManagerBase>());
+}
+
+template<class T> void ServiceLocator::setModelLoaderService(T&& modelLoaderService) {
+	_modelLoaderService.reset(new T(std::forward<T>(modelLoaderService)), OpGLLib::default_delete<gl::ModelLoaderBase>());
 }
 
 }
