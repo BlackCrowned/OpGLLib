@@ -20,13 +20,15 @@ ServiceLocator::ServiceLocator() :
 
 ServiceLocator::ServiceLocator(OpGLLibBase const* pointer) :
 		_loggingService(new NullLogging(), OpGLLib::default_delete<LoggingBase>()),
-				_inputManagerService(new NullInputManager(pointer), OpGLLib::default_delete<InputManagerBase>()) {
+				_inputManagerService(new NullInputManager(pointer), OpGLLib::default_delete<InputManagerBase>()),
+				_modelLoaderService(new gl::NullModelLoader(pointer), OpGLLib::default_delete<gl::ModelLoaderBase>()) {
 
 }
 
 void ServiceLocator::init(OpGLLibBase const* pointer) {
 	_loggingService.reset(new NullLogging(), OpGLLib::default_delete<LoggingBase>());
 	_inputManagerService.reset(new NullInputManager(pointer), OpGLLib::default_delete<InputManagerBase>());
+	_modelLoaderService.reset(new gl::NullModelLoader(pointer), OpGLLib::default_delete<gl::ModelLoaderBase>());
 }
 
 void ServiceLocator::setLoggingService(std::shared_ptr<LoggingBase>&& loggingService) {
