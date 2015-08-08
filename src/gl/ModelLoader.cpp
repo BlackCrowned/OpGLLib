@@ -7,6 +7,8 @@
 
 #include <OpGLLib/gl/ModelLoader.h>
 
+#include <OpGLLib/ServiceLocator.h>
+
 namespace OpGLLib {
 namespace gl {
 
@@ -102,6 +104,26 @@ std::vector<glm::uvec3>& NullMesh::indices() {
 	return _indices;
 }
 
+LoadModelException::LoadModelException(OpGLLibBase const* pointer, std::string const& model, std::string const& reason) :
+		Exception(pointer), _model(model), _reason(reason) {
+
+}
+
+ExceptionType LoadModelException::what() {
+	return ExceptionType::GL_MODELLOADER_LOADMODEL_EXCEPTION;
+}
+
+std::string LoadModelException::toString() {
+	return "Unable to load model " + _model + ": " + _reason;
+}
+
+bool LoadModelException::handle() {
+	getServiceLocator().getLoggingService()->log(toString(), LoggingLevel::unrecoverableError);
+
+	//Assume unrecoverable
+	return false;
+}
+
 ModelLoaderBase::ModelLoaderBase() :
 		OpGLLibBase() {
 
@@ -125,10 +147,17 @@ ModelLoader::ModelLoader(OpGLLibBase const* pointer) :
 std::shared_ptr<Mesh> ModelLoader::load(std::string const& model) {
 	std::shared_ptr<Mesh> mesh;
 	std::string fileType = model.substr(model.find_last_of('.') + 1);
+
+	//Log
+	getServiceLocator().getLoggingService()->log("Loading model: " + model, LoggingLevel::debug);
+
 	if (fileType == "obj") {
 		mesh = loadObj(model);
 	} else {
-		LOG("Unable to parse: " + model, LoggingLevel::recoverableError);
+		//Return if unrecoverable
+		if (!LoadModelException(this, model, "Unknown file extension ." + fileType).handle()) {
+			return std::shared_ptr<Mesh>(new NullMesh(), OpGLLib::default_delete<Mesh>());
+		}
 	}
 	return mesh;
 }

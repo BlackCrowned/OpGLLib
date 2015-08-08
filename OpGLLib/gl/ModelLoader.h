@@ -95,6 +95,20 @@ private:
  * Required exceptions
  */
 
+class LoadModelException :public Exception {
+public:
+	LoadModelException(OpGLLibBase const* pointer, std::string const& model, std::string const& reason);
+	~LoadModelException() = default;
+
+	virtual ExceptionType what();
+	virtual std::string toString();
+
+	virtual bool handle();
+
+private:
+	std::string const& _model;
+	std::string const& _reason;
+};
 
 /*
  * Main class
