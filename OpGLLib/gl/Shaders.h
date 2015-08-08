@@ -27,7 +27,7 @@ namespace Shaders {
 
 class CompileException: public Exception {
 public:
-	CompileException(OpGLLibBase* pointer, std::string const& shader, std::shared_ptr<char> const& infoLog);
+	CompileException(OpGLLibBase const* pointer, std::string const& shader, std::shared_ptr<char> const& infoLog);
 	virtual ~CompileException() = default;
 
 	virtual ExceptionType what();
@@ -42,7 +42,7 @@ private:
 
 class LinkException: public Exception {
 public:
-	LinkException(OpGLLibBase* pointer, std::shared_ptr<char> const& infoLog);
+	LinkException(OpGLLibBase const* pointer, std::shared_ptr<char> const& infoLog);
 	virtual ~LinkException() = default;
 
 	virtual ExceptionType what();

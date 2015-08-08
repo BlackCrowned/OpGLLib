@@ -11,12 +11,12 @@
 
 namespace OpGLLib {
 
-Exception::Exception(OpGLLibBase* pointer) :
+Exception::Exception(OpGLLibBase const* pointer) :
 		OpGLLibBase(pointer) {
 
 }
 
-OpenFileException::OpenFileException(OpGLLibBase* pointer, std::string const& file) :
+OpenFileException::OpenFileException(OpGLLibBase const* pointer, std::string const& file) :
 		Exception(pointer), _file(file) {
 
 }

@@ -22,7 +22,7 @@ enum class ExceptionType {
 
 class Exception: public OpGLLibBase {
 public:
-	Exception(OpGLLibBase* pointer);
+	Exception(OpGLLibBase const* pointer);
 	virtual ~Exception() = default;
 
 	virtual ExceptionType what() = 0;
@@ -33,7 +33,7 @@ public:
 
 class OpenFileException: public Exception {
 public:
-	OpenFileException(OpGLLibBase* pointer, std::string const& file);
+	OpenFileException(OpGLLibBase const* pointer, std::string const& file);
 	virtual ~OpenFileException() = default;
 
 	virtual ExceptionType what();
