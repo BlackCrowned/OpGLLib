@@ -104,6 +104,24 @@ std::vector<glm::uvec3>& NullMesh::indices() {
 	return _indices;
 }
 
+Model::Model() :
+		_mesh(new NullMesh(), OpGLLib::default_delete<Mesh>()) {
+
+}
+
+Model::Model(std::shared_ptr<Mesh> mesh) :
+		_mesh(mesh) {
+
+}
+
+std::string& Model::name() {
+	return _mesh->name();
+}
+
+std::shared_ptr<Mesh> Model::mesh() {
+	return _mesh;
+}
+
 LoadModelException::LoadModelException(OpGLLibBase const* pointer, std::string const& model, std::string const& reason) :
 		Exception(pointer), _model(model), _reason(reason) {
 

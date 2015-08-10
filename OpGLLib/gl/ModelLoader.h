@@ -71,7 +71,7 @@ private:
 	std::vector<glm::uvec3> _indices;
 };
 
-class NullMesh : public Mesh {
+class NullMesh: public Mesh {
 public:
 	NullMesh() = default;
 	virtual ~NullMesh() = default;
@@ -91,11 +91,33 @@ private:
 	std::vector<glm::uvec3> _indices;
 };
 
+class Model {
+public:
+	Model();
+	Model(std::shared_ptr<Mesh> mesh);
+	Model(Model const& other) = default;
+	~Model() = default;
+
+	void setMesh(std::shared_ptr<Mesh> mesh);
+	/*void setMaterial */
+	/*void setMaterialCollection */
+
+	std::string& name();
+
+	std::shared_ptr<Mesh> mesh();
+	/*Material material();*/
+	/*MaterialCollection materialCollecion();*/
+
+private:
+	std::shared_ptr<Mesh> _mesh;
+	/*std::shared_ptr<MaterialCollection> _materialCollection;*/
+};
+
 /*
  * Required exceptions
  */
 
-class LoadModelException :public Exception {
+class LoadModelException: public Exception {
 public:
 	LoadModelException(OpGLLibBase const* pointer, std::string const& model, std::string const& reason);
 	~LoadModelException() = default;
@@ -114,7 +136,7 @@ private:
  * Main class
  */
 
-class ModelLoaderBase : public OpGLLibBase {
+class ModelLoaderBase: public OpGLLibBase {
 public:
 	ModelLoaderBase();
 	ModelLoaderBase(OpGLLibBase const* pointer);
@@ -123,7 +145,7 @@ public:
 	virtual std::shared_ptr<Mesh> load(std::string const& model) = 0;
 };
 
-class ModelLoader : public ModelLoaderBase{
+class ModelLoader: public ModelLoaderBase {
 public:
 	ModelLoader();
 	ModelLoader(OpGLLibBase const* pointer);
@@ -135,7 +157,7 @@ protected:
 	std::shared_ptr<MeshImpl<MeshType::OBJ>> loadObj(std::string const& model);
 };
 
-class NullModelLoader : public ModelLoaderBase {
+class NullModelLoader: public ModelLoaderBase {
 public:
 	NullModelLoader();
 	NullModelLoader(OpGLLibBase const* pointer);
