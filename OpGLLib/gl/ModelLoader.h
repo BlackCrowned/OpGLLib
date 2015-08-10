@@ -142,7 +142,7 @@ public:
 	ModelLoaderBase(OpGLLibBase const* pointer);
 	virtual ~ModelLoaderBase() = default;
 
-	virtual std::shared_ptr<Mesh> load(std::string const& model) = 0;
+	virtual std::shared_ptr<Model> load(std::string const& model) = 0;
 };
 
 class ModelLoader: public ModelLoaderBase {
@@ -151,10 +151,10 @@ public:
 	ModelLoader(OpGLLibBase const* pointer);
 	virtual ~ModelLoader() = default;
 
-	virtual std::shared_ptr<Mesh> load(std::string const& model);
+	virtual std::shared_ptr<Model> load(std::string const& model);
 
 protected:
-	std::shared_ptr<MeshImpl<MeshType::OBJ>> loadObj(std::string const& model);
+	std::shared_ptr<Model> loadObj(std::string const& modelfile);
 };
 
 class NullModelLoader: public ModelLoaderBase {
@@ -163,7 +163,7 @@ public:
 	NullModelLoader(OpGLLibBase const* pointer);
 	virtual ~NullModelLoader() = default;
 
-	virtual std::shared_ptr<Mesh> load(std::string const& model);
+	virtual std::shared_ptr<Model> load(std::string const& model);
 };
 
 }
