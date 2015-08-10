@@ -114,11 +114,15 @@ Model::Model(std::shared_ptr<Mesh> mesh) :
 
 }
 
-std::string& Model::name() {
+void Model::setMesh(std::shared_ptr<Mesh>&& mesh) {
+	_mesh = std::forward<std::shared_ptr<Mesh>>(mesh);
+}
+
+std::string& Model::name() const {
 	return _mesh->name();
 }
 
-std::shared_ptr<Mesh> Model::mesh() {
+std::shared_ptr<Mesh> Model::mesh() const{
 	return _mesh;
 }
 

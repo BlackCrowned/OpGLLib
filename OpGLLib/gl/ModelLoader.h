@@ -98,13 +98,13 @@ public:
 	Model(Model const& other) = default;
 	~Model() = default;
 
-	void setMesh(std::shared_ptr<Mesh> mesh);
+	void setMesh(std::shared_ptr<Mesh>&& mesh);
 	/*void setMaterial */
 	/*void setMaterialCollection */
 
-	std::string& name();
+	std::string& name() const;
 
-	std::shared_ptr<Mesh> mesh();
+	std::shared_ptr<Mesh> mesh() const;
 	/*Material material();*/
 	/*MaterialCollection materialCollecion();*/
 
