@@ -47,6 +47,11 @@ size_t size(std::fstream& file);
 char* dataPtr(std::fstream& file);
 std::shared_ptr<char> dataSharedPtr(std::fstream& file);
 std::string dataString(std::fstream& file);
+
+std::string fileType(std::string const& file);
+
+std::string filePath(std::string const& file);
+std::string fileName(std::string const& path);
 }
 }
 

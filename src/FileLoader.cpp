@@ -123,6 +123,58 @@ std::shared_ptr<char> dataSharedPtr(std::fstream& file) {
 std::string dataString(std::fstream& file) {
 	return std::string(dataPtr(file), size(file));
 }
+
+std::string fileType(std::string const& file) {
+	return file.substr(file.find_last_of('.') + 1);
+}
+
+std::string filePath(std::string const& file) {
+	//See if directories are separated by '/' and '\'
+	if (file.find('/') != file.npos && file.find('\\') != file.npos) {
+		//Find the last used separator
+		if (file.find_last_of('/') > file.find_last_of('\\')) {
+			return file.substr(0, file.find_last_of('/') + 1);
+		} else {
+			return file.substr(0, file.find_last_of('\\') + 1);
+		}
+	}
+	//See if directories are separated by '/'
+	else if (file.find('/') != file.npos) {
+		return file.substr(0, file.find_last_of('/') + 1);
+	}
+	//See if directories are separated by '\'
+	else if (file.find('\\') != file.npos) {
+		return file.substr(0, file.find_last_of('\\') + 1);
+	}
+	//Else return empty path
+	else {
+		return "";
+	}
+}
+
+std::string fileName(std::string const& path) {
+	//See if directories are separated by '/' and '\'
+	if (path.find('/') != path.npos && path.find('\\') != path.npos) {
+		//Find the last used separator
+		if (path.find_last_of('/') > path.find_last_of('\\')) {
+			return path.substr(path.find_last_of('/') + 1);
+		} else {
+			return path.substr(path.find_last_of('\\') + 1);
+		}
+	}
+	//See if directories are separated by '/'
+	else if (path.find('/') != path.npos) {
+		return path.substr(path.find_last_of('/') + 1);
+	}
+	//See if directories are separated by '\'
+	else if (path.find('\\') != path.npos) {
+		return path.substr(path.find_last_of('\\') + 1);
+	}
+	//Else return path
+	else {
+		return path;
+	}
+}
 }
 }
 
