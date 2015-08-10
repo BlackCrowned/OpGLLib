@@ -29,6 +29,10 @@ enum class MeshType {
 	OBJ = 0
 };
 
+enum class MaterialType {
+	MTL = 0
+};
+
 class Mesh {
 public:
 	Mesh() = default;
@@ -89,6 +93,71 @@ private:
 	std::vector<glm::vec3> _normals;
 	std::vector<glm::vec2> _texCoords;
 	std::vector<glm::uvec3> _indices;
+};
+
+class Material {
+public:
+	Material() = default;
+	Material(Material const& other) = default;
+	virtual ~Material() = default;
+
+	virtual std::string const& name() const = 0;
+
+	virtual glm::vec4 const& ambient() const = 0;
+	virtual glm::vec4 const& diffuse() const = 0;
+	virtual glm::vec4 const& specular() const = 0;
+	virtual glm::vec4 const& transmittance() const = 0;
+	virtual glm::vec4 const& emission() const = 0;
+
+	virtual std::string const& ambientTexture() const = 0;
+	virtual std::string const& diffuseTexture() const = 0;
+	virtual std::string const& specularTexture() const = 0;
+	virtual std::string const& normalTexture() const = 0;
+};
+
+template<MaterialType T>
+class MaterialImpl {
+public:
+	MaterialImpl() = delete;
+	~MaterialImpl() = delete;
+};
+
+template<> class MaterialImpl<MaterialType::MTL> : public Material {
+public:
+	MaterialImpl() = default;
+	MaterialImpl(tinyobj::material_t material);
+	MaterialImpl(MaterialImpl<MaterialType::MTL> const& other) = default;
+	MaterialImpl(MaterialImpl<MaterialType::MTL> && other) = default;
+	virtual ~MaterialImpl() = default;
+
+	void setData(tinyobj::material_t material);
+
+	virtual std::string const& name() const;
+
+	virtual glm::vec4 const& ambient() const;
+	virtual glm::vec4 const& diffuse() const;
+	virtual glm::vec4 const& specular() const;
+	virtual glm::vec4 const& transmittance() const;
+	virtual glm::vec4 const& emission() const;
+
+	virtual std::string const& ambientTexture() const;
+	virtual std::string const& diffuseTexture() const;
+	virtual std::string const& specularTexture() const;
+	virtual std::string const& normalTexture() const;
+
+private:
+	std::string _name;
+
+	glm::vec4 _ambient;
+	glm::vec4 _diffuse;
+	glm::vec4 _specular;
+	glm::vec4 _transmittance;
+	glm::vec4 _emission;
+
+	std::string _ambientTexture;
+	std::string _diffuseTexture;
+	std::string _specularTexture;
+	std::string _normalTexture;
 };
 
 class Model {

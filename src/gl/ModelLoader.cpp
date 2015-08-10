@@ -104,6 +104,66 @@ std::vector<glm::uvec3> const& NullMesh::indices() const {
 	return _indices;
 }
 
+MaterialImpl<MaterialType::MTL>::MaterialImpl(tinyobj::material_t material) {
+	//Set Data
+	setData(material);
+}
+
+void MaterialImpl<MaterialType::MTL>::setData(tinyobj::material_t material) {
+	_name = material.name;
+
+	_ambient = glm::vec4(material.ambient[0], material.ambient[1], material.ambient[2], 1.0f);
+	_diffuse = glm::vec4(material.diffuse[0], material.diffuse[1], material.diffuse[2], 1.0f);
+	_specular = glm::vec4(material.specular[0], material.specular[1], material.specular[2], 1.0f);
+	_transmittance = glm::vec4(material.transmittance[0], material.transmittance[1], material.transmittance[2], 1.0f);
+	_emission = glm::vec4(material.emission[0], material.emission[1], material.emission[2], 1.0f);
+
+	_ambientTexture = material.ambient_texname;
+	_diffuseTexture = material.diffuse_texname;
+	_specularTexture = material.specular_texname;
+	_normalTexture = material.normal_texname;
+}
+
+std::string const& MaterialImpl<MaterialType::MTL>::name() const{
+	return _name;
+}
+
+glm::vec4 const& MaterialImpl<MaterialType::MTL>::ambient() const {
+	return _ambient;
+}
+
+glm::vec4 const& MaterialImpl<MaterialType::MTL>::diffuse() const {
+	return _diffuse;
+}
+
+glm::vec4 const& MaterialImpl<MaterialType::MTL>::specular() const {
+	return _specular;
+}
+
+glm::vec4 const& MaterialImpl<MaterialType::MTL>::transmittance() const {
+	return _transmittance;
+}
+
+glm::vec4 const& MaterialImpl<MaterialType::MTL>::emission() const {
+	return _emission;
+}
+
+std::string const& MaterialImpl<MaterialType::MTL>::ambientTexture() const {
+	return _ambientTexture;
+}
+
+std::string const& MaterialImpl<MaterialType::MTL>::diffuseTexture() const {
+	return _diffuseTexture;
+}
+
+std::string const& MaterialImpl<MaterialType::MTL>::specularTexture() const {
+	return _specularTexture;
+}
+
+std::string const& MaterialImpl<MaterialType::MTL>::normalTexture() const {
+	return _normalTexture;
+}
+
 Model::Model() :
 		_mesh(new NullMesh(), OpGLLib::default_delete<Mesh>()) {
 
