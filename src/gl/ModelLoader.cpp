@@ -226,25 +226,29 @@ ModelLoader::ModelLoader(OpGLLibBase const* pointer) :
 
 }
 
-std::shared_ptr<Model> ModelLoader::load(std::string const& modelfile) {
+std::shared_ptr<Model> ModelLoader::load(std::string const& file) {
 	std::shared_ptr<Model> model;
-	std::string fileType = modelfile.substr(modelfile.find_last_of('.') + 1);
+	std::string fileType = files::fileType(file);
 
 	//Log
-	getServiceLocator().getLoggingService()->log("Loading model: " + modelfile, LoggingLevel::debug);
+	getServiceLocator().getLoggingService()->log("Loading model: " + file, LoggingLevel::debug);
+
+	//Get seperate path and filename
+	std::string const& path = files::filePath(file);
+	//std::string const& filename = files::fileName(file);
 
 	if (fileType == "obj") {
-		model = loadObj(modelfile);
+		model = loadObj(file, path);
 	} else {
 		//Return if unrecoverable
-		if (!LoadModelException(this, modelfile, "Unknown file extension ." + fileType).handle()) {
+		if (!LoadModelException(this, file, "Unknown file extension ." + fileType).handle()) {
 			return std::shared_ptr<Model>(new Model(), OpGLLib::default_delete<Model>());
 		}
 	}
 	return model;
 }
 
-std::shared_ptr<Model> ModelLoader::loadObj(std::string const& modelfile) {
+std::shared_ptr<Model> ModelLoader::loadObj(std::string const& file, std::string const& basepath) {
 	//Construct storage classes
 	std::shared_ptr<Model> model(new Model(), OpGLLib::default_delete<Model>());
 	std::shared_ptr<MeshImpl<MeshType::OBJ>> mesh(new MeshImpl<MeshType::OBJ>(), OpGLLib::default_delete<MeshImpl<MeshType::OBJ>>());
@@ -252,7 +256,7 @@ std::shared_ptr<Model> ModelLoader::loadObj(std::string const& modelfile) {
 	std::vector<tinyobj::shape_t> shapes;
 
 	//Load obj file
-	std::string err = tinyobj::LoadObj(shapes, materials, modelfile.c_str());
+	std::string err = tinyobj::LoadObj(shapes, materials, file.c_str(), basepath.c_str());
 
 	if (!err.empty()) {
 		LOG(err, OpGLLib::LoggingLevel::recoverableError);
@@ -278,7 +282,7 @@ NullModelLoader::NullModelLoader(OpGLLibBase const* pointer) :
 
 }
 
-std::shared_ptr<Model> NullModelLoader::load(std::string const& model) {
+std::shared_ptr<Model> NullModelLoader::load(std::string const& file) {
 	//Return NullMesh
 	return std::shared_ptr<Model>(new Model(), OpGLLib::default_delete<Model>());
 }

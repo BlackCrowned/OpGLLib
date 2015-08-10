@@ -15,6 +15,7 @@
 #include <OpGLLib/Logging.h>
 #include <OpGLLib/OpGLLib.h>
 #include <OpGLLib/Exception.h>
+#include <OpGLLib/FileLoader.h>
 
 #include <string>
 #include <vector>
@@ -211,7 +212,7 @@ public:
 	ModelLoaderBase(OpGLLibBase const* pointer);
 	virtual ~ModelLoaderBase() = default;
 
-	virtual std::shared_ptr<Model> load(std::string const& model) = 0;
+	virtual std::shared_ptr<Model> load(std::string const& file) = 0;
 };
 
 class ModelLoader: public ModelLoaderBase {
@@ -220,10 +221,10 @@ public:
 	ModelLoader(OpGLLibBase const* pointer);
 	virtual ~ModelLoader() = default;
 
-	virtual std::shared_ptr<Model> load(std::string const& model);
+	virtual std::shared_ptr<Model> load(std::string const& file);
 
 protected:
-	std::shared_ptr<Model> loadObj(std::string const& modelfile);
+	std::shared_ptr<Model> loadObj(std::string const& file, std::string const& basepath = "");
 };
 
 class NullModelLoader: public ModelLoaderBase {
@@ -232,7 +233,7 @@ public:
 	NullModelLoader(OpGLLibBase const* pointer);
 	virtual ~NullModelLoader() = default;
 
-	virtual std::shared_ptr<Model> load(std::string const& model);
+	virtual std::shared_ptr<Model> load(std::string const& file);
 };
 
 }
