@@ -64,43 +64,43 @@ void MeshImpl<MeshType::OBJ>::setData(tinyobj::shape_t shape) {
 	}
 }
 
-std::string& MeshImpl<MeshType::OBJ>::name() {
+std::string const& MeshImpl<MeshType::OBJ>::name() const {
 	return _name;
 }
 
-std::vector<glm::vec3>& MeshImpl<MeshType::OBJ>::vertices() {
+std::vector<glm::vec3> const& MeshImpl<MeshType::OBJ>::vertices() const {
 	return _vertices;
 }
 
-std::vector<glm::vec3>& MeshImpl<MeshType::OBJ>::normals() {
+std::vector<glm::vec3> const& MeshImpl<MeshType::OBJ>::normals() const {
 	return _normals;
 }
 
-std::vector<glm::vec2>& MeshImpl<MeshType::OBJ>::texCoords() {
+std::vector<glm::vec2> const& MeshImpl<MeshType::OBJ>::texCoords() const {
 	return _texCoords;
 }
 
-std::vector<glm::uvec3>& MeshImpl<MeshType::OBJ>::indices() {
+std::vector<glm::uvec3> const& MeshImpl<MeshType::OBJ>::indices() const {
 	return _indices;
 }
 
-std::string& NullMesh::name() {
+std::string const& NullMesh::name() const {
 	return _name;
 }
 
-std::vector<glm::vec3>& NullMesh::vertices() {
+std::vector<glm::vec3> const& NullMesh::vertices() const {
 	return _vertices;
 }
 
-std::vector<glm::vec3>& NullMesh::normals() {
+std::vector<glm::vec3> const& NullMesh::normals() const {
 	return _normals;
 }
 
-std::vector<glm::vec2>& NullMesh::texCoords() {
+std::vector<glm::vec2> const& NullMesh::texCoords() const {
 	return _texCoords;
 }
 
-std::vector<glm::uvec3>& NullMesh::indices() {
+std::vector<glm::uvec3> const& NullMesh::indices() const {
 	return _indices;
 }
 
@@ -118,7 +118,7 @@ void Model::setMesh(std::shared_ptr<Mesh>&& mesh) {
 	_mesh = std::forward<std::shared_ptr<Mesh>>(mesh);
 }
 
-std::string& Model::name() const {
+std::string const& Model::name() const {
 	return _mesh->name();
 }
 

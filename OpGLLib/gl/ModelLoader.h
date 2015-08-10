@@ -34,12 +34,12 @@ public:
 	Mesh() = default;
 	virtual ~Mesh() = default;
 
-	virtual std::string& name() = 0;
+	virtual std::string const& name() const = 0;
 
-	virtual std::vector<glm::vec3>& vertices() = 0;
-	virtual std::vector<glm::vec3>& normals() = 0;
-	virtual std::vector<glm::vec2>& texCoords() = 0;
-	virtual std::vector<glm::uvec3>& indices() = 0;
+	virtual std::vector<glm::vec3> const& vertices() const = 0;
+	virtual std::vector<glm::vec3> const& normals() const = 0;
+	virtual std::vector<glm::vec2> const& texCoords() const = 0;
+	virtual std::vector<glm::uvec3> const& indices() const = 0;
 };
 
 template<MeshType T> class MeshImpl {
@@ -55,12 +55,12 @@ public:
 
 	void setData(tinyobj::shape_t shape);
 
-	virtual std::string& name();
+	virtual std::string const& name() const;
 
-	virtual std::vector<glm::vec3>& vertices();
-	virtual std::vector<glm::vec3>& normals();
-	virtual std::vector<glm::vec2>& texCoords();
-	virtual std::vector<glm::uvec3>& indices();
+	virtual std::vector<glm::vec3> const& vertices() const;
+	virtual std::vector<glm::vec3> const& normals() const;
+	virtual std::vector<glm::vec2> const& texCoords() const;
+	virtual std::vector<glm::uvec3> const& indices() const;
 
 private:
 	std::string _name;
@@ -76,12 +76,12 @@ public:
 	NullMesh() = default;
 	virtual ~NullMesh() = default;
 
-	virtual std::string& name();
+	virtual std::string const& name() const;
 
-	virtual std::vector<glm::vec3>& vertices();
-	virtual std::vector<glm::vec3>& normals();
-	virtual std::vector<glm::vec2>& texCoords();
-	virtual std::vector<glm::uvec3>& indices();
+	virtual std::vector<glm::vec3> const& vertices() const;
+	virtual std::vector<glm::vec3> const& normals() const;
+	virtual std::vector<glm::vec2> const& texCoords() const;
+	virtual std::vector<glm::uvec3> const& indices() const;
 
 private:
 	std::string _name;
@@ -102,7 +102,7 @@ public:
 	/*void setMaterial */
 	/*void setMaterialCollection */
 
-	std::string& name() const;
+	std::string const& name() const;
 
 	std::shared_ptr<Mesh> mesh() const;
 	/*Material material();*/
