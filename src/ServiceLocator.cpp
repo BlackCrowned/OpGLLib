@@ -14,7 +14,7 @@
 namespace OpGLLib {
 
 ServiceLocator::ServiceLocator() :
-		_loggingService(), _inputManagerService() {
+		_loggingService(), _inputManagerService(), _modelLoaderService() {
 
 }
 
