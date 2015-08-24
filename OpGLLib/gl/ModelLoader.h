@@ -161,6 +161,39 @@ private:
 	std::string _normalTexture;
 };
 
+class NullMaterial : public Material{
+public:
+	NullMaterial() = default;
+	NullMaterial(NullMaterial const& other) = default;
+	~NullMaterial() = default;
+
+	virtual std::string const& name() const;
+
+	virtual glm::vec4 const& ambient() const;
+	virtual glm::vec4 const& diffuse() const;
+	virtual glm::vec4 const& specular() const;
+	virtual glm::vec4 const& transmittance() const;
+	virtual glm::vec4 const& emission() const;
+
+	virtual std::string const& ambientTexture() const;
+	virtual std::string const& diffuseTexture() const;
+	virtual std::string const& specularTexture() const;
+	virtual std::string const& normalTexture() const;
+
+private:
+	std::string _name;
+
+	glm::vec4 _ambient;
+	glm::vec4 _diffuse;
+	glm::vec4 _specular;
+	glm::vec4 _transmittance;
+	glm::vec4 _emission;
+
+	std::string _ambientTexture;
+	std::string _diffuseTexture;
+	std::string _specularTexture;
+	std::string _normalTexture;
+};
 class Model {
 public:
 	Model();

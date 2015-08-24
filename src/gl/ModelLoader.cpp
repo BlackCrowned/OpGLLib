@@ -164,6 +164,46 @@ std::string const& MaterialImpl<MaterialType::MTL>::normalTexture() const {
 	return _normalTexture;
 }
 
+std::string const& NullMaterial::name() const {
+	return _name;
+}
+
+glm::vec4 const& NullMaterial::ambient() const {
+	return _ambient;
+}
+
+glm::vec4 const& NullMaterial::diffuse() const {
+	return _diffuse;
+}
+
+glm::vec4 const& NullMaterial::specular() const {
+	return _specular;
+}
+
+glm::vec4 const& NullMaterial::transmittance() const {
+	return _transmittance;
+}
+
+glm::vec4 const& NullMaterial::emission() const {
+	return _emission;
+}
+
+std::string const& NullMaterial::ambientTexture() const {
+	return _ambientTexture;
+}
+
+std::string const& NullMaterial::diffuseTexture() const {
+	return _diffuseTexture;
+}
+
+std::string const& NullMaterial::specularTexture() const {
+	return _specularTexture;
+}
+
+std::string const& NullMaterial::normalTexture() const {
+	return _normalTexture;
+}
+
 Model::Model() :
 		_mesh(new NullMesh(), OpGLLib::default_delete<Mesh>()) {
 
