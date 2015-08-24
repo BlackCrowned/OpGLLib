@@ -124,7 +124,7 @@ void MaterialImpl<MaterialType::MTL>::setData(tinyobj::material_t material) {
 	_normalTexture = material.normal_texname;
 }
 
-std::string const& MaterialImpl<MaterialType::MTL>::name() const{
+std::string const& MaterialImpl<MaterialType::MTL>::name() const {
 	return _name;
 }
 
@@ -161,6 +161,93 @@ std::string const& MaterialImpl<MaterialType::MTL>::specularTexture() const {
 }
 
 std::string const& MaterialImpl<MaterialType::MTL>::normalTexture() const {
+	return _normalTexture;
+}
+
+MaterialImpl<MaterialType::MATERIAL_COLLECTION>::MaterialImpl(Material const& other) :
+		Material(), _name(other.name()), _ambient(other.ambient()), _diffuse(other.diffuse()), _specular(other.specular()),
+				_transmittance(other.transmittance()), _emission(other.emission()), _ambientTexture(other.ambientTexture()),
+				_diffuseTexture(other.diffuseTexture()), _specularTexture(other.specularTexture()), _normalTexture(other.normalTexture()) {
+
+}
+
+void MaterialImpl<MaterialType::MATERIAL_COLLECTION>::setName(std::string const& name) {
+	_name = name;
+}
+
+void MaterialImpl<MaterialType::MATERIAL_COLLECTION>::setAmbient(glm::vec4 const& ambient) {
+	_ambient = ambient;
+}
+
+void MaterialImpl<MaterialType::MATERIAL_COLLECTION>::setDiffuse(glm::vec4 const& diffuse) {
+	_diffuse = diffuse;
+}
+
+void MaterialImpl<MaterialType::MATERIAL_COLLECTION>::setSpecular(glm::vec4 const& specular) {
+	_specular = specular;
+}
+
+void MaterialImpl<MaterialType::MATERIAL_COLLECTION>::setTransmittance(glm::vec4 const& transmittance) {
+	_transmittance = transmittance;
+}
+
+void MaterialImpl<MaterialType::MATERIAL_COLLECTION>::setEmission(glm::vec4 const& emission) {
+	_emission = emission;
+}
+
+void MaterialImpl<MaterialType::MATERIAL_COLLECTION>::setAmbientTexture(std::string const& ambientTexture) {
+	_ambientTexture = ambientTexture;
+}
+
+void MaterialImpl<MaterialType::MATERIAL_COLLECTION>::setDiffuseTexture(std::string const& diffuseTexture) {
+	_diffuseTexture = diffuseTexture;
+}
+
+void MaterialImpl<MaterialType::MATERIAL_COLLECTION>::setSpecularTexture(std::string const& specularTexture) {
+	_specularTexture = specularTexture;
+}
+
+void MaterialImpl<MaterialType::MATERIAL_COLLECTION>::setNormalTexture(std::string const& normalTexture) {
+	_normalTexture = normalTexture;
+}
+
+std::string const& MaterialImpl<MaterialType::MATERIAL_COLLECTION>::name() const {
+	return _name;
+}
+
+glm::vec4 const& MaterialImpl<MaterialType::MATERIAL_COLLECTION>::ambient() const {
+	return _ambient;
+}
+
+glm::vec4 const& MaterialImpl<MaterialType::MATERIAL_COLLECTION>::diffuse() const {
+	return _diffuse;
+}
+
+glm::vec4 const& MaterialImpl<MaterialType::MATERIAL_COLLECTION>::specular() const {
+	return _specular;
+}
+
+glm::vec4 const& MaterialImpl<MaterialType::MATERIAL_COLLECTION>::transmittance() const {
+	return _transmittance;
+}
+
+glm::vec4 const& MaterialImpl<MaterialType::MATERIAL_COLLECTION>::emission() const {
+	return _emission;
+}
+
+std::string const& MaterialImpl<MaterialType::MATERIAL_COLLECTION>::ambientTexture() const {
+	return _ambientTexture;
+}
+
+std::string const& MaterialImpl<MaterialType::MATERIAL_COLLECTION>::diffuseTexture() const {
+	return _diffuseTexture;
+}
+
+std::string const& MaterialImpl<MaterialType::MATERIAL_COLLECTION>::specularTexture() const {
+	return _specularTexture;
+}
+
+std::string const& MaterialImpl<MaterialType::MATERIAL_COLLECTION>::normalTexture() const {
 	return _normalTexture;
 }
 
@@ -204,6 +291,197 @@ std::string const& NullMaterial::normalTexture() const {
 	return _normalTexture;
 }
 
+void MaterialComparator::operator ()(MaterialImpl<MaterialType::MATERIAL_COLLECTION>& dest, Material const& src) const {
+	//Compare names
+	compNames(dest, src);
+
+	//Compare ambients
+	compAmbient(dest, src);
+	//Compare diffuses
+	compDiffuse(dest, src);
+	//Compare speculars
+	compSpecular(dest, src);
+	//Compare transmittances
+	compTransmittance(dest, src);
+	//Compare emissions
+	compEmission(dest, src);
+
+	//Compare ambientTextures
+	compAmbientTexture(dest, src);
+	//Compare diffuseTextures
+	compDiffuseTexture(dest, src);
+	//Compare specularTextures
+	compSpecularTexture(dest, src);
+	//Compare normalTextures
+	compNormalTexture(dest, src);
+}
+
+void MaterialComparator::compNames(MaterialImpl<MaterialType::MATERIAL_COLLECTION>& dest, Material const& src) const {
+	//Ignore empty name
+	if (!src.name().empty()) {
+		//If dest is empty use src
+		if (dest.name().empty()) {
+			dest.setName(src.name());
+		}
+		//If not combine both names
+		else {
+			dest.setName(dest.name() + "|" + src.name());
+		}
+	}
+}
+
+void MaterialComparator::compAmbient(MaterialImpl<MaterialType::MATERIAL_COLLECTION>& dest, Material const& src) const {
+	//Ignore empty ambient
+	if (src.ambient() != glm::vec4()) {
+		//If dest is empty use src
+		if (dest.ambient() == glm::vec4()) {
+			dest.setAmbient(src.ambient());
+		}
+		//If not multiply both values
+		else {
+			dest.setAmbient(dest.ambient() * src.ambient());
+		}
+	}
+}
+
+void MaterialComparator::compDiffuse(MaterialImpl<MaterialType::MATERIAL_COLLECTION>& dest, Material const& src) const {
+	//Ignore empty diffuse
+	if (src.diffuse() != glm::vec4()) {
+		//If dest is empty use src
+		if (dest.diffuse() == glm::vec4()) {
+			dest.setDiffuse(src.diffuse());
+		}
+		//If not multiply both values
+		else {
+			dest.setDiffuse(dest.diffuse() * src.diffuse());
+		}
+	}
+}
+
+void MaterialComparator::compSpecular(MaterialImpl<MaterialType::MATERIAL_COLLECTION>& dest, Material const& src) const {
+	//Ignore empty specular
+	if (src.specular() != glm::vec4()) {
+		//If dest is empty use src
+		if (dest.specular() == glm::vec4()) {
+			dest.setSpecular(src.specular());
+		}
+		//If not multiply both values
+		else {
+			dest.setSpecular(dest.specular() * src.specular());
+		}
+	}
+}
+
+void MaterialComparator::compTransmittance(MaterialImpl<MaterialType::MATERIAL_COLLECTION>& dest, Material const& src) const {
+	//Ignore empty transmittance
+	if (src.transmittance() != glm::vec4()) {
+		//If dest is empty use src
+		if (dest.transmittance() == glm::vec4()) {
+			dest.setTransmittance(src.transmittance());
+		}
+		//If not multiply both values
+		else {
+			dest.setTransmittance(dest.transmittance() * src.transmittance());
+		}
+	}
+}
+
+void MaterialComparator::compEmission(MaterialImpl<MaterialType::MATERIAL_COLLECTION>& dest, Material const& src) const {
+	//Ignore empty emission
+	if (src.emission() != glm::vec4()) {
+		//If dest is empty use src
+		if (dest.emission() == glm::vec4()) {
+			dest.setEmission(src.emission());
+		}
+		//If not multiply both values
+		else {
+			dest.setEmission(dest.emission() * src.emission());
+		}
+	}
+}
+
+void MaterialComparator::compAmbientTexture(MaterialImpl<MaterialType::MATERIAL_COLLECTION>& dest, Material const& src) const {
+	//Ignore empty ambientTexture
+	if (!src.ambientTexture().empty()) {
+		//If dest is empty use src
+		if (dest.ambientTexture().empty()) {
+			dest.setAmbientTexture(src.ambientTexture());
+		}
+		//If not keep using dest value
+	}
+}
+
+void MaterialComparator::compDiffuseTexture(MaterialImpl<MaterialType::MATERIAL_COLLECTION>& dest, Material const& src) const {
+	//Ignore empty diffuseTexture
+	if (!src.diffuseTexture().empty()) {
+		//If dest is empty use src
+		if (dest.diffuseTexture().empty()) {
+			dest.setDiffuseTexture(src.diffuseTexture());
+		}
+		//If not keep using dest value
+	}
+}
+
+void MaterialComparator::compSpecularTexture(MaterialImpl<MaterialType::MATERIAL_COLLECTION>& dest, Material const& src) const {
+	//Ignore empty specularTexture
+	if (!src.specularTexture().empty()) {
+		//If dest is empty use src
+		if (dest.specularTexture().empty()) {
+			dest.setSpecularTexture(src.specularTexture());
+		}
+		//If not keep using dest value
+	}
+}
+
+void MaterialComparator::compNormalTexture(MaterialImpl<MaterialType::MATERIAL_COLLECTION>& dest, Material const& src) const {
+	//Ignore empty normalTexture
+	if (!src.normalTexture().empty()) {
+		//If dest is empty use src
+		if (dest.normalTexture().empty()) {
+			dest.setNormalTexture(src.normalTexture());
+		}
+		//If not keep using dest value
+	}
+}
+
+MaterialCollection::MaterialCollection() :
+		_material(new NullMaterial(), OpGLLib::default_delete<Material>()) {
+
+}
+
+MaterialCollection::MaterialCollection(std::initializer_list<std::shared_ptr<Material>> init_list) {
+	//Add all materials provided by init_list
+	for (auto i : init_list) {
+		addMaterial(i);
+	}
+
+	//Update resulting material
+	update();
+}
+
+void MaterialCollection::addMaterial(std::shared_ptr<Material> material) {
+	_materialList.push_back(material);
+}
+
+void MaterialCollection::update() {
+	MaterialComparator comparator;
+
+	//Make sure _materialList isn't empty
+	if (!_materialList.empty()) {
+		//Construct new _material with first material from _materialList as base
+		_material.reset(new MaterialImpl<MaterialType::MATERIAL_COLLECTION>(*_materialList[0]), OpGLLib::default_delete<Material>());
+	}
+	//Continue with the following materials in _materialList (if any)
+	for (size_t i = 1; i < _materialList.size(); i++) {
+		//Compare materials
+		comparator.operator ()(*std::dynamic_pointer_cast<MaterialImpl<MaterialType::MATERIAL_COLLECTION>>(_material), *_materialList[i]);
+	}
+}
+
+std::shared_ptr<Material> MaterialCollection::get() const {
+	return _material;
+}
+
 Model::Model() :
 		_mesh(new NullMesh(), OpGLLib::default_delete<Mesh>()) {
 
@@ -222,7 +500,7 @@ std::string const& Model::name() const {
 	return _mesh->name();
 }
 
-std::shared_ptr<Mesh> Model::mesh() const{
+std::shared_ptr<Mesh> Model::mesh() const {
 	return _mesh;
 }
 
