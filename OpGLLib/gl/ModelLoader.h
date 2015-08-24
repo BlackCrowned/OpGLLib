@@ -268,7 +268,7 @@ public:
 	MaterialCollection(std::initializer_list<std::shared_ptr<Material>> init_list);
 	~MaterialCollection() = default;
 
-	void addMaterial(std::shared_ptr<Material> material);
+	void addMaterial(std::shared_ptr<Material>&& material);
 
 	void update();
 
@@ -286,18 +286,18 @@ public:
 	~Model() = default;
 
 	void setMesh(std::shared_ptr<Mesh>&& mesh);
-	/*void setMaterial */
-	/*void setMaterialCollection */
+	void setMaterial(std::shared_ptr<Material>&& material);
+	void setMaterialCollection(std::shared_ptr<MaterialCollection>&& materialCollection);
 
 	std::string const& name() const;
 
 	std::shared_ptr<Mesh> mesh() const;
-	/*Material material();*/
-	/*MaterialCollection materialCollecion();*/
+	std::shared_ptr<Material> material() const;
+	std::shared_ptr<MaterialCollection> materialCollecion() const;
 
 private:
 	std::shared_ptr<Mesh> _mesh;
-	/*std::shared_ptr<MaterialCollection> _materialCollection;*/
+	std::shared_ptr<MaterialCollection> _materialCollection;
 };
 
 /*

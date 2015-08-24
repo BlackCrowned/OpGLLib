@@ -452,15 +452,15 @@ MaterialCollection::MaterialCollection() :
 MaterialCollection::MaterialCollection(std::initializer_list<std::shared_ptr<Material>> init_list) {
 	//Add all materials provided by init_list
 	for (auto i : init_list) {
-		addMaterial(i);
+		addMaterial(std::move(i));
 	}
 
 	//Update resulting material
 	update();
 }
 
-void MaterialCollection::addMaterial(std::shared_ptr<Material> material) {
-	_materialList.push_back(material);
+void MaterialCollection::addMaterial(std::shared_ptr<Material>&& material) {
+	_materialList.push_back(std::forward<std::shared_ptr<Material>>(material));
 }
 
 void MaterialCollection::update() {
@@ -496,12 +496,29 @@ void Model::setMesh(std::shared_ptr<Mesh>&& mesh) {
 	_mesh = std::forward<std::shared_ptr<Mesh>>(mesh);
 }
 
+void Model::setMaterial(std::shared_ptr<Material>&& material) {
+	_materialCollection->addMaterial(std::forward<std::shared_ptr<Material>>(material));
+	_materialCollection->update();
+}
+
+void Model::setMaterialCollection(std::shared_ptr<MaterialCollection>&& materialCollection) {
+	_materialCollection = std::forward<std::shared_ptr<MaterialCollection>>(materialCollection);
+}
+
 std::string const& Model::name() const {
 	return _mesh->name();
 }
 
 std::shared_ptr<Mesh> Model::mesh() const {
 	return _mesh;
+}
+
+std::shared_ptr<Material> Model::material() const {
+	return _materialCollection->get();
+}
+
+std::shared_ptr<MaterialCollection> Model::materialCollecion() const {
+	return _materialCollection;
 }
 
 LoadModelException::LoadModelException(OpGLLibBase const* pointer, std::string const& model, std::string const& reason) :
@@ -569,7 +586,8 @@ std::shared_ptr<Model> ModelLoader::load(std::string const& file) {
 std::shared_ptr<Model> ModelLoader::loadObj(std::string const& file, std::string const& basepath) {
 	//Construct storage classes
 	std::shared_ptr<Model> model(new Model(), OpGLLib::default_delete<Model>());
-	std::shared_ptr<MeshImpl<MeshType::OBJ>> mesh(new MeshImpl<MeshType::OBJ>(), OpGLLib::default_delete<MeshImpl<MeshType::OBJ>>());
+	std::shared_ptr<Mesh> mesh(new MeshImpl<MeshType::OBJ>(), OpGLLib::default_delete<Mesh>());
+	std::shared_ptr<MaterialCollection> materialCollection(new MaterialCollection(), OpGLLib::default_delete<MaterialCollection>());
 	std::vector<tinyobj::material_t> materials;
 	std::vector<tinyobj::shape_t> shapes;
 
@@ -582,10 +600,23 @@ std::shared_ptr<Model> ModelLoader::loadObj(std::string const& file, std::string
 	}
 
 	//Convert data to Mesh
-	mesh->setData(shapes[0]);
+	std::dynamic_pointer_cast<MeshImpl<MeshType::OBJ>>(mesh)->setData(shapes[0]);
 
 	//Use Mesh in Model
-	model->setMesh(mesh);
+	model->setMesh(std::move(mesh));
+
+	//Loop through all materials and fill the materialCollection
+	for (auto it = materials.begin(); it != materials.end(); it++) {
+		std::shared_ptr<Material> material(new MaterialImpl<MaterialType::MTL>(), OpGLLib::default_delete<Material>());
+		std::dynamic_pointer_cast<MaterialImpl<MaterialType::MTL>>(material)->setData(*it);
+		materialCollection->addMaterial(std::move(material));
+	}
+
+	//Update materialCollection
+	materialCollection->update();
+
+	//Use materialCollection in model
+	model->setMaterialCollection(std::move(materialCollection));
 
 	return model;
 }
