@@ -9,6 +9,7 @@
 
 using namespace std;
 
+namespace OpGLLib {
 template<typename Event>
 Callbacks<Event>::Callbacks() {
 
@@ -57,3 +58,6 @@ template<typename Event>
 int Callbacks<Event>::size() {
 	return callbacks.size();
 }
+}
+
+

@@ -10,6 +10,7 @@
 
 using namespace std;
 
+namespace OpGLLib {
 namespace ImageLoader {
 Bitmap::Bitmap() {
 
@@ -66,8 +67,11 @@ bool Bitmap::loadBitmap(char* ptr) {
 		colorTable(ptr + 0xE + *headerSize, 0);
 	}
 
-	imageData = shared_ptr<tvec4<OpGLLib::Types::BYTE> >(new tvec4<OpGLLib::Types::BYTE> [*width * (*height > 0 ? *height : -*height)],
-			OpGLLib::default_delete<tvec4<OpGLLib::Types::BYTE> []>());
+//	imageData = shared_ptr<tvec4<OpGLLib::Types::BYTE> >(new tvec4<OpGLLib::Types::BYTE> [*width * (*height > 0 ? *height : -*height)],
+//			OpGLLib::default_delete<tvec4<OpGLLib::Types::BYTE> []>());
+
+	imageData.reserve((*width * (*height > 0 ? *height : -*height)) * 4);
+	imageData.resize((*width * (*height > 0 ? *height : -*height)) * 4);
 
 	long int currentHeight = *height;
 	long int maxWidth = *width;
@@ -82,7 +86,7 @@ bool Bitmap::loadBitmap(char* ptr) {
 				BMPImageData = ptr + *offset + ++ImageDataCount * ImageDataCountMultiplier;
 				ImageDataOffset = 0;
 			}
-			tvec4<OpGLLib::Types::BYTE>* tmp = imageData.get() + (maxHeight - currentHeight) * maxWidth + i;
+			tvec4<dataType>* tmp = reinterpret_cast<tvec4<dataType>*>(imageData.data()) + (maxHeight - currentHeight) * maxWidth + i;
 			switch (*bitCount) {
 			case 1:
 			case 4:
@@ -121,13 +125,15 @@ bool Bitmap::loadBitmap(std::string filename) {
 		std::cerr << "Failed to open file: " << filename << "!" << std::endl;
 		return false;
 	}
-	char *ptr = OpGLLib::file::dataPtr(file);
+	char *ptr = OpGLLib::files::dataPtr(file);
 	return loadBitmap(ptr);
 }
 
-Image2D<OpGLLib::Types::BYTE> Bitmap::getImage() {
-	return Image2D<OpGLLib::Types::BYTE>(static_cast<size_t>(*width),
-			*height > 0 ? static_cast<size_t>(*height) : static_cast<size_t>(-*height), imageData);
+Image<Bitmap::dataType> Bitmap::getImage() {
+//	return Image2D<OpGLLib::Types::BYTE>(static_cast<size_t>(*width),
+//			*height > 0 ? static_cast<size_t>(*height) : static_cast<size_t>(-*height), imageData);
+	return Image<dataType>( { static_cast<size_t>(*width), *height > 0 ? static_cast<size_t>(*height) : static_cast<size_t>(-*height) },
+			imageData);
 }
 
 Dimensions Bitmap::getDimensions() {
@@ -146,12 +152,27 @@ size_t Bitmap::getBitCount() {
 	return bitCount.data;
 }
 
-Bitmap loadBMP(std::string filename) {
+Image<unsigned char> loadBMP(std::string filename) {
 	Bitmap bitmap(filename);
 
 	cout << "Loaded [" << bitmap.getWidth() << "|" << bitmap.getHeight() << "] " << bitmap.getBitCount() << "-Bit Bitmap" << endl;
 
-	return bitmap;
+	return bitmap.getImage();
 }
 
+Image<unsigned char> loadPNG(std::string filename) {
+	//Decode png
+	std::vector<unsigned char> data;
+	unsigned int width, height;
+	int errorCode = lodepng::decode(data, width, height, filename);
+	if (errorCode) {
+		cerr << "Loading " << filename << " failed with error: " << lodepng_error_text(errorCode) << "." << endl;
+	}
+
+
+	//Return Image
+	return Image<unsigned char>({width, height}, std::move(data));
+}
+
+}
 }

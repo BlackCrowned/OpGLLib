@@ -9,6 +9,7 @@
 
 using namespace std;
 
+namespace OpGLLib {
 FileLoader::FileLoader() {
 	file = new fstream();
 }
@@ -90,26 +91,28 @@ FileLoader::operator bool() {
 	return file->good();
 }
 
-namespace OpGLLib {
-namespace file {
+namespace files {
 size_t size(std::fstream& file) {
 	//Save current get pointer
 	size_t const& currg = file.tellg();
 	//Get file size
-	file.seekg(0, std::ios::end);
+	file.seekg(0, file.end);
 	size_t const& size = file.tellg();
 	//Reset to previous get pointer
-	file.seekg(currg, std::ios::beg);
+	file.seekg(currg, file.beg);
 	return size;
 }
 
 char *dataPtr(std::fstream& file) {
 	//Get file size
-	size_t const& size = file::size(file);
+	size_t const& size = files::size(file);
 	//Allocate memory
 	char* buf = new char[size + 1];
 	//Read data
+	file.seekg(0, file.beg);
 	file.read(buf, size);
+	//Add terminating Null-Byte
+	buf[file.gcount()] = '\0';
 	//Return buffer
 	return buf;
 }
@@ -119,6 +122,58 @@ std::shared_ptr<char> dataSharedPtr(std::fstream& file) {
 }
 std::string dataString(std::fstream& file) {
 	return std::string(dataPtr(file), size(file));
+}
+
+std::string fileType(std::string const& file) {
+	return file.substr(file.find_last_of('.') + 1);
+}
+
+std::string filePath(std::string const& file) {
+	//See if directories are separated by '/' and '\'
+	if (file.find('/') != file.npos && file.find('\\') != file.npos) {
+		//Find the last used separator
+		if (file.find_last_of('/') > file.find_last_of('\\')) {
+			return file.substr(0, file.find_last_of('/') + 1);
+		} else {
+			return file.substr(0, file.find_last_of('\\') + 1);
+		}
+	}
+	//See if directories are separated by '/'
+	else if (file.find('/') != file.npos) {
+		return file.substr(0, file.find_last_of('/') + 1);
+	}
+	//See if directories are separated by '\'
+	else if (file.find('\\') != file.npos) {
+		return file.substr(0, file.find_last_of('\\') + 1);
+	}
+	//Else return empty path
+	else {
+		return "";
+	}
+}
+
+std::string fileName(std::string const& path) {
+	//See if directories are separated by '/' and '\'
+	if (path.find('/') != path.npos && path.find('\\') != path.npos) {
+		//Find the last used separator
+		if (path.find_last_of('/') > path.find_last_of('\\')) {
+			return path.substr(path.find_last_of('/') + 1);
+		} else {
+			return path.substr(path.find_last_of('\\') + 1);
+		}
+	}
+	//See if directories are separated by '/'
+	else if (path.find('/') != path.npos) {
+		return path.substr(path.find_last_of('/') + 1);
+	}
+	//See if directories are separated by '\'
+	else if (path.find('\\') != path.npos) {
+		return path.substr(path.find_last_of('\\') + 1);
+	}
+	//Else return path
+	else {
+		return path;
+	}
 }
 }
 }

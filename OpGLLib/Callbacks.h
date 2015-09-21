@@ -8,8 +8,14 @@
 #ifndef OPGLLIB_CALLBACKS_H_
 #define OPGLLIB_CALLBACKS_H_
 
-#include <OpGLLib/internal.h>
+#include <chrono>
+#include <functional>
+#include <iostream>
+#include <deque>
+#include <queue>
+#include <map>
 
+namespace OpGLLib{
 enum CallbackSettings {
 	removeWhenFinished = 0x1
 };
@@ -114,5 +120,8 @@ private:
 };
 
 template class Callbacks<int> ;
+}
+
+
 
 #endif /* OPGLLIB_CALLBACKS_H_ */

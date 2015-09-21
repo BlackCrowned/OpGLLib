@@ -7,6 +7,7 @@
 
 #include <OpGLLib/Perspective.h>
 
+namespace OpGLLib {
 Perspective::Perspective() {
 	perspectiveMatrix = glm::mat4(0);
 
@@ -159,3 +160,5 @@ void Perspective::seekState() {
 	zFar = tmp.zFar;
 	useFoV = tmp.useFoV;
 }
+}
+

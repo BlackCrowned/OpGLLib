@@ -8,7 +8,7 @@
 #ifndef OPGLLIB_TIMER_H_
 #define OPGLLIB_TIMER_H_
 
-#include <OpGLLib/internal.h>
+#include <chrono>
 
 class Timer {
 public:

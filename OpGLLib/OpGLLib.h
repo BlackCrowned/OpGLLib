@@ -9,38 +9,43 @@
 #define OPGLLIB_OPGLLIB_H_
 
 #include <OpGLLib/internal.h>
-#include <OpGLLib/LoadShaders.h>
-#include <OpGLLib/Matrices.h>
-#include <OpGLLib/Perspective.h>
-#include <OpGLLib/Camera.h>
-#include <OpGLLib/Transformation.h>
-#include <OpGLLib/Debug.h>
+
+//#include <OpGLLib/ServiceLocator.h>
+#include <OpGLLib/Observer.h>
+#include <string>
+
+#include <OpGLLib/DefaultDelete.h>
+#include <OpGLLib/ObserverFwd.h>
+#include <OpGLLib/ServiceLocatorFwd.h>
 
 namespace OpGLLib {
 
-class OpGLLib {
+class OpGLLibBase: public Observer::LoggingSubject, public Observer::ExceptionHandlerSubject, public Observer::InputManagerSubject {
 public:
-	OpGLLib();
-	OpGLLib(glbinding::ContextHandle context);
+	//Prevent shadowing of Subjects
+	using Observer::LoggingSubject::addObserver;
+	using Observer::LoggingSubject::notify;
+	using Observer::ExceptionHandlerSubject::addObserver;
+	using Observer::ExceptionHandlerSubject::notify;
+	using Observer::InputManagerSubject::addObserver;
+	using Observer::InputManagerSubject::notify;
 
-	void setContext(glbinding::ContextHandle context);
+	OpGLLibBase();
+	OpGLLibBase(OpGLLibBase const* pointer);
+	OpGLLibBase(OpGLLibBase const& other) = default;
+	OpGLLibBase(OpGLLibBase&& other) = default;
+	~OpGLLibBase() = default;
 
-	void enableCulling(gl::GLenum CullFace = gl::GL_BACK, gl::GLenum FrontFace = gl::GL_CCW);
-	void disableCulling();
-	void enableDepthTest(gl::GLboolean DepthMasc = gl::GL_TRUE, gl::GLenum DepthFunc = gl::GL_LEQUAL);
-	void disableDepthTest();
+	void reset();
+	void reset(OpGLLibBase const* pointer);
 
-	std::chrono::milliseconds getFrameTime(int range = 1);
-	float getFrameRate(int range = 1);
+	void setServiceLocator(ServiceLocator&& serviceLocator);
+	ServiceLocator& getServiceLocator() const;
 
-	LoadShaders loadShaders;
-	Matrices matrices;
-	Perspective perspective;
-	Camera camera;
-	Transformation transformation;
+	void swap(OpGLLibBase& other);
+
 private:
-	std::chrono::time_point<std::chrono::system_clock> lastFrame;
-	std::deque<std::chrono::milliseconds> frameDuration;
+	std::shared_ptr<ServiceLocator> _serviceLocator;
 };
 
 }
