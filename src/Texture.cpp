@@ -46,6 +46,80 @@ void Texture2D::generateMipmap() {
 	::gl::glGenerateMipmap(_target);
 }
 
+TextureManagerBase::TextureManagerBase() :
+		OpGLLibBase() {
+
+}
+
+TextureManagerBase::TextureManagerBase(OpGLLibBase const* pointer) :
+		OpGLLibBase(pointer) {
+
+}
+
+TextureManager::TextureManager() :
+		TextureManagerBase(), _textureCache() {
+
+}
+
+TextureManager::TextureManager(OpGLLibBase const* pointer) :
+		TextureManagerBase(pointer), _textureCache() {
+
+}
+
+Texture2D TextureManager::loadTexture2D(std::string file, bool cache) {
+	//Check wether texture is cached
+	if (cache && checkTextureCache(file)) {
+		return getCachedTexture(file);
+	}
+
+	//Texture needs to be loaded
+	//TODO: Call to an ImageManager
+
+	//Generate Texture // TODO: Add arguments
+	Texture2D texture();
+
+	//If requested, cache texture
+	if (cache) {
+		_textureCache[file] = texture;
+	}
+
+	return texture;
+}
+
+void TextureManager::preloadTexture2D(std::string file) {
+	loadTexture2D(file);
+}
+
+bool TextureManager::checkTextureCache(std::string file) {
+	return (_textureCache.count(file) > 0 ? true : false);
+}
+
+Texture2D TextureManager::getCachedTexture(std::string file) {
+	return _textureCache[file];
+}
+
+NullTextureManager::NullTextureManager() :
+		TextureManagerBase() {
+
+}
+
+NullTextureManager::NullTextureManager(OpGLLibBase const* pointer) :
+		TextureManagerBase(pointer) {
+
+}
+
+Texture2D NullTextureManager::loadTexture2D(std::string file, bool cache) {
+	return Texture2D();
+}
+
+void NullTextureManager::preloadTexture2D(std::string file) {
+	return;
+}
+
+bool NullTextureManager::checkTextureCache(std::string file) {
+	return false;
+}
+
 }
 
 }
