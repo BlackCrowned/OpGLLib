@@ -281,7 +281,7 @@ private:
 class Model {
 public:
 	Model();
-	Model(std::shared_ptr<Mesh> mesh);
+	Model(std::shared_ptr<Mesh> mesh, std::shared_ptr<MaterialCollection> materialCollection);
 	Model(Model const& other) = default;
 	~Model() = default;
 
@@ -296,6 +296,9 @@ public:
 	std::shared_ptr<MaterialCollection> materialCollecion() const;
 
 private:
+	void update();
+
+	std::string _name;
 	std::shared_ptr<Mesh> _mesh;
 	std::shared_ptr<MaterialCollection> _materialCollection;
 };

@@ -483,30 +483,34 @@ std::shared_ptr<Material> MaterialCollection::get() const {
 }
 
 Model::Model() :
-		_mesh(new NullMesh(), OpGLLib::default_delete<Mesh>()) {
+		_name(""), _mesh(new NullMesh(), OpGLLib::default_delete<Mesh>()),
+				_materialCollection(new MaterialCollection(), OpGLLib::default_delete<MaterialCollection>()) {
 
 }
 
-Model::Model(std::shared_ptr<Mesh> mesh) :
-		_mesh(mesh) {
-
+Model::Model(std::shared_ptr<Mesh> mesh, std::shared_ptr<MaterialCollection> materialCollection) :
+		_mesh(mesh), _materialCollection(materialCollection) {
+	update();
 }
 
 void Model::setMesh(std::shared_ptr<Mesh>&& mesh) {
 	_mesh = std::forward<std::shared_ptr<Mesh>>(mesh);
+	update();
 }
 
 void Model::setMaterial(std::shared_ptr<Material>&& material) {
 	_materialCollection->addMaterial(std::forward<std::shared_ptr<Material>>(material));
 	_materialCollection->update();
+	update();
 }
 
 void Model::setMaterialCollection(std::shared_ptr<MaterialCollection>&& materialCollection) {
 	_materialCollection = std::forward<std::shared_ptr<MaterialCollection>>(materialCollection);
+	update();
 }
 
 std::string const& Model::name() const {
-	return _mesh->name();
+	return _name;
 }
 
 std::shared_ptr<Mesh> Model::mesh() const {
@@ -519,6 +523,11 @@ std::shared_ptr<Material> Model::material() const {
 
 std::shared_ptr<MaterialCollection> Model::materialCollecion() const {
 	return _materialCollection;
+}
+
+void Model::update() {
+	//Update name;
+	_name = _mesh->name() + "|" + _materialCollection->get()->name();
 }
 
 LoadModelException::LoadModelException(OpGLLibBase const* pointer, std::string const& model, std::string const& reason) :
