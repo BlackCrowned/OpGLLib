@@ -7,6 +7,7 @@
 
 #include <OpGLLib/Camera.h>
 
+namespace OpGLLib {
 Camera::Camera() {
 	center = glm::vec3(0.0f, 0.0f, -1.0f);
 	up = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -138,3 +139,5 @@ void Camera::seekState() {
 	up = tmp.up;
 	cameraPos = tmp.cameraPos;
 }
+}
+

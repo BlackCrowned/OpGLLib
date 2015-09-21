@@ -4,12 +4,15 @@
  *  Created on: 24.11.2014
  *      Author: Michael
  */
-
-#include <OpGLLib/internal.h>
-
 #ifndef OPGLLIB_PERSPECTIVE_H_
 #define OPGLLIB_PERSPECTIVE_H_
 
+#define INCLUDE_GLM
+#include <OpGLLib/internal.h>
+
+#include <stack>
+
+namespace OpGLLib {
 class Perspective {
 public:
 	Perspective();
@@ -50,5 +53,8 @@ private:
 
 	std::stack<Perspective> stateStack;
 };
+}
+
+
 
 #endif /* OPGLLIB_PERSPECTIVE_H_ */

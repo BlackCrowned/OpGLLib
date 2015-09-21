@@ -1,88 +1,43 @@
 #include <OpGLLib/OpGLLib.h>
 
-using namespace std;
-using namespace gl;
+#include <OpGLLib/ServiceLocator.h>
 
 namespace OpGLLib {
 
-OpGLLib::OpGLLib() {
-#ifndef RElEASE
-	_debug.enableLogging();
-#endif
+OpGLLibBase::OpGLLibBase() :
+		_serviceLocator(new ServiceLocator(), OpGLLib::default_delete<ServiceLocator>()) {
+	_serviceLocator->init(this);
 }
 
-OpGLLib::OpGLLib(glbinding::ContextHandle context) {
-	setContext(context);
-#ifndef RElEASE
-	_debug.enableLogging();
-#endif
-}
-
-void OpGLLib::setContext(glbinding::ContextHandle context) {
-	glbinding::Binding::useContext(context);
-}
-
-void OpGLLib::enableCulling(GLenum CullFace, GLenum FrontFace) {
-	glEnable(GL_CULL_FACE);
-	glCullFace(CullFace);
-	glFrontFace(FrontFace);
-}
-
-void OpGLLib::disableCulling() {
-	glDisable(GL_CULL_FACE);
-}
-
-void OpGLLib::enableDepthTest(GLboolean DepthMasc, GLenum DepthFunc) {
-	glEnable(GL_DEPTH_TEST);
-	glDepthMask(DepthMasc);
-	glDepthFunc(DepthFunc);
-}
-
-void OpGLLib::disableDepthTest() {
-	glDisable(GL_DEPTH_TEST);
-}
-
-chrono::milliseconds OpGLLib::getFrameTime(int range) {
-	chrono::time_point<chrono::system_clock> now = chrono::system_clock::now();
-	chrono::milliseconds duration = chrono::duration_cast<chrono::milliseconds>(now.time_since_epoch() - lastFrame.time_since_epoch());
-	if (lastFrame.time_since_epoch().count() == 0) {
-		lastFrame = now;
-		return chrono::milliseconds(0);
-	}
-	frameDuration.push_front(duration);
-	lastFrame = now;
-	if (range == 1) {
-		if (frameDuration.size() > 1000) {
-			frameDuration.resize(150);
-		}
-		return duration;
-	}
-	else if (range > 1) {
-		int frameDurationSize = frameDuration.size();
-		if (frameDurationSize > range * 12) {
-			frameDuration.resize(range * 10);
-		}
-		if (frameDurationSize > range) {
-			for (int i = 1; i < range; i++) {
-				duration += frameDuration.at(i);
-			}
-			return duration / range;
-		}
-		else {
-			for (int i = 1; i < frameDurationSize; i++) {
-				duration += frameDuration.at(i);
-			}
-			return duration / frameDurationSize;
-		}
-	}
-	else {
-		return chrono::milliseconds(0);
-	}
+OpGLLibBase::OpGLLibBase(OpGLLibBase const* pointer) :
+		_serviceLocator(pointer->_serviceLocator) {
 
 }
 
-float OpGLLib::getFrameRate(int range) {
-	int frameTime = getFrameTime(range).count();
-	return frameTime == 0 ? 1 : 1000.0f / frameTime;
+void OpGLLibBase::reset() {
+	OpGLLibBase newBase;
+
+	//Swap with newBase
+	swap(newBase);
 }
+
+void OpGLLibBase::reset(OpGLLibBase const* pointer) {
+	OpGLLibBase newBase(pointer);
+
+	//Swap with newBase
+	swap(newBase);
+}
+
+void OpGLLibBase::setServiceLocator(ServiceLocator&& serviceLocator) {
+	_serviceLocator.reset(new ServiceLocator(std::forward<ServiceLocator>(serviceLocator)), OpGLLib::default_delete<ServiceLocator>());
+}
+
+ServiceLocator& OpGLLibBase::getServiceLocator() const {
+	return *_serviceLocator;
+}
+
+void OpGLLibBase::swap(OpGLLibBase& other) {
+	std::swap(_serviceLocator, other._serviceLocator);
+}
+
 }

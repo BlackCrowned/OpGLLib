@@ -8,7 +8,12 @@
 #ifndef OPGLLIB_DEBUG_H_
 #define OPGLLIB_DEBUG_H_
 
+#define INCLUDE_GLM
 #include <OpGLLib/internal.h>
+
+#include <iostream>
+#include <string>
+#include <iomanip>
 
 class Debug {
 public:

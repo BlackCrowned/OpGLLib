@@ -1,66 +1,58 @@
 /*
  * Texture.h
  *
- *  Created on: 29.01.2015
- *      Author: Michael
+ *  Created on: 28.06.2015
+ *      Author: mimoe
  */
 
 #ifndef OPGLLIB_TEXTURE_H_
 #define OPGLLIB_TEXTURE_H_
 
+#define INCLUDE_GLBINDING
 #include <OpGLLib/internal.h>
+
 #include <OpGLLib/ImageLoader.h>
+#include <OpGLLib/GLTypes.h>
+#include <OpGLLib/State.h>
+
+#include <type_traits>
 
 namespace OpGLLib {
 
-struct TextureImage {
-	gl::GLenum internalFormat;
-	size_t width;
-	size_t height;
-	gl::GLenum format;
-	gl::GLenum type;
-	std::shared_ptr<void> data;
-};
+namespace gl {
 
-class Texture {
+class Texture2D {
 public:
-	Texture();
-	Texture(gl::GLenum target, std::initializer_list<std::pair<gl::GLenum, int>> texParameteri);
-	template<class T> Texture(gl::GLenum target, ImageLoader::Image<T>& image, int level, gl::GLenum internalFormat, gl::GLenum format,
-			gl::GLenum type, std::initializer_list<std::pair<gl::GLenum, int>> texParameteri = { });
+	Texture2D();
+	template<class T> Texture2D(ImageLoader::Image<T>& image, ::gl::GLenum target = ::gl::GL_TEXTURE_2D, int mipmap = 0,
+			int internalFormat = (int) ::gl::GL_RGBA, ::gl::GLenum format = ::gl::GL_RGBA);
+	~Texture2D();
 
-	void setTextureId(unsigned int id);
-	unsigned int getTextureId();
+	void setTarget(::gl::GLenum target);
+	template<class T> void setData(ImageLoader::Image<T>& image, int mipmap = 0, int internalFormat = ::gl::GL_RGBA, ::gl::GLenum format =
+			::gl::GL_RGBA);
 
-	template<class T> void setImage(ImageLoader::Image<T>& image, int level, gl::GLenum internalFormat, gl::GLenum format, gl::GLenum type);
+	unsigned int getId();
 
-	void setTexParameteri(gl::GLenum type, int value);
-	void unsetTexParameteri(gl::GLenum type);
+	void bindTexture();
 
-	void setTexParameterf(gl::GLenum type, float value);
-	void unsetTexParameterf(gl::GLenum type);
+	void generateMipmap();
 
-	void setTexParameteriv(gl::GLenum type, const int* value);
-	void unsetTexParameteriv(gl::GLenum type);
+	template<class T> void texParameteri(::gl::GLenum pname, T param);
+	template<class T> void texParameterf(::gl::GLenum pname, T param);
 
-	void setTexParameterfv(gl::GLenum type, const float* value);
-	void unsetTexParameterfv(gl::GLenum type);
-
-	std::map<gl::GLenum, int> const& getTexParameteri();
-	std::map<gl::GLenum, float> const& getTexParameterf();
-	std::map<gl::GLenum, const int*> const& getTexParameteriv();
-	std::map<gl::GLenum, const float*> const& getTexParameterfv();
+	template<class T> void texParameterfv(::gl::GLenum pname, T params);
+	template<class T> void texParameteriv(::gl::GLenum pname, T params);
+	template<class T> void texParameterIiv(::gl::GLenum pname, T params);
+	template<class T> void texParameterIuiv(::gl::GLenum pname, T params);
 private:
-	unsigned int textureId;
-	gl::GLenum target;
-	std::map<int, TextureImage> imageData;
-	std::map<gl::GLenum, int> textureParameteri;
-	std::map<gl::GLenum, float> textureParameterf;
-	std::map<gl::GLenum, const int*> textureParameteriv;
-	std::map<gl::GLenum, const float*> textureParameterfv;
+	unsigned int _id;
+	::gl::GLenum _target;
 };
 
-} /* namespace OpGLLib */
+}
+
+}
 
 #include <OpGLLib/Texture.inl>
 

@@ -9,18 +9,6 @@
 #define OPGLLIB_OPGLLIBDEF_H_
 
 namespace OpGLLib {
-template<typename T> struct default_delete {
-	constexpr default_delete() noexcept = default;
-	template<typename U> default_delete(default_delete<U> const&) noexcept;
-	void operator ()(T* ptr) const;
-};
-
-template<typename T> struct default_delete<T[]> {
-	constexpr default_delete() noexcept = default;
-	template<typename U> default_delete(default_delete<U[]> const&) noexcept;
-	void operator ()(T* ptr) const;
-};
-
 namespace Types {
 
 enum class Endianness {

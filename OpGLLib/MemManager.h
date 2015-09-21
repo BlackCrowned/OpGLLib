@@ -11,6 +11,8 @@
 #include <deque>
 #include <iostream>
 
+namespace OpGLLib {
+
 template<class T>
 class MemManager {
 public:
@@ -53,6 +55,7 @@ private:
 	size_t medianAllocationSize = 0;
 	std::allocator<T> allocator;
 };
+}
 
 #include <OpGLLib/MemManager.inl>
 

@@ -9,6 +9,7 @@
 
 using namespace std;
 
+namespace OpGLLib {
 Transformation::Transformation() :
 		Matrices(), Camera(), Perspective() {
 	transformationMatrix = glm::mat4(1.0f);
@@ -205,3 +206,5 @@ void Transformation::roll(float roll) {
 void Transformation::multMatrix(glm::mat4 matrix) {
 	transformationMatrix = matrix * transformationMatrix;
 }
+}
+
