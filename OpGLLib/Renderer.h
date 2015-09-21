@@ -16,6 +16,7 @@
 #include <OpGLLib/Context.h>
 #include <OpGLLib/State.h>
 #include <OpGLLib/Data.h>
+#include <OpGLLib/Texture.h>
 
 #include <map>
 
@@ -29,6 +30,8 @@ public:
 	~Render();
 
 	unsigned int setVertexArrayObject(unsigned int vao = 0);
+
+	//Buffers
 
 	void bindVertexArrayObject();
 
@@ -49,10 +52,18 @@ public:
 	void enableVertexAttribute(unsigned int index);
 	void disableVertexAttribute(unsigned int index);
 
+	//Textures
+
+	void setTexture2D(::gl::GLenum textureUnit, Texture2D texture);
+	void unsetTexture2D(::gl::GLenum textureUnit);
+
 	void updateDrawSettings(::gl::GLenum mode);
 	void updateDrawSettings(int first, int count);
 	void updateDrawSettings(int count, ::gl::GLenum type, const void* indicies);
 	void updateDrawSettings(bool indexedDraw);
+
+	void enableTextures();
+	void disableTextures();
 
 	void draw();
 private:
@@ -73,9 +84,13 @@ private:
 		int indiciesCount = 0;
 		::gl::GLenum indiciesType;
 		const void* indicies = 0;
+
+		bool textures = true;
+		int texture2DCount = 0;
 	};
 	DrawSettings _drawSettings;
 
+	std::map<::gl::GLenum, Texture2D> _texture2Ds;
 };
 }
 //namespace Renderer {

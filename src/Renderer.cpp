@@ -111,6 +111,19 @@ void Render::disableVertexAttribute(unsigned int index) {
 	glDisableVertexAttribArray(index);
 }
 
+void Render::setTexture2D(GLenum textureUnit, Texture2D texture) {
+	_texture2Ds[textureUnit] = texture;
+
+	_drawSettings.texture2DCount++;
+}
+
+void Render::unsetTexture2D(GLenum textureUnit) {
+	//Make sure elements have been erased before decreasing counter
+	if (_texture2Ds.erase(textureUnit) > 0) {
+		_drawSettings.texture2DCount--;
+	}
+}
+
 void Render::updateDrawSettings(GLenum mode) {
 	_drawSettings.mode = mode;
 }
@@ -132,9 +145,29 @@ void Render::updateDrawSettings(bool indexedDraw) {
 	_drawSettings.indexedDraw = indexedDraw;
 }
 
+void Render::enableTextures() {
+	_drawSettings.textures = true;
+}
+
+void Render::disableTextures() {
+	_drawSettings.textures = false;
+}
+
 void Render::draw() {
 	//Bind VAO
 	bindVertexArrayObject();
+
+	//Bind Textures
+	if (_drawSettings.textures) {
+		if (_drawSettings.texture2DCount > 0) {
+			for (auto it = _texture2Ds.begin(); it != _texture2Ds.end(); it++) {
+				//Select textureUnit
+				glActiveTexture(it->first);
+				//Bind Texture
+				it->second.bindTexture();
+			}
+		}
+	}
 
 	//Draw
 	if (_drawSettings.indexedDraw) {
