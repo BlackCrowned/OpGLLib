@@ -6,7 +6,6 @@
  */
 
 namespace OpGLLib {
-namespace ImageLoader {
 
 template<class T> Image<T>::Image(Dimensions dimensions, std::vector<dataType> const& data) :
 		_dimensions(dimensions), _data(data) {
@@ -151,6 +150,5 @@ template<class T> void Image<T>::reset(Dimensions dimensions, std::vector<dataTy
 //	return (*this)[x][y];
 //}
 
-}
 }
 

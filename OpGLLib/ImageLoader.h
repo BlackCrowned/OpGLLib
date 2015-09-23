@@ -12,12 +12,10 @@
 #include <OpGLLib/internal.h>
 
 #include <OpGLLib/FileLoader.h>
-#include <OpGLLib/OpGLLibDef.h>
 
 #include <lodePNG/lodepng.h>
 
 namespace OpGLLib {
-namespace ImageLoader {
 
 struct Dimensions {
 	size_t width, height;
@@ -101,92 +99,9 @@ private:
 //	tvec4<T>& operator ()(size_t x = 0, size_t y = 0);
 //};
 
-enum Compression {
-	BI_RGB = 0, BI_RLE8 = 1, BI_RLE4 = 2, BI_BITFIELDS = 3
-};
-
-struct ColorTableEntry {
-	ColorTableEntry(char* offset) {
-		color.b = *reinterpret_cast<Types::BYTE*>(offset);
-		color.g = *reinterpret_cast<Types::BYTE*>(offset + 1);
-		color.r = *reinterpret_cast<Types::BYTE*>(offset + 2);
-		color.a = *reinterpret_cast<Types::BYTE*>(offset + 3);
-	}
-	tvec4<Types::BYTE> color;
-};
-
-struct ColorTable {
-	ColorTable() {
-		ptr = nullptr;
-		_size = 0;
-	}
-	ColorTable(char* ptr, size_t size) {
-		ColorTable::ptr = ptr;
-		ColorTable::_size = size;
-	}
-	~ColorTable() {
-
-	}
-	void operator ()(char* ptr, size_t size) {
-		ColorTable::ptr = ptr;
-		ColorTable::_size = size;
-	}
-	ColorTableEntry operator [](int i) {
-		char* offset = ptr + (i * 4);
-		return ColorTableEntry(offset);
-	}
-	size_t size() {
-		return _size;
-	}
-private:
-	char* ptr;
-	size_t _size;
-};
-
-struct Bitmask {
-	Types::DWORD<> red, green, blue;
-};
-
-class Bitmap {
-public:
-	typedef unsigned char dataType;
-
-	Bitmap();
-	Bitmap(char* ptr);
-	Bitmap(std::string filename);
-	Bitmap(Bitmap const& other) = delete;
-	Bitmap(Bitmap&& other) = default;
-	~Bitmap();
-	bool loadBitmap(char* data);
-	bool loadBitmap(std::string filename);
-
-	Image<dataType> getImage();
-	Dimensions getDimensions();
-	size_t getWidth();
-	size_t getHeight();
-	size_t getBitCount();
-private:
-	Types::WORD<> signature;
-	Types::DWORD<> fileSize;
-	Types::DWORD<> headerSize;
-	Types::DWORD<> offset;
-	Types::LONG<> width;
-	Types::LONG<> height;
-	Types::WORD<> planes;
-	Types::WORD<> bitCount;
-	Types::DWORD<> compression;
-	Types::DWORD<> sizeImage;
-	Types::DWORD<> clrUsed;
-	Types::DWORD<> clrImportant;
-	Bitmask bitmask;
-	ColorTable colorTable;
-	std::vector<dataType> imageData;
-};
-
-Image<unsigned char> loadBMP(std::string filename);
+//Image<unsigned char> loadBMP(std::string filename);
 
 Image<unsigned char> loadPNG(std::string filename);
-}
 
 }
 
