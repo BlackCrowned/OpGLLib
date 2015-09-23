@@ -76,7 +76,7 @@ Texture2D TextureManager::loadTexture2D(std::string file, bool cache) {
 	//TODO: Call to an ImageManager
 
 	//Generate Texture // TODO: Add arguments
-	Texture2D texture();
+	Texture2D texture;
 
 	//If requested, cache texture
 	if (cache) {
