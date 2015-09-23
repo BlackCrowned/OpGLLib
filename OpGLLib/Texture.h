@@ -12,7 +12,7 @@
 #include <OpGLLib/internal.h>
 
 #include <OpGLLib/OpGLLib.h>
-#include <OpGLLib/ImageLoader.h>
+#include <OpGLLib/Image.h>
 #include <OpGLLib/GLTypes.h>
 #include <OpGLLib/State.h>
 

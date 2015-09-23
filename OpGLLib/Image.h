@@ -1,12 +1,12 @@
 /*
- * ImageLoader.h
+ * Image.h
  *
  *  Created on: 16.01.2015
  *      Author: Michael
  */
 
-#ifndef OPGLLIB_IMAGELOADER_H_
-#define OPGLLIB_IMAGELOADER_H_
+#ifndef OPGLLIB_IMAGE_H_
+#define OPGLLIB_IMAGE_H_
 
 #define INCLUDE_GLM
 #include <OpGLLib/internal.h>
@@ -107,6 +107,6 @@ Image<unsigned char> loadPNG(std::string filename);
 
 
 
-#include <OpGLLib/ImageLoader.inl>
+#include <OpGLLib/Image.inl>
 
-#endif /* OPGLLIB_IMAGELOADER_H_ */
+#endif /* OPGLLIB_IMAGE_H_ */

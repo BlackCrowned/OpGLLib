@@ -1,5 +1,5 @@
 /*
- * ImageLoader.inl
+ * Image.inl
  *
  *  Created on: 16.01.2015
  *      Author: Michael
