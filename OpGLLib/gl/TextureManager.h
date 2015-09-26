@@ -13,6 +13,7 @@
 
 #include <OpGLLib/OpGLLib.h>
 #include <OpGLLib/gl/Texture.h>
+#include <OpGLLib/FileLoader.h>
 
 #include <string>
 #include <map>
@@ -27,10 +28,10 @@ public:
 	TextureManagerBase(OpGLLibBase const* pointer);
 	virtual ~TextureManagerBase() = default;
 
-	virtual Texture2D loadTexture2D(std::string file, bool cache = true) = 0;
-	virtual void preloadTexture2D(std::string file) = 0;
+	virtual Texture2D loadTexture2D(std::string const& file, bool cache = true) = 0;
+	virtual void preloadTexture2D(std::string const& file) = 0;
 
-	virtual bool checkTextureCache(std::string file) = 0;
+	virtual bool checkTextureCache(std::string const& file) = 0;
 };
 
 class TextureManager : public TextureManagerBase {
@@ -39,15 +40,15 @@ public:
 	TextureManager(OpGLLibBase const* pointer);
 	virtual ~TextureManager() = default;
 
-	virtual Texture2D loadTexture2D(std::string file, bool cache = true);
-	virtual void preloadTexture2D(std::string file);
+	virtual Texture2D loadTexture2D(std::string const& file, bool cache = true);
+	virtual void preloadTexture2D(std::string const& file);
 
-	virtual bool checkTextureCache(std::string file);
+	virtual bool checkTextureCache(std::string const& file);
 
 private:
-	template<class T> Image<T> getImage(std::string file);
+	template<class T> Image<T> getImage(std::string const& file);
 
-	Texture2D getCachedTexture(std::string file);
+	Texture2D getCachedTexture(std::string const& file);
 
 	std::map<std::string, Texture2D> _textureCache;
 };
@@ -58,10 +59,10 @@ public:
 	NullTextureManager(OpGLLibBase const* pointer);
 	virtual ~NullTextureManager() = default;
 
-	virtual Texture2D loadTexture2D(std::string file, bool cache = true);
-	virtual void preloadTexture2D(std::string file);
+	virtual Texture2D loadTexture2D(std::string const& file, bool cache = true);
+	virtual void preloadTexture2D(std::string const& file);
 
-	virtual bool checkTextureCache(std::string file);
+	virtual bool checkTextureCache(std::string const& file);
 };
 
 }

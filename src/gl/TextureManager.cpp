@@ -30,16 +30,14 @@ TextureManager::TextureManager(OpGLLibBase const* pointer) :
 
 }
 
-Texture2D TextureManager::loadTexture2D(std::string file, bool cache) {
+Texture2D TextureManager::loadTexture2D(std::string const& file, bool cache) {
 	//Check wether texture is cached
 	if (cache && checkTextureCache(file)) {
 		return getCachedTexture(file);
 	}
 
-	//Texture needs to be loaded
-	//TODO: Call to an ImageManager
-
-	//Generate Texture // TODO: Add arguments
+	//Determine FileType //TODO
+	std::string const& fileType = files::fileType(file);
 	Texture2D texture;
 
 	//If requested, cache texture
@@ -50,15 +48,15 @@ Texture2D TextureManager::loadTexture2D(std::string file, bool cache) {
 	return texture;
 }
 
-void TextureManager::preloadTexture2D(std::string file) {
+void TextureManager::preloadTexture2D(std::string const& file) {
 	loadTexture2D(file);
 }
 
-bool TextureManager::checkTextureCache(std::string file) {
+bool TextureManager::checkTextureCache(std::string const& file) {
 	return (_textureCache.count(file) > 0 ? true : false);
 }
 
-Texture2D TextureManager::getCachedTexture(std::string file) {
+Texture2D TextureManager::getCachedTexture(std::string const& file) {
 	return _textureCache[file];
 }
 
@@ -72,15 +70,15 @@ NullTextureManager::NullTextureManager(OpGLLibBase const* pointer) :
 
 }
 
-Texture2D NullTextureManager::loadTexture2D(std::string file, bool cache) {
+Texture2D NullTextureManager::loadTexture2D(std::string const& file, bool cache) {
 	return Texture2D();
 }
 
-void NullTextureManager::preloadTexture2D(std::string file) {
+void NullTextureManager::preloadTexture2D(std::string const& file) {
 	return;
 }
 
-bool NullTextureManager::checkTextureCache(std::string file) {
+bool NullTextureManager::checkTextureCache(std::string const& file) {
 	return false;
 }
 
