@@ -5,11 +5,12 @@
  *      Author: mimoe
  */
 
-#ifndef GL_TEXTUREMANAGERFWD_H_
-#define GL_TEXTUREMANAGERFWD_H_
+namespace OpGLLib {
+namespace gl {
 
+class TextureManagerBase;
+class TextureManager;
+class NullTextureManager;
 
-
-
-
-#endif /* GL_TEXTUREMANAGERFWD_H_ */
+}
+}
