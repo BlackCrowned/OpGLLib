@@ -25,12 +25,12 @@ class Texture2D {
 public:
 	//TODO: Copy/Move constructors
 	Texture2D();
-	template<class T> Texture2D(Image<T>& image, ::gl::GLenum target = ::gl::GL_TEXTURE_2D, int mipmap = 0,
-			int internalFormat = (int) ::gl::GL_RGBA, ::gl::GLenum format = ::gl::GL_RGBA);
+	template<class T> Texture2D(Image<T>& image, ::gl::GLenum target = ::gl::GL_TEXTURE_2D, int mipmap = 0, int internalFormat =
+			(int) ::gl::GL_RGBA, ::gl::GLenum format = ::gl::GL_RGBA);
 	~Texture2D();
 
 	void setTarget(::gl::GLenum target);
-	template<class T> void setData(Image<T>& image, int mipmap = 0, int internalFormat = ::gl::GL_RGBA, ::gl::GLenum format =
+	template<class T> void setData(Image<T>& image, int mipmap = 0, int internalFormat = (int) ::gl::GL_RGBA, ::gl::GLenum format =
 			::gl::GL_RGBA);
 
 	unsigned int getId();
