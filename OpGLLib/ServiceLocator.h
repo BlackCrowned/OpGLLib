@@ -14,6 +14,7 @@
 #include <OpGLLib/InputManagerFwd.h>
 #include <OpGLLib/gl/ModelLoaderFwd.h>
 #include <OpGLLib/ImageManagerFwd.h>
+#include <OpGLLib/gl/TextureManagerFwd.h>
 #include <OpGLLib/DefaultDelete.h>
 
 #include <OpGLLib/OpGLLibFwd.h>
@@ -48,11 +49,16 @@ public:
 	template<class T> void setImageManagerService(T&& imageManagerService);
 	std::shared_ptr<ImageManagerBase> getImageManagerService() const;
 
+	void setTextureManagerService(std::shared_ptr<gl::TextureManagerBase>&& textureManagerService);
+	template<class T> void setTextureManagerService(T&& textureManagerService);
+	std::shared_ptr<gl::TextureManagerBase> getTextureManagerService() const;
+
 private:
 	std::shared_ptr<LoggingBase> _loggingService;
 	std::shared_ptr<InputManagerBase> _inputManagerService;
 	std::shared_ptr<gl::ModelLoaderBase> _modelLoaderService;
 	std::shared_ptr<ImageManagerBase> _imageManagerService;
+	std::shared_ptr<gl::TextureManagerBase> _textureManagerService;
 };
 
 }

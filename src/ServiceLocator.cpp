@@ -9,13 +9,14 @@
 #include <OpGLLib/InputManager.h>
 #include <OpGLLib/gl/ModelLoader.h>
 #include <OpGLLib/ImageManager.h>
+#include <OpGLLib/gl/TextureManager.h>
 
 #include <OpGLLib/OpGLLib.h>
 
 namespace OpGLLib {
 
 ServiceLocator::ServiceLocator() :
-		_loggingService(), _inputManagerService(), _modelLoaderService(), _imageManagerService() {
+		_loggingService(), _inputManagerService(), _modelLoaderService(), _imageManagerService(), _textureManagerService() {
 
 }
 
@@ -23,7 +24,8 @@ ServiceLocator::ServiceLocator(OpGLLibBase const* pointer) :
 		_loggingService(new NullLogging(), OpGLLib::default_delete<LoggingBase>()),
 				_inputManagerService(new NullInputManager(pointer), OpGLLib::default_delete<InputManagerBase>()),
 				_modelLoaderService(new gl::NullModelLoader(pointer), OpGLLib::default_delete<gl::ModelLoaderBase>()),
-				_imageManagerService(new NullImageManager(pointer), OpGLLib::default_delete<ImageManagerBase>()){
+				_imageManagerService(new NullImageManager(pointer), OpGLLib::default_delete<ImageManagerBase>()),
+				_textureManagerService(new gl::NullTextureManager(pointer), OpGLLib::default_delete<gl::TextureManagerBase>()){
 
 }
 
@@ -32,6 +34,7 @@ void ServiceLocator::init(OpGLLibBase const* pointer) {
 	_inputManagerService.reset(new NullInputManager(pointer), OpGLLib::default_delete<InputManagerBase>());
 	_modelLoaderService.reset(new gl::NullModelLoader(pointer), OpGLLib::default_delete<gl::ModelLoaderBase>());
 	_imageManagerService.reset(new NullImageManager(pointer), OpGLLib::default_delete<ImageManagerBase>());
+	_textureManagerService.reset(new gl::NullTextureManager(pointer), OpGLLib::default_delete<gl::TextureManagerBase>());
 }
 
 void ServiceLocator::setLoggingService(std::shared_ptr<LoggingBase>&& loggingService) {
@@ -92,6 +95,21 @@ void ServiceLocator::setImageManagerService(std::shared_ptr<ImageManagerBase>&& 
 
 std::shared_ptr<ImageManagerBase> ServiceLocator::getImageManagerService() const{
 	return _imageManagerService;
+}
+
+void ServiceLocator::setTextureManagerService(std::shared_ptr<gl::TextureManagerBase>&& textureManagerService) {
+	//Check if textureManagerService holds a pointer
+	if (textureManagerService.use_count()) {
+		_textureManagerService = std::forward<std::shared_ptr<gl::TextureManagerBase>>(textureManagerService);
+	}
+	//If it does not, register a null service instead
+	else {
+		_textureManagerService.reset(new gl::NullTextureManager(), OpGLLib::default_delete<gl::TextureManagerBase>());
+	}
+}
+
+std::shared_ptr<gl::TextureManagerBase> ServiceLocator::getTextureManagerService() const {
+	return _textureManagerService;
 }
 
 }
