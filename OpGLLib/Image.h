@@ -46,10 +46,6 @@ private:
 	std::vector<dataType> _data;
 };
 
-//Image<unsigned char> loadBMP(std::string filename);
-
-Image<unsigned char> loadPNG(std::string filename);
-
 }
 
 
