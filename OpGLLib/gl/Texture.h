@@ -23,8 +23,9 @@ namespace gl {
 
 class Texture2D {
 public:
-	//TODO: Copy/Move constructors
 	Texture2D();
+	Texture2D(Texture2D const& other);
+	Texture2D(Texture2D&& other) = delete;
 	template<class T> Texture2D(Image<T>& image, ::gl::GLenum target = ::gl::GL_TEXTURE_2D, int mipmap = 0, int internalFormat =
 			(int) ::gl::GL_RGBA, ::gl::GLenum format = ::gl::GL_RGBA);
 	~Texture2D();
