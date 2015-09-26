@@ -30,6 +30,8 @@ public:
 			(int) ::gl::GL_RGBA, ::gl::GLenum format = ::gl::GL_RGBA);
 	~Texture2D();
 
+	Texture2D& operator =(Texture2D const& other);
+
 	void setTarget(::gl::GLenum target);
 	template<class T> void setData(Image<T>& image, int mipmap = 0, int internalFormat = (int) ::gl::GL_RGBA, ::gl::GLenum format =
 			::gl::GL_RGBA);

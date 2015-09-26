@@ -23,13 +23,24 @@ Texture2D::Texture2D(Texture2D const& other) {
 	_id = other._id;
 	_target = other._target;
 
-	//Register new instance of textureId
+	//Register new instance of GLTexture
 	State::manageTexture(_id);
 }
 
 Texture2D::~Texture2D() {
 	//Delete GLTexture
 	State::deleteTexture(_id);
+}
+
+Texture2D& Texture2D::operator =(Texture2D const& other) {
+	//Copy members
+	_id = other._id;
+	_target = other._target;
+
+	//Register new instance of GLTexture
+	State::manageTexture(_id);
+
+	return *this;
 }
 
 void Texture2D::setTarget(::gl::GLenum target) {
