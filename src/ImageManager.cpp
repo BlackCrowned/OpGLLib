@@ -76,6 +76,14 @@ Image<unsigned char> ImageManager::_loadPng(std::string const& file) const {
 	return Image<unsigned char>( { width, height }, std::move(data));
 }
 
+NullImageManager::NullImageManager() : ImageManagerBase() {
+
+}
+
+NullImageManager::NullImageManager(OpGLLibBase const* pointer) : ImageManagerBase(pointer) {
+
+}
+
 Image<unsigned char> NullImageManager::loadPng(std::string const& file, bool cache) const{
 	return Image<unsigned char>();
 }
