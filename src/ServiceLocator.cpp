@@ -45,7 +45,7 @@ void ServiceLocator::setLoggingService(std::shared_ptr<LoggingBase>&& loggingSer
 	}
 }
 
-std::shared_ptr<LoggingBase> ServiceLocator::getLoggingService() {
+std::shared_ptr<LoggingBase> ServiceLocator::getLoggingService() const{
 	return _loggingService;
 }
 
@@ -60,7 +60,7 @@ void ServiceLocator::setInputManagerService(std::shared_ptr<InputManagerBase>&& 
 	}
 }
 
-std::shared_ptr<InputManagerBase> ServiceLocator::getInputManagerService() {
+std::shared_ptr<InputManagerBase> ServiceLocator::getInputManagerService() const{
 	return _inputManagerService;
 }
 
@@ -75,7 +75,7 @@ void ServiceLocator::setModelLoaderService(std::shared_ptr<gl::ModelLoaderBase>&
 	}
 }
 
-std::shared_ptr<gl::ModelLoaderBase> ServiceLocator::getModelLoaderService() {
+std::shared_ptr<gl::ModelLoaderBase> ServiceLocator::getModelLoaderService() const{
 	return _modelLoaderService;
 }
 
@@ -90,7 +90,7 @@ void ServiceLocator::setImageManagerService(std::shared_ptr<ImageManagerBase>&& 
 	}
 }
 
-std::shared_ptr<ImageManagerBase> ServiceLocator::getImageManagerService() {
+std::shared_ptr<ImageManagerBase> ServiceLocator::getImageManagerService() const{
 	return _imageManagerService;
 }
 

@@ -34,21 +34,21 @@ public:
 
 	void setLoggingService(std::shared_ptr<LoggingBase>&& loggingService);
 	template<class T> void setLoggingService(T&& loggingService);
-	std::shared_ptr<LoggingBase> getLoggingService();
+	std::shared_ptr<LoggingBase> getLoggingService() const;
 
 	void setInputManagerService(std::shared_ptr<InputManagerBase>&& inputManagerService);
 	template<class T> void setInputManagerService(T&& inputManagerService);
-	std::shared_ptr<InputManagerBase> getInputManagerService();
+	std::shared_ptr<InputManagerBase> getInputManagerService() const;
 
 	void setModelLoaderService(std::shared_ptr<gl::ModelLoaderBase>&& modelLoaderService);
 	template<class T> void setModelLoaderService(T&& modelLoaderService);
-	std::shared_ptr<gl::ModelLoaderBase> getModelLoaderService();
+	std::shared_ptr<gl::ModelLoaderBase> getModelLoaderService() const;
 
 	void setImageManagerService(std::shared_ptr<ImageManagerBase>&& imageManagerService);
 	template<class T> void setImageManagerService(T&& imageManagerService);
-	std::shared_ptr<ImageManagerBase> getImageManagerService();
+	std::shared_ptr<ImageManagerBase> getImageManagerService() const;
 
-	private:
+private:
 	std::shared_ptr<LoggingBase> _loggingService;
 	std::shared_ptr<InputManagerBase> _inputManagerService;
 	std::shared_ptr<gl::ModelLoaderBase> _modelLoaderService;
