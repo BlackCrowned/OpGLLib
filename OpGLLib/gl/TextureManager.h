@@ -14,6 +14,8 @@
 #include <OpGLLib/OpGLLib.h>
 #include <OpGLLib/gl/Texture.h>
 #include <OpGLLib/FileLoader.h>
+#include <OpGLLib/ServiceLocator.h>
+#include <OpGLLib/ImageManager.h>
 
 #include <string>
 #include <map>

@@ -36,9 +36,16 @@ Texture2D TextureManager::loadTexture2D(std::string const& file, bool cache) {
 		return getCachedTexture(file);
 	}
 
-	//Determine FileType //TODO
+	//Determine FileType
 	std::string const& fileType = files::fileType(file);
 	Texture2D texture;
+	if (fileType == "png") {
+		Image<unsigned char> img = getServiceLocator().getImageManagerService()->loadPng(file, false);
+		texture.setData(img);
+	}
+	else {
+		getServiceLocator().getLoggingService()->log("TextureManager::loadTexture2D: " + fileType + "-files not supported.", LoggingLevel::unrecoverableError);
+	}
 
 	//If requested, cache texture
 	if (cache) {
