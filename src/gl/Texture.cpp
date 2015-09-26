@@ -5,7 +5,7 @@
  *      Author: mimoe
  */
 
-#include <OpGLLib/Texture.h>
+#include <OpGLLib/gl/Texture.h>
 
 namespace OpGLLib {
 

@@ -99,6 +99,6 @@ public:
 
 }
 
-#include <OpGLLib/Texture.inl>
+#include <OpGLLib/gl/Texture.inl>
 
 #endif /* OPGLLIB_TEXTURE_H_ */
