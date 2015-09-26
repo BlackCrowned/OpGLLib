@@ -7,8 +7,6 @@
 
 #include <OpGLLib/ImageManager.h>
 
-#include <OpGLLib/ServiceLocator.h>
-
 namespace OpGLLib {
 
 ImageManagerBase::ImageManagerBase() :

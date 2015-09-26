@@ -11,6 +11,7 @@
 #include <OpGLLib/OpGLLib.h>
 #include <OpGLLib/Image.h>
 #include <OpGLLib/FileLoader.h>
+#include <OpGLLib/ServiceLocator.h>
 
 #include <string>
 #include <map>
