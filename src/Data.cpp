@@ -9,7 +9,7 @@
 
 namespace OpGLLib {
 
-std::map<void*, std::shared_ptr<Data::VertexSettings>> Data::_vertexSettings;
+std::map<ptrdiff_t, std::shared_ptr<Data::VertexSettings>> Data::_vertexSettings;
 std::map<unsigned int, std::shared_ptr<Data::BufferSettings>> Data::_bufferSettings;
 
 Data::BufferSettings::BufferSettings(std::shared_ptr<VertexSettings>& vertexSettings) {
