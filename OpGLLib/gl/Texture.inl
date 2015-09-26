@@ -15,7 +15,7 @@ template<class T> Texture2D::Texture2D(Image<T>& image, ::gl::GLenum target, int
 	_id = State::genTexture();
 
 	//Set target
-	setTarget(target);
+	_target = target;
 
 	//Set data
 	setData(image, mipmap, internalFormat, format);
