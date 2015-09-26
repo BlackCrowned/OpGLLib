@@ -13,6 +13,7 @@
 #include <OpGLLib/Logging.h>
 #include <OpGLLib/InputManagerFwd.h>
 #include <OpGLLib/gl/ModelLoaderFwd.h>
+#include <OpGLLib/ImageManagerFwd.h>
 #include <OpGLLib/DefaultDelete.h>
 
 #include <OpGLLib/OpGLLibFwd.h>
@@ -40,13 +41,18 @@ public:
 	std::shared_ptr<InputManagerBase> getInputManagerService();
 
 	void setModelLoaderService(std::shared_ptr<gl::ModelLoaderBase>&& modelLoaderService);
-	template <class T> void setModelLoaderService(T&& modelLoaderService);
+	template<class T> void setModelLoaderService(T&& modelLoaderService);
 	std::shared_ptr<gl::ModelLoaderBase> getModelLoaderService();
 
-private:
+	void setImageManagerService(std::shared_ptr<ImageManagerBase>&& imageManagerService);
+	template<class T> void setImageManagerService(T&& imageManagerService);
+	std::shared_ptr<ImageManagerBase> getImageManagerService();
+
+	private:
 	std::shared_ptr<LoggingBase> _loggingService;
 	std::shared_ptr<InputManagerBase> _inputManagerService;
 	std::shared_ptr<gl::ModelLoaderBase> _modelLoaderService;
+	std::shared_ptr<ImageManagerBase> _imageManagerService;
 };
 
 }

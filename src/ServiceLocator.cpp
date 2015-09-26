@@ -8,6 +8,7 @@
 #include <OpGLLib/ServiceLocator.h>
 #include <OpGLLib/InputManager.h>
 #include <OpGLLib/gl/ModelLoader.h>
+#include <OpGLLib/ImageManager.h>
 
 #include <OpGLLib/OpGLLib.h>
 
@@ -74,6 +75,21 @@ void ServiceLocator::setModelLoaderService(std::shared_ptr<gl::ModelLoaderBase>&
 
 std::shared_ptr<gl::ModelLoaderBase> ServiceLocator::getModelLoaderService() {
 	return _modelLoaderService;
+}
+
+void ServiceLocator::setImageManagerService(std::shared_ptr<ImageManagerBase>&& imageManagerService) {
+	//Check if imageManagerService holds a pointer
+	if (imageManagerService.use_count()) {
+		_imageManagerService = std::forward<std::shared_ptr<ImageManagerBase>>(imageManagerService);
+	}
+	//If it does not, register a null service instead
+	else {
+		_imageManagerService.reset(new NullImageManager(), OpGLLib::default_delete<ImageManagerBase>());
+	}
+}
+
+std::shared_ptr<ImageManagerBase> ServiceLocator::getImageManagerService() {
+	return _imageManagerService;
 }
 
 }

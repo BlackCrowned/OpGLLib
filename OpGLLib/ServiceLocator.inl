@@ -19,4 +19,8 @@ template<class T> void ServiceLocator::setModelLoaderService(T&& modelLoaderServ
 	_modelLoaderService.reset(new T(std::forward<T>(modelLoaderService)), OpGLLib::default_delete<gl::ModelLoaderBase>());
 }
 
+template<class T> void ServiceLocator::setImageManagerService(T&& imageManagerService) {
+	_imageManagerService.reset(new T(std::forward<T>(imageManagerService)), OpGLLib::default_delete<ImageManagerBase>());
+}
+
 }
