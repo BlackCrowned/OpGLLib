@@ -16,7 +16,7 @@
 #include <OpGLLib/Context.h>
 #include <OpGLLib/State.h>
 #include <OpGLLib/Data.h>
-#include <OpGLLib/Texture.h>
+#include <OpGLLib/gl/Texture.h>
 
 #include <map>
 
