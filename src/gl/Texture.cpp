@@ -5,10 +5,9 @@
  *      Author: mimoe
  */
 
-#include <OpGLLib/Texture.h>
+#include <OpGLLib/gl/Texture.h>
 
 namespace OpGLLib {
-
 namespace gl {
 
 Texture2D::Texture2D() {
@@ -19,9 +18,29 @@ Texture2D::Texture2D() {
 	_target = ::gl::GL_TEXTURE_2D;
 }
 
+Texture2D::Texture2D(Texture2D const& other) {
+	//Copy members
+	_id = other._id;
+	_target = other._target;
+
+	//Register new instance of GLTexture
+	State::manageTexture(_id);
+}
+
 Texture2D::~Texture2D() {
 	//Delete GLTexture
 	State::deleteTexture(_id);
+}
+
+Texture2D& Texture2D::operator =(Texture2D const& other) {
+	//Copy members
+	_id = other._id;
+	_target = other._target;
+
+	//Register new instance of GLTexture
+	State::manageTexture(_id);
+
+	return *this;
 }
 
 void Texture2D::setTarget(::gl::GLenum target) {
@@ -47,5 +66,4 @@ void Texture2D::generateMipmap() {
 }
 
 }
-
 }

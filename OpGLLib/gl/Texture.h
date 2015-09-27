@@ -11,25 +11,28 @@
 #define INCLUDE_GLBINDING
 #include <OpGLLib/internal.h>
 
-#include <OpGLLib/ImageLoader.h>
+#include <OpGLLib/OpGLLib.h>
+#include <OpGLLib/Image.h>
 #include <OpGLLib/GLTypes.h>
 #include <OpGLLib/State.h>
 
 #include <type_traits>
 
 namespace OpGLLib {
-
 namespace gl {
 
 class Texture2D {
 public:
 	Texture2D();
-	template<class T> Texture2D(ImageLoader::Image<T>& image, ::gl::GLenum target = ::gl::GL_TEXTURE_2D, int mipmap = 0,
-			int internalFormat = (int) ::gl::GL_RGBA, ::gl::GLenum format = ::gl::GL_RGBA);
+	Texture2D(Texture2D const& other);
+	template<class T> Texture2D(Image<T>& image, ::gl::GLenum target = ::gl::GL_TEXTURE_2D, int mipmap = 0, int internalFormat =
+			(int) ::gl::GL_RGBA, ::gl::GLenum format = ::gl::GL_RGBA);
 	~Texture2D();
 
+	Texture2D& operator =(Texture2D const& other);
+
 	void setTarget(::gl::GLenum target);
-	template<class T> void setData(ImageLoader::Image<T>& image, int mipmap = 0, int internalFormat = ::gl::GL_RGBA, ::gl::GLenum format =
+	template<class T> void setData(Image<T>& image, int mipmap = 0, int internalFormat = (int) ::gl::GL_RGBA, ::gl::GLenum format =
 			::gl::GL_RGBA);
 
 	unsigned int getId();
@@ -51,9 +54,8 @@ private:
 };
 
 }
-
 }
 
-#include <OpGLLib/Texture.inl>
+#include <OpGLLib/gl/Texture.inl>
 
 #endif /* OPGLLIB_TEXTURE_H_ */

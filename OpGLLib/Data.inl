@@ -13,20 +13,20 @@ template<class T> Data::BufferSettings::BufferSettings(T* addr) {
 
 template<class T> void Data::setVertexSettings(T* addr, std::shared_ptr<VertexSettings> vertexSettings) {
 	//Check for existing vertexSettings with key 'addr'
-	if (_vertexSettings.count(reinterpret_cast<void*>(addr)) > 0) {
+	if (_vertexSettings.count(reinterpret_cast<ptrdiff_t>(addr)) > 0) {
 		return;
 	}
 
 	//Store vertexSettings with key 'addr'
-	_vertexSettings[reinterpret_cast<void*>(addr)] = vertexSettings;
+	_vertexSettings[reinterpret_cast<ptrdiff_t>(addr)] = vertexSettings;
 }
 
 template<class containerT> void Data::setVertexSettings(containerT& data, ::gl::GLenum type) {
 	//Extract addr
-	void* addr = reinterpret_cast<void*>(&data[0][0]);
+	ptrdiff_t addr = reinterpret_cast<ptrdiff_t>(&data[0][0]);
 
 	//Check for existing vertexSettings with key 'addr'
-	if (_vertexSettings.count(reinterpret_cast<void*>(addr)) > 0) {
+	if (_vertexSettings.count(reinterpret_cast<ptrdiff_t>(addr)) > 0) {
 		return;
 	}
 
@@ -48,16 +48,16 @@ template<class T> void Data::setBufferSettings(unsigned int buffer, T* addr) {
 
 template<class T> auto Data::getVertexSettings(T* addr) -> std::shared_ptr<VertexSettings> {
 	//Check if vertexSettings with key 'addr' exist
-	if (_vertexSettings.count(reinterpret_cast<void*>(addr)) == 0) {
+	if (_vertexSettings.count(reinterpret_cast<ptrdiff_t>(addr)) == 0) {
 		return std::shared_ptr<VertexSettings>();
 	}
 
 	//Return vertexSettings with key 'addr'
-	return _vertexSettings[reinterpret_cast<void*>(addr)];
+	return _vertexSettings[reinterpret_cast<ptrdiff_t>(addr)];
 }
 
 template<class T> void Data::deleteVertexSettings(T* addr) {
-	_vertexSettings.erase(reinterpret_cast<void*>(addr));
+	_vertexSettings.erase(reinterpret_cast<ptrdiff_t>(addr));
 }
 
 }

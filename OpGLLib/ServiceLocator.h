@@ -13,6 +13,8 @@
 #include <OpGLLib/Logging.h>
 #include <OpGLLib/InputManagerFwd.h>
 #include <OpGLLib/gl/ModelLoaderFwd.h>
+#include <OpGLLib/ImageManagerFwd.h>
+#include <OpGLLib/gl/TextureManagerFwd.h>
 #include <OpGLLib/DefaultDelete.h>
 
 #include <OpGLLib/OpGLLibFwd.h>
@@ -33,20 +35,30 @@ public:
 
 	void setLoggingService(std::shared_ptr<LoggingBase>&& loggingService);
 	template<class T> void setLoggingService(T&& loggingService);
-	std::shared_ptr<LoggingBase> getLoggingService();
+	std::shared_ptr<LoggingBase> getLoggingService() const;
 
 	void setInputManagerService(std::shared_ptr<InputManagerBase>&& inputManagerService);
 	template<class T> void setInputManagerService(T&& inputManagerService);
-	std::shared_ptr<InputManagerBase> getInputManagerService();
+	std::shared_ptr<InputManagerBase> getInputManagerService() const;
 
 	void setModelLoaderService(std::shared_ptr<gl::ModelLoaderBase>&& modelLoaderService);
-	template <class T> void setModelLoaderService(T&& modelLoaderService);
-	std::shared_ptr<gl::ModelLoaderBase> getModelLoaderService();
+	template<class T> void setModelLoaderService(T&& modelLoaderService);
+	std::shared_ptr<gl::ModelLoaderBase> getModelLoaderService() const;
+
+	void setImageManagerService(std::shared_ptr<ImageManagerBase>&& imageManagerService);
+	template<class T> void setImageManagerService(T&& imageManagerService);
+	std::shared_ptr<ImageManagerBase> getImageManagerService() const;
+
+	void setTextureManagerService(std::shared_ptr<gl::TextureManagerBase>&& textureManagerService);
+	template<class T> void setTextureManagerService(T&& textureManagerService);
+	std::shared_ptr<gl::TextureManagerBase> getTextureManagerService() const;
 
 private:
 	std::shared_ptr<LoggingBase> _loggingService;
 	std::shared_ptr<InputManagerBase> _inputManagerService;
 	std::shared_ptr<gl::ModelLoaderBase> _modelLoaderService;
+	std::shared_ptr<ImageManagerBase> _imageManagerService;
+	std::shared_ptr<gl::TextureManagerBase> _textureManagerService;
 };
 
 }

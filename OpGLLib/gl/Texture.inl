@@ -9,24 +9,24 @@ namespace OpGLLib {
 
 namespace gl {
 
-template<class T> Texture2D::Texture2D(ImageLoader::Image<T>& image, ::gl::GLenum target, int mipmap, int internalFormat,
+template<class T> Texture2D::Texture2D(Image<T>& image, ::gl::GLenum target, int mipmap, int internalFormat,
 		::gl::GLenum format) {
 	//Create GLTexture
 	_id = State::genTexture();
 
 	//Set target
-	setTarget(target);
+	_target = target;
 
 	//Set data
 	setData(image, mipmap, internalFormat, format);
 }
 
-template<class T> void Texture2D::setData(ImageLoader::Image<T>& image, int mipmap, int internalFormat, ::gl::GLenum format) {
+template<class T> void Texture2D::setData(Image<T>& image, int mipmap, int internalFormat, ::gl::GLenum format) {
 	//Bind Texture
 	bindTexture();
 
 	//Upload ImageData
-	ImageLoader::Dimensions dimensions = image.getDimensions();
+	Dimensions dimensions = image.getDimensions();
 	::gl::glTexImage2D(_target, mipmap, internalFormat, dimensions.width, dimensions.height, 0, format, GLTypes::getType<T>(),
 			&image.get()[0]);
 }

@@ -56,7 +56,7 @@ public:
 	static void deleteBufferSettings(unsigned int buffer);
 
 private:
-	static std::map<void*, std::shared_ptr<VertexSettings>> _vertexSettings;
+	static std::map<ptrdiff_t, std::shared_ptr<VertexSettings>> _vertexSettings;
 	static std::map<unsigned int, std::shared_ptr<BufferSettings>> _bufferSettings;
 };
 

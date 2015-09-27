@@ -14,6 +14,7 @@ namespace gl {
 
 std::map<unsigned int, State::VertexArrayObjectData> State::_vertexArrayObjectInstances;
 std::map<unsigned int, int> State::_bufferObjectInstances;
+std::map<unsigned int, int> State::_textureInstances;
 std::map<glbinding::ContextHandle, State::data> State::contextDependantData;
 
 unsigned int State::genVertexArray() {
