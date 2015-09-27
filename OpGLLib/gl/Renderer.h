@@ -172,6 +172,6 @@ private:
 //}
 }
 
-#include <OpGLLib/Renderer.inl>
+#include <OpGLLib/gl/Renderer.inl>
 
 #endif /* OPGLLIB_RENDERER_H_ */

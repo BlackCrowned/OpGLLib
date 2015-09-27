@@ -5,7 +5,7 @@
  *      Author: Michael
  */
 
-#include <OpGLLib/Renderer.h>
+#include <OpGLLib/gl/Renderer.h>
 
 using namespace std;
 using namespace gl;
