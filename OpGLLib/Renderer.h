@@ -54,7 +54,9 @@ public:
 
 	//Textures
 
-	void setTexture2D(::gl::GLenum textureUnit, Texture2D texture);
+	void setTexture2D(unsigned int textureUnit, Texture2D texture, int sampler2DLocation);
+	void setTexture2D(::gl::GLenum textureUnit, Texture2D texture, int sampler2DLocation);
+	void unsetTexture2D(unsigned int textureUnit);
 	void unsetTexture2D(::gl::GLenum textureUnit);
 
 	void updateDrawSettings(::gl::GLenum mode);
@@ -90,7 +92,8 @@ private:
 	};
 	DrawSettings _drawSettings;
 
-	std::map<::gl::GLenum, Texture2D> _texture2Ds;
+	std::map<unsigned int, Texture2D> _texture2Ds;
+	std::map<unsigned int, int> _sampler2Ds;
 };
 }
 //namespace Renderer {

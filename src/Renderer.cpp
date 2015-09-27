@@ -111,15 +111,30 @@ void Render::disableVertexAttribute(unsigned int index) {
 	glDisableVertexAttribArray(index);
 }
 
-void Render::setTexture2D(GLenum textureUnit, Texture2D texture) {
+void Render::setTexture2D(unsigned int textureUnit, Texture2D texture, int sampler2DLocation) {
 	_texture2Ds[textureUnit] = texture;
+	_sampler2Ds[textureUnit] = sampler2DLocation;
 
 	_drawSettings.texture2DCount++;
 }
 
-void Render::unsetTexture2D(GLenum textureUnit) {
+void Render::setTexture2D(GLenum textureUnit, Texture2D texture, int sampler2DLocation) {
+	_texture2Ds[static_cast<unsigned int>(textureUnit)] = texture;
+	_sampler2Ds[static_cast<unsigned int>(textureUnit)] = sampler2DLocation;
+
+	_drawSettings.texture2DCount++;
+}
+
+void Render::unsetTexture2D(unsigned int textureUnit) {
 	//Make sure elements have been erased before decreasing counter
 	if (_texture2Ds.erase(textureUnit) > 0) {
+		_drawSettings.texture2DCount--;
+	}
+}
+
+void Render::unsetTexture2D(GLenum textureUnit) {
+	//Make sure elements have been erased before decreasing counter
+	if (_texture2Ds.erase(static_cast<unsigned int>(textureUnit)) > 0) {
 		_drawSettings.texture2DCount--;
 	}
 }
@@ -162,9 +177,11 @@ void Render::draw() {
 		if (_drawSettings.texture2DCount > 0) {
 			for (auto it = _texture2Ds.begin(); it != _texture2Ds.end(); it++) {
 				//Select textureUnit
-				glActiveTexture(it->first);
+				glActiveTexture(static_cast<GLenum>(it->first));
 				//Bind Texture
 				it->second.bindTexture();
+				//Upload active texture to sampler2D
+				glUniform1i(_sampler2Ds[it->first], static_cast<int>(it->first) - static_cast<int>(GL_TEXTURE0));
 			}
 		}
 	}
