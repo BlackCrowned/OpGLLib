@@ -8,6 +8,12 @@
 namespace OpGLLib {
 namespace gl {
 
+template<class T> ModelRenderSetting::ModelRenderSetting(int vertexAttribute, int override, ::gl::GLboolean normalize, size_t stride,
+		const void* offset, T start, ::gl::GLenum usage) :
+		vertexAttribute(vertexAttribute), override(override), normalize(normalize), stride(stride), offset(offset),
+				start(reinterpret_cast<size_t>(start)), usage(usage) {
+}
+
 template<class containerT> unsigned int Render::setBuffer(::gl::GLenum target, containerT& data, ::gl::GLenum type, ::gl::GLenum usage) {
 	//Bind VAO
 	bindVertexArrayObject();

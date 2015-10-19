@@ -19,9 +19,78 @@
 #include <OpGLLib/gl/Texture.h>
 
 #include <map>
+#include <utility>
 
 namespace OpGLLib {
 namespace gl {
+
+enum class ModelData {
+	vertices = 0x1, normals = 0x2, texCoords = 0x4, indices = 0x8
+};
+
+enum class MaterialData {
+	ambient = 0x1,
+	diffuse = 0x2,
+	specular = 0x4,
+	transmittance = 0x8,
+	emission = 0x10,
+	ambientTexture = 0x20,
+	diffuseTexture = 0x40,
+	specularTexture = 0x80,
+	normalTexture = 0x100
+};
+
+struct ModelRenderSetting {
+	ModelRenderSetting() = default;
+	template<class T = size_t> ModelRenderSetting(int vertexAttribute, int override = false, ::gl::GLboolean normalize = ::gl::GL_FALSE,
+			size_t stride = 0, const void* offset = (const void*) 0, T start = (T) 0, ::gl::GLenum usage = ::gl::GL_STATIC_DRAW);
+
+	int enabled = true;
+	int vertexAttribute = 0;
+	int override = false;
+	::gl::GLboolean normalize = ::gl::GL_FALSE;
+	size_t stride = 0;
+	const void* offset = 0;
+	union {
+		size_t start = 0;
+		const void* indices;
+	};
+	::gl::GLenum usage = ::gl::GL_STATIC_DRAW;
+};
+
+class ModelRenderSettings {
+public:
+	ModelRenderSettings();
+	ModelRenderSettings(std::initializer_list<std::pair<ModelData, ModelRenderSetting>> init_list);
+	ModelRenderSettings(std::initializer_list<std::pair<MaterialData, ModelRenderSetting>> init_list);
+	ModelRenderSettings(std::map<ModelData, ModelRenderSetting> modelSettings,
+			std::map<MaterialData, ModelRenderSetting> materialSetting = { });
+	ModelRenderSettings(ModelRenderSettings const& other) = default;
+	ModelRenderSettings(ModelRenderSettings&& other) = default;
+	~ModelRenderSettings() = default;
+
+	ModelRenderSettings& operator =(ModelRenderSettings const& other) = default;
+	ModelRenderSettings& operator =(ModelRenderSettings&& other) = default;
+
+	bool indexDraw(bool indexDraw);
+	bool indexDraw() const;
+
+	void addSetting(std::pair<ModelData, ModelRenderSetting> modelSetting);
+	void addSetting(ModelData modelData, ModelRenderSetting modelSetting);
+	void addSetting(std::pair<MaterialData, ModelRenderSetting> materialSetting);
+	void addSetting(MaterialData materialData, ModelRenderSetting materialSetting);
+
+	void removeSetting(ModelData modelData);
+	void removeSetting(MaterialData materialData);
+
+	ModelRenderSetting getSetting(ModelData modelData) const;
+	ModelRenderSetting getSetting(MaterialData materialData) const;
+
+private:
+	std::map<ModelData, ModelRenderSetting> _modelSettings;
+	std::map<MaterialData, ModelRenderSetting> _materialSettings;
+	bool _indexDraw = true;
+};
 
 class Render {
 public:
@@ -37,9 +106,11 @@ public:
 	template<class containerT> unsigned int setBuffer(::gl::GLenum target, containerT& data, ::gl::GLenum type, ::gl::GLenum usage =
 			::gl::GL_STATIC_DRAW);
 
-	template<class containerT> unsigned int setVertexBuffer(containerT& data, ::gl::GLenum type, ::gl::GLenum usage = ::gl::GL_STATIC_DRAW);
+	template<class containerT> unsigned int setVertexBuffer(containerT& data, ::gl::GLenum type,
+			::gl::GLenum usage = ::gl::GL_STATIC_DRAW);
 
-	template<class containerT> unsigned int setIndexBuffer(containerT& data, ::gl::GLenum type, ::gl::GLenum usage = ::gl::GL_STATIC_DRAW);
+	template<class containerT> unsigned int setIndexBuffer(containerT& data, ::gl::GLenum type,
+			::gl::GLenum usage = ::gl::GL_STATIC_DRAW);
 
 	void bindBuffer(::gl::GLenum target, unsigned int& buffer);
 
@@ -57,6 +128,13 @@ public:
 	void setTexture2D(::gl::GLenum textureUnit, Texture2D texture, int sampler2DLocation);
 	void unsetTexture2D(unsigned int textureUnit);
 	void unsetTexture2D(::gl::GLenum textureUnit);
+
+	//Models
+
+	void loadModel(std::shared_ptr<Model> model, ModelRenderSettings const& settings);
+	void loadMaterial();
+
+	//Render Settings
 
 	void updateDrawSettings(::gl::GLenum mode);
 	void updateDrawSettings(int first, int count);
