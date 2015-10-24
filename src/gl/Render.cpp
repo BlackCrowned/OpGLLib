@@ -18,20 +18,20 @@ ModelRenderSettings::ModelRenderSettings() :
 
 }
 
-ModelRenderSettings::ModelRenderSettings(std::initializer_list<std::pair<ModelData, MeshRenderSetting>> init_list) {
+ModelRenderSettings::ModelRenderSettings(std::initializer_list<std::pair<ModelData, ModelRenderSetting>> init_list) {
 	for (auto it = init_list.begin(); it != init_list.end(); it++) {
 		_modelSettings.insert(*it);
 	}
 }
 
-ModelRenderSettings::ModelRenderSettings(std::initializer_list<std::pair<MaterialData, MeshRenderSetting>> init_list) {
+ModelRenderSettings::ModelRenderSettings(std::initializer_list<std::pair<MaterialData, ModelRenderSetting>> init_list) {
 	for (auto it = init_list.begin(); it != init_list.end(); it++) {
 		_materialSettings.insert(*it);
 	}
 }
 
-ModelRenderSettings::ModelRenderSettings(std::map<ModelData, MeshRenderSetting> modelSetting,
-		std::map<MaterialData, MeshRenderSetting> materialSetting) :
+ModelRenderSettings::ModelRenderSettings(std::map<ModelData, ModelRenderSetting> modelSetting,
+		std::map<MaterialData, ModelRenderSetting> materialSetting) :
 		_modelSettings(modelSetting), _materialSettings(materialSetting) {
 
 }
@@ -45,19 +45,19 @@ bool ModelRenderSettings::indexDraw() const {
 	return _indexDraw;
 }
 
-void ModelRenderSettings::addSetting(std::pair<ModelData, MeshRenderSetting> modelSetting) {
+void ModelRenderSettings::addSetting(std::pair<ModelData, ModelRenderSetting> modelSetting) {
 	_modelSettings.insert(modelSetting);
 }
 
-void ModelRenderSettings::addSetting(ModelData modelData, MeshRenderSetting modelSetting) {
+void ModelRenderSettings::addSetting(ModelData modelData, ModelRenderSetting modelSetting) {
 	_modelSettings[modelData] = modelSetting;
 }
 
-void ModelRenderSettings::addSetting(std::pair<MaterialData, MeshRenderSetting> materialSetting) {
+void ModelRenderSettings::addSetting(std::pair<MaterialData, ModelRenderSetting> materialSetting) {
 	_materialSettings.insert(materialSetting);
 }
 
-void ModelRenderSettings::addSetting(MaterialData materialData, MeshRenderSetting materialSetting) {
+void ModelRenderSettings::addSetting(MaterialData materialData, ModelRenderSetting materialSetting) {
 	_materialSettings[materialData] = materialSetting;
 }
 
@@ -69,27 +69,27 @@ void ModelRenderSettings::removeSetting(MaterialData materialData) {
 	_materialSettings.erase(materialData);
 }
 
-MeshRenderSetting ModelRenderSettings::getSetting(ModelData modelData) const {
+ModelRenderSetting ModelRenderSettings::getSetting(ModelData modelData) const {
 	//Only return settings if they exist.
 	if (_modelSettings.count(modelData) > 0) {
 		return _modelSettings.at(modelData);
 	}
 	//Otherwise assume disabled dataMembers
 	else {
-		MeshRenderSetting setting;
+		ModelRenderSetting setting;
 		setting.enabled = false;
 		return setting;
 	}
 }
 
-MeshRenderSetting ModelRenderSettings::getSetting(MaterialData materialData) const {
+ModelRenderSetting ModelRenderSettings::getSetting(MaterialData materialData) const {
 	//Only return settings if they exist.
 	if (_materialSettings.count(materialData) > 0) {
 		return _materialSettings.at(materialData);
 	}
 	//Otherwise assume disabled dataMembers
 	else {
-		MeshRenderSetting setting;
+		ModelRenderSetting setting;
 		setting.enabled = false;
 		return setting;
 	}
@@ -221,24 +221,24 @@ void Render::loadModel(std::shared_ptr<Model> model, ModelRenderSettings const& 
 	unsigned int indexBuffer, vertexBuffer, normalBuffer, texCoordBuffer;
 
 	//Load indicies
-	MeshRenderSetting indexSettings = settings.getSetting(ModelData::indices);
+	ModelRenderSetting indexSettings = settings.getSetting(ModelData::indices);
 	if (settings.indexDraw()) {
 		indexBuffer = setIndexBuffer(model->mesh()->indices(), GL_UNSIGNED_INT, indexSettings.usage);
 	}
 
 	//Load vertexData
-	MeshRenderSetting vertexSettings = settings.getSetting(ModelData::vertices);
+	ModelRenderSetting vertexSettings = settings.getSetting(ModelData::vertices);
 	if (vertexSettings.enabled) {
 		vertexBuffer = setVertexBuffer(model->mesh()->vertices(), GL_FLOAT, vertexSettings.usage);
 	}
 
 	//Load normals
-	MeshRenderSetting normalSettings = settings.getSetting(ModelData::normals);
+	ModelRenderSetting normalSettings = settings.getSetting(ModelData::normals);
 	if (normalSettings.enabled) {
 		normalBuffer = setVertexBuffer(model->mesh()->normals(), GL_FLOAT, normalSettings.usage);
 	}
 	//Load texCoords
-	MeshRenderSetting texCoordSettings = settings.getSetting(ModelData::texCoords);
+	ModelRenderSetting texCoordSettings = settings.getSetting(ModelData::texCoords);
 	if (texCoordSettings.enabled) {
 		texCoordBuffer = setVertexBuffer(model->mesh()->texCoords(), GL_FLOAT, vertexSettings.usage);
 	}
