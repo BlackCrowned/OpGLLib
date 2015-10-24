@@ -40,9 +40,9 @@ enum class MaterialData {
 	normalTexture = 0x100
 };
 
-struct ModelRenderSetting {
-	ModelRenderSetting() = default;
-	template<class T = size_t> ModelRenderSetting(int vertexAttribute, int override = false, ::gl::GLboolean normalize = ::gl::GL_FALSE,
+struct MeshRenderSetting {
+	MeshRenderSetting() = default;
+	template<class T = size_t> MeshRenderSetting(int vertexAttribute, int override = false, ::gl::GLboolean normalize = ::gl::GL_FALSE,
 			size_t stride = 0, const void* offset = (const void*) 0, T start = (T) 0, ::gl::GLenum usage = ::gl::GL_STATIC_DRAW);
 
 	int enabled = true;
@@ -61,10 +61,10 @@ struct ModelRenderSetting {
 class ModelRenderSettings {
 public:
 	ModelRenderSettings();
-	ModelRenderSettings(std::initializer_list<std::pair<ModelData, ModelRenderSetting>> init_list);
-	ModelRenderSettings(std::initializer_list<std::pair<MaterialData, ModelRenderSetting>> init_list);
-	ModelRenderSettings(std::map<ModelData, ModelRenderSetting> modelSettings,
-			std::map<MaterialData, ModelRenderSetting> materialSetting = { });
+	ModelRenderSettings(std::initializer_list<std::pair<ModelData, MeshRenderSetting>> init_list);
+	ModelRenderSettings(std::initializer_list<std::pair<MaterialData, MeshRenderSetting>> init_list);
+	ModelRenderSettings(std::map<ModelData, MeshRenderSetting> modelSettings,
+			std::map<MaterialData, MeshRenderSetting> materialSetting = { });
 	ModelRenderSettings(ModelRenderSettings const& other) = default;
 	ModelRenderSettings(ModelRenderSettings&& other) = default;
 	~ModelRenderSettings() = default;
@@ -75,20 +75,20 @@ public:
 	bool indexDraw(bool indexDraw);
 	bool indexDraw() const;
 
-	void addSetting(std::pair<ModelData, ModelRenderSetting> modelSetting);
-	void addSetting(ModelData modelData, ModelRenderSetting modelSetting);
-	void addSetting(std::pair<MaterialData, ModelRenderSetting> materialSetting);
-	void addSetting(MaterialData materialData, ModelRenderSetting materialSetting);
+	void addSetting(std::pair<ModelData, MeshRenderSetting> modelSetting);
+	void addSetting(ModelData modelData, MeshRenderSetting modelSetting);
+	void addSetting(std::pair<MaterialData, MeshRenderSetting> materialSetting);
+	void addSetting(MaterialData materialData, MeshRenderSetting materialSetting);
 
 	void removeSetting(ModelData modelData);
 	void removeSetting(MaterialData materialData);
 
-	ModelRenderSetting getSetting(ModelData modelData) const;
-	ModelRenderSetting getSetting(MaterialData materialData) const;
+	MeshRenderSetting getSetting(ModelData modelData) const;
+	MeshRenderSetting getSetting(MaterialData materialData) const;
 
 private:
-	std::map<ModelData, ModelRenderSetting> _modelSettings;
-	std::map<MaterialData, ModelRenderSetting> _materialSettings;
+	std::map<ModelData, MeshRenderSetting> _modelSettings;
+	std::map<MaterialData, MeshRenderSetting> _materialSettings;
 	bool _indexDraw = true;
 };
 
