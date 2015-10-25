@@ -132,7 +132,7 @@ public:
 	//Models
 
 	void loadModel(std::shared_ptr<Model> model, ModelRenderSettings const& settings);
-	void loadMaterial();
+	void loadMaterial(std::shared_ptr<Material> material, ModelRenderSettings const& settings);
 
 	//Render Settings
 

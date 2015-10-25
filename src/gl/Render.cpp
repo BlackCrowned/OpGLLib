@@ -244,6 +244,7 @@ void Render::loadModel(std::shared_ptr<Model> model, ModelRenderSettings const& 
 	}
 
 	//Load materials //TODO
+	loadMaterial(model->materialCollecion()->get(), settings);
 
 	//Use indexed drawing
 	if (settings.indexDraw()) {
@@ -277,24 +278,47 @@ void Render::loadModel(std::shared_ptr<Model> model, ModelRenderSettings const& 
 	}
 }
 
-void Render::loadMaterial() {
+void Render::loadMaterial(std::shared_ptr<Material> material, ModelRenderSettings const& settings) {
+	int ambientBuffer, diffuseBuffer, specularBuffer, transmittanceBuffer, emissionBuffer;
+	unsigned int ambientTexture, diffuseTexture, specularTexture, normalTexture;
+
 	//Load ambient
+	ModelRenderSetting ambientSettings = settings.getSetting(MaterialData::ambient);
+	if (ambientSettings.enabled) {
+		ambientBuffer = setVertexBuffer(material->ambient(), GL_FLOAT, ambientSettings.usage);
+	}
 
 	//Load diffuse
+	ModelRenderSetting diffuseSettings = settings.getSetting(MaterialData::diffuse);
+	if (diffuseSettings.enabled) {
+		diffuseBuffer = setVertexBuffer(material->ambient(), GL_FLOAT, diffuseSettings.usage);
+	}
 
 	//Load specular
+	ModelRenderSetting specularSettings = settings.getSetting(MaterialData::specular);
+	if (specularSettings.enabled) {
+		specularBuffer = setVertexBuffer(material->specular(), GL_FLOAT, specularSettings.usage);
+	}
 
 	//Load transmittance
+	ModelRenderSetting transmittanceSettings = settings.getSetting(MaterialData::transmittance);
+	if (transmittanceSettings.enabled) {
+		transmittanceBuffer = setVertexBuffer(material->transmittance(), GL_FLOAT, transmittanceSettings.usage);
+	}
 
 	//Load emission
+	ModelRenderSetting emissionSettings = settings.getSetting(MaterialData::emission);
+	if (emissionSettings.enabled) {
+		emissionBuffer = setVertexBuffer(material->emission(), GL_FLOAT, emissionSettings.usage);
+	}
 
-	//Load ambientTexture
+	//Load ambientTexture	//TODO
 
-	//Load diffuseTexture
+	//Load diffuseTexture	//TODO
 
-	//Load specularTexture
+	//Load specularTexture	//TODO
 
-	//Load normalTexture
+	//Load normalTexture	//TODO
 }
 
 void Render::updateDrawSettings(GLenum mode) {
