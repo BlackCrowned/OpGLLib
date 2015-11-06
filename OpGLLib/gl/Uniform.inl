@@ -9,99 +9,63 @@ namespace OpGLLib {
 namespace gl {
 
 template<class T> Uniform1<T>::Uniform1(int location, T data) :
-		Uniform(location), _data(data), _hasChanged(true) {
+		Uniform(location), _data(data) {
 
 }
 
 template<> void Uniform1<float>::update() const {
-	if (_hasChanged) {
 		::gl::glUniform1f(_location, _data);
-		_hasChanged = false;
-	}
 }
 template<> void Uniform1<int>::update() const {
-	if (_hasChanged) {
 		::gl::glUniform1i(_location, _data);
-		_hasChanged = false;
-	}
 }
 template<> void Uniform1<unsigned int>::update() const {
-	if (_hasChanged) {
 		::gl::glUniform1ui(_location, _data);
-		_hasChanged = false;
-	}
 }
 
 template<class T> Uniform2<T>::Uniform2(int location, T data1, T data2) :
-		Uniform(location), _data1(data1), _data2(data2), _hasChanged(true) {
+		Uniform(location), _data1(data1), _data2(data2) {
 
 }
 
 template<> void Uniform2<float>::update() const {
-	if (_hasChanged) {
 		::gl::glUniform2f(_location, _data1, _data2);
-		_hasChanged = false;
-	}
 }
 template<> void Uniform2<int>::update() const {
-	if (_hasChanged) {
 		::gl::glUniform2i(_location, _data1, _data2);
-		_hasChanged = false;
-	}
 }
 template<> void Uniform2<unsigned int>::update() const {
-	if (_hasChanged) {
 		::gl::glUniform2ui(_location, _data1, _data2);
-		_hasChanged = false;
-	}
 }
 
 template<class T> Uniform3<T>::Uniform3(int location, T data1, T data2, T data3) :
-		Uniform(location), _data1(data1), _data2(data2), _data3(data3), _hasChanged(true) {
+		Uniform(location), _data1(data1), _data2(data2), _data3(data3) {
 
 }
 
 template<> void Uniform3<float>::update() const {
-	if (_hasChanged) {
 		::gl::glUniform3f(_location, _data1, _data2, _data3);
-		_hasChanged = false;
-	}
 }
 template<> void Uniform3<int>::update() const {
-	if (_hasChanged) {
 		::gl::glUniform3i(_location, _data1, _data2, _data3);
-		_hasChanged = false;
-	}
 }
 template<> void Uniform3<unsigned int>::update() const {
-	if (_hasChanged) {
 		::gl::glUniform3ui(_location, _data1, _data2, _data3);
-		_hasChanged = false;
-	}
 }
 
 template<class T> Uniform4<T>::Uniform4(int location, T data1, T data2, T data3, T data4) :
-		Uniform(location), _data1(data1), _data2(data2), _data3(data3), _data4(data4), _hasChanged(true) {
+		Uniform(location), _data1(data1), _data2(data2), _data3(data3), _data4(data4) {
 
 }
 
 template<> void Uniform4<float>::update() const {
-	if (_hasChanged) {
 		::gl::glUniform4f(_location, _data1, _data2, _data3, _data4);
-		_hasChanged = false;
-	}
 }
 template<> void Uniform4<int>::update() const {
-	if (_hasChanged) {
 		::gl::glUniform4i(_location, _data1, _data2, _data3, _data4);
-		_hasChanged = false;
-	}
 }
 template<> void Uniform4<unsigned int>::update() const {
-	if (_hasChanged) {
 		::gl::glUniform4ui(_location, _data1, _data2, _data3, _data4);
-		_hasChanged = false;
-	}
 }
 
 template<size_t x, class T> UniformVector<x, T>::UniformVector(int location, T const* ptr, size_t count) :

@@ -39,7 +39,6 @@ public:
 
 private:
 	T _data;
-	mutable bool _hasChanged;
 };
 
 template<class T>
@@ -52,7 +51,6 @@ public:
 
 private:
 	T _data1, _data2;
-	mutable bool _hasChanged;
 };
 
 template<class T>
@@ -65,7 +63,6 @@ public:
 
 private:
 	T _data1, _data2, _data3;
-	mutable bool _hasChanged;
 };
 
 template<class T>
@@ -78,7 +75,6 @@ public:
 
 private:
 	T _data1, _data2, _data3, _data4;
-	mutable bool _hasChanged;
 };
 
 template<size_t x, class T>
