@@ -12,23 +12,34 @@ template<class T> Uniform1<T>::Uniform1(int location, T data) :
 		Uniform(location), _data(data) {
 
 }
+template<class T> Uniform1<T>::Uniform1(int location, glm::detail::tvec1<T, glm::precision::highp> data) :
+		Uniform(location), _data(data.x) {
+
+}
 
 template<class T> void Uniform1<T>::setData(T data) {
 	_data = data;
 }
+template<class T> void Uniform1<T>::setData(glm::detail::tvec1<T, glm::precision::highp> data) {
+	_data = data.x;
+}
 
 template<> void Uniform1<float>::update() const {
-		::gl::glUniform1f(_location, _data);
+	::gl::glUniform1f(_location, _data);
 }
 template<> void Uniform1<int>::update() const {
-		::gl::glUniform1i(_location, _data);
+	::gl::glUniform1i(_location, _data);
 }
 template<> void Uniform1<unsigned int>::update() const {
-		::gl::glUniform1ui(_location, _data);
+	::gl::glUniform1ui(_location, _data);
 }
 
 template<class T> Uniform2<T>::Uniform2(int location, T data1, T data2) :
 		Uniform(location), _data1(data1), _data2(data2) {
+
+}
+template<class T> Uniform2<T>::Uniform2(int location, glm::detail::tvec2<T, glm::precision::highp> data) :
+		Uniform(location), _data1(data.x), _data2(data.y) {
 
 }
 
@@ -36,19 +47,27 @@ template<class T> void Uniform2<T>::setData(T data1, T data2) {
 	_data1 = data1;
 	_data2 = data2;
 }
+template<class T> void Uniform2<T>::setData(glm::detail::tvec2<T, glm::precision::highp> data) {
+	_data1 = data.x;
+	_data2 = data.y;
+}
 
 template<> void Uniform2<float>::update() const {
-		::gl::glUniform2f(_location, _data1, _data2);
+	::gl::glUniform2f(_location, _data1, _data2);
 }
 template<> void Uniform2<int>::update() const {
-		::gl::glUniform2i(_location, _data1, _data2);
+	::gl::glUniform2i(_location, _data1, _data2);
 }
 template<> void Uniform2<unsigned int>::update() const {
-		::gl::glUniform2ui(_location, _data1, _data2);
+	::gl::glUniform2ui(_location, _data1, _data2);
 }
 
 template<class T> Uniform3<T>::Uniform3(int location, T data1, T data2, T data3) :
 		Uniform(location), _data1(data1), _data2(data2), _data3(data3) {
+
+}
+template<class T> Uniform3<T>::Uniform3(int location, glm::detail::tvec3<T, glm::precision::highp> data) :
+		Uniform(location), _data1(data.x), _data2(data.y), _data3(data.z) {
 
 }
 
@@ -57,19 +76,28 @@ template<class T> void Uniform3<T>::setData(T data1, T data2, T data3) {
 	_data2 = data2;
 	_data3 = data3;
 }
+template<class T> void Uniform3<T>::setData(glm::detail::tvec3<T, glm::precision::highp> data) {
+	_data1 = data.x;
+	_data2 = data.y;
+	_data3 = data.z;
+}
 
 template<> void Uniform3<float>::update() const {
-		::gl::glUniform3f(_location, _data1, _data2, _data3);
+	::gl::glUniform3f(_location, _data1, _data2, _data3);
 }
 template<> void Uniform3<int>::update() const {
-		::gl::glUniform3i(_location, _data1, _data2, _data3);
+	::gl::glUniform3i(_location, _data1, _data2, _data3);
 }
 template<> void Uniform3<unsigned int>::update() const {
-		::gl::glUniform3ui(_location, _data1, _data2, _data3);
+	::gl::glUniform3ui(_location, _data1, _data2, _data3);
 }
 
 template<class T> Uniform4<T>::Uniform4(int location, T data1, T data2, T data3, T data4) :
 		Uniform(location), _data1(data1), _data2(data2), _data3(data3), _data4(data4) {
+
+}
+template<class T> Uniform4<T>::Uniform4(int location, glm::detail::tvec4<T, glm::precision::highp> data) :
+		Uniform(location), _data1(data.x), _data2(data.y), _data3(data.z), _data4(data.w) {
 
 }
 
@@ -79,15 +107,21 @@ template<class T> void Uniform4<T>::setData(T data1, T data2, T data3, T data4) 
 	_data3 = data3;
 	_data4 = data4;
 }
+template<class T> void Uniform4<T>::setData(glm::detail::tvec4<T, glm::precision::highp> data) {
+	_data1 = data.x;
+	_data2 = data.y;
+	_data3 = data.z;
+	_data4 = data.w;
+}
 
 template<> void Uniform4<float>::update() const {
-		::gl::glUniform4f(_location, _data1, _data2, _data3, _data4);
+	::gl::glUniform4f(_location, _data1, _data2, _data3, _data4);
 }
 template<> void Uniform4<int>::update() const {
-		::gl::glUniform4i(_location, _data1, _data2, _data3, _data4);
+	::gl::glUniform4i(_location, _data1, _data2, _data3, _data4);
 }
 template<> void Uniform4<unsigned int>::update() const {
-		::gl::glUniform4ui(_location, _data1, _data2, _data3, _data4);
+	::gl::glUniform4ui(_location, _data1, _data2, _data3, _data4);
 }
 
 template<size_t x, class T> UniformVector<x, T>::UniformVector(int location, T const* ptr, size_t count) :

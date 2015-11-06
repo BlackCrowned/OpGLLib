@@ -33,9 +33,11 @@ template<class T>
 class Uniform1 : public Uniform{
 public:
 	Uniform1(int location, T data);
+	Uniform1(int location, glm::detail::tvec1<T, glm::precision::highp> data);
 	virtual ~Uniform1() = default;
 
 	void setData(T data);
+	void setData(glm::detail::tvec1<T, glm::precision::highp> data);
 
 	virtual void update() const;
 
@@ -47,9 +49,11 @@ template<class T>
 class Uniform2 : public Uniform{
 public:
 	Uniform2(int location, T data1, T data2);
+	Uniform2(int location, glm::detail::tvec2<T, glm::precision::highp> data);
 	virtual ~Uniform2() = default;
 
 	void setData(T data1, T data2);
+	void setData(glm::detail::tvec2<T, glm::precision::highp> data);
 
 	virtual void update() const;
 
@@ -61,9 +65,11 @@ template<class T>
 class Uniform3 : public Uniform{
 public:
 	Uniform3(int location, T data1, T data2, T data3);
+	Uniform3(int location, glm::detail::tvec3<T, glm::precision::highp> data);
 	virtual ~Uniform3() = default;
 
 	void setData(T data1, T data2, T data3);
+	void setData(glm::detail::tvec3<T, glm::precision::highp> data);
 
 	virtual void update() const;
 
@@ -75,9 +81,11 @@ template<class T>
 class Uniform4 : public Uniform{
 public:
 	Uniform4(int location, T data1, T data2, T data3, T data4);
+	Uniform4(int location, glm::detail::tvec4<T, glm::precision::highp> data);
 	virtual ~Uniform4() = default;
 
 	void setData(T data1, T data2, T data3, T data4);
+	void setData(glm::detail::tvec4<T, glm::precision::highp> data);
 
 	virtual void update() const;
 
