@@ -23,7 +23,7 @@ template<class T> void Data::setVertexSettings(T* addr, std::shared_ptr<VertexSe
 
 template<class containerT> void Data::setVertexSettings(containerT& data, ::gl::GLenum type) {
 	//Extract addr
-	ptrdiff_t addr = reinterpret_cast<ptrdiff_t>(&data[0][0]);
+	ptrdiff_t addr = reinterpret_cast<ptrdiff_t>(data.data());
 
 	//Check for existing vertexSettings with key 'addr'
 	if (_vertexSettings.count(reinterpret_cast<ptrdiff_t>(addr)) > 0) {
