@@ -35,6 +35,8 @@ public:
 	Uniform1(int location, T data);
 	virtual ~Uniform1() = default;
 
+	void setData(T data);
+
 	virtual void update() const;
 
 private:
@@ -46,6 +48,8 @@ class Uniform2 : public Uniform{
 public:
 	Uniform2(int location, T data1, T data2);
 	virtual ~Uniform2() = default;
+
+	void setData(T data1, T data2);
 
 	virtual void update() const;
 
@@ -59,6 +63,8 @@ public:
 	Uniform3(int location, T data1, T data2, T data3);
 	virtual ~Uniform3() = default;
 
+	void setData(T data1, T data2, T data3);
+
 	virtual void update() const;
 
 private:
@@ -70,6 +76,8 @@ class Uniform4 : public Uniform{
 public:
 	Uniform4(int location, T data1, T data2, T data3, T data4);
 	virtual ~Uniform4() = default;
+
+	void setData(T data1, T data2, T data3, T data4);
 
 	virtual void update() const;
 
@@ -83,6 +91,8 @@ public:
 	UniformVector(int location, T const* ptr, size_t count = 1);
 	virtual ~UniformVector() = default;
 
+	void setData(T const* ptr, size_t count = 1);
+
 	virtual void update() const;
 
 private:
@@ -95,6 +105,8 @@ class UniformMatrix : public Uniform{
 public:
 	UniformMatrix(int location, T const* ptr, size_t count = 1, ::gl::GLboolean transpose = ::gl::GL_FALSE);
 	virtual ~UniformMatrix() = default;
+
+	void setData(T const* ptr, size_t count = 1, ::gl::GLboolean transpose = ::gl::GL_FALSE);
 
 	virtual void update() const;
 
