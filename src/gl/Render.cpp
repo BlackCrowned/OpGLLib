@@ -285,31 +285,31 @@ void Render::loadMaterial(std::shared_ptr<Material> material, ModelRenderSetting
 	//Load ambient
 	ModelRenderSetting ambientSettings = settings.getSetting(MaterialData::ambient);
 	if (ambientSettings.enabled) {
-		ambientBuffer = setVertexBuffer(material->ambient(), GL_FLOAT, ambientSettings.usage);
+		//ambientBuffer = setVertexBuffer(material->ambient(), GL_FLOAT, ambientSettings.usage);
 	}
 
 	//Load diffuse
 	ModelRenderSetting diffuseSettings = settings.getSetting(MaterialData::diffuse);
 	if (diffuseSettings.enabled) {
-		diffuseBuffer = setVertexBuffer(material->ambient(), GL_FLOAT, diffuseSettings.usage);
+		//diffuseBuffer = setVertexBuffer(material->diffuse(), GL_FLOAT, diffuseSettings.usage);
 	}
 
 	//Load specular
 	ModelRenderSetting specularSettings = settings.getSetting(MaterialData::specular);
 	if (specularSettings.enabled) {
-		specularBuffer = setVertexBuffer(material->specular(), GL_FLOAT, specularSettings.usage);
+		//specularBuffer = setVertexBuffer(material->specular(), GL_FLOAT, specularSettings.usage);
 	}
 
 	//Load transmittance
 	ModelRenderSetting transmittanceSettings = settings.getSetting(MaterialData::transmittance);
 	if (transmittanceSettings.enabled) {
-		transmittanceBuffer = setVertexBuffer(material->transmittance(), GL_FLOAT, transmittanceSettings.usage);
+		//transmittanceBuffer = setVertexBuffer(material->transmittance(), GL_FLOAT, transmittanceSettings.usage);
 	}
 
 	//Load emission
 	ModelRenderSetting emissionSettings = settings.getSetting(MaterialData::emission);
 	if (emissionSettings.enabled) {
-		emissionBuffer = setVertexBuffer(material->emission(), GL_FLOAT, emissionSettings.usage);
+		//emissionBuffer = setVertexBuffer(material->emission(), GL_FLOAT, emissionSettings.usage);
 	}
 
 	//Load ambientTexture	//TODO
