@@ -94,14 +94,15 @@ template<size_t x, class T> void UniformVector<x, T>::setData(T const* ptr, size
 	_count = count;
 }
 
-template<size_t x, size_t y, class T> UniformMatrix<x, y, T>::UniformMatrix(int location, T const* ptr, size_t count,
+template<size_t x, size_t y, class T> UniformMatrix<x, y, T>::UniformMatrix(int location, data_t const& matrix, size_t count,
 		::gl::GLboolean transpose) :
-		Uniform(location), _ptr(ptr), _count(count), _transpose(transpose) {
+		Uniform(location), _matrix(matrix), _ptr(glm::value_ptr(_matrix)), _count(count), _transpose(transpose) {
 
 }
 
-template<size_t x, size_t y, class T> void UniformMatrix<x, y, T>::setData(T const* ptr, size_t count, ::gl::GLboolean transpose) {
-	_ptr = ptr;
+template<size_t x, size_t y, class T> void UniformMatrix<x, y, T>::setData(data_t const& matrix, size_t count, ::gl::GLboolean transpose) {
+	_matrix = matrix;
+	_ptr = glm::value_ptr(_matrix);
 	_count = count;
 	_transpose = transpose;
 }

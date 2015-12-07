@@ -110,14 +110,47 @@ private:
 template<size_t x, size_t y, class T>
 class UniformMatrix : public Uniform{
 public:
-	UniformMatrix(int location, T const* ptr, size_t count = 1, ::gl::GLboolean transpose = ::gl::GL_FALSE);
+	template<size_t x_, size_t y_, class U> struct data {
+		using type = void;
+	};
+	template<class U> struct data<2, 2, U> {
+		using type = glm::detail::tmat2x2<U, glm::precision::highp>;
+	};
+	template<class U> struct data<2, 3, U> {
+		using type = glm::detail::tmat2x3<U, glm::precision::highp>;
+	};
+	template<class U> struct data<3, 2, U> {
+		using type = glm::detail::tmat3x2<U, glm::precision::highp>;
+	};
+	template<class U> struct data<2, 4, U> {
+		using type = glm::detail::tmat2x4<U, glm::precision::highp>;
+	};
+	template<class U> struct data<4, 2, U> {
+		using type = glm::detail::tmat4x2<U, glm::precision::highp>;
+	};
+	template<class U> struct data<3, 3, U> {
+		using type = glm::detail::tmat3x3<U, glm::precision::highp>;
+	};
+	template<class U> struct data<3, 4, U> {
+		using type = glm::detail::tmat3x4<U, glm::precision::highp>;
+	};
+	template<class U> struct data<4, 3, U> {
+		using type = glm::detail::tmat4x3<U, glm::precision::highp>;
+	};
+	template<class U> struct data<4, 4, U> {
+		using type = glm::detail::tmat4x4<U, glm::precision::highp>;
+	};
+	using data_t = typename data<x, y, T>::type;
+
+	UniformMatrix(int location, data_t const& matrix, size_t count = 1, ::gl::GLboolean transpose = ::gl::GL_FALSE);
 	virtual ~UniformMatrix() = default;
 
-	void setData(T const* ptr, size_t count = 1, ::gl::GLboolean transpose = ::gl::GL_FALSE);
+	void setData(data_t const& matrix, size_t count = 1, ::gl::GLboolean transpose = ::gl::GL_FALSE);
 
 	virtual void update() const;
 
 private:
+	data_t _matrix;
 	T const* _ptr;
 	size_t _count;
 	::gl::GLboolean _transpose;

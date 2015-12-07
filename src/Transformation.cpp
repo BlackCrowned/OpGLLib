@@ -73,7 +73,7 @@ glm::mat4 Transformation::getTransformationMatrix(bool noCameraTransform, bool n
 }
 
 void Transformation::updateTransformationMatrixUniform(std::shared_ptr<gl::Uniform> uniform, bool noCameraTransform, bool noPerspectiveTransform, bool noOrientationTransform) {
-	static_pointer_cast<gl::UniformMatrix<4, 4, float>>(uniform)->setData(glm::value_ptr(getTransformationMatrix(noCameraTransform, noPerspectiveTransform, noOrientationTransform)));
+	static_pointer_cast<gl::UniformMatrix<4, 4, float>>(uniform)->setData(getTransformationMatrix(noCameraTransform, noPerspectiveTransform, noOrientationTransform));
 }
 
 void Transformation::loadIdentityMatrix() {
