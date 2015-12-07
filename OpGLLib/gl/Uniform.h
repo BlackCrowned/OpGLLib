@@ -102,7 +102,6 @@ public:
 	void setData(T const* ptr, size_t count = 1);
 
 	virtual void update() const;
-
 private:
 	T const* _ptr;
 	size_t _count;

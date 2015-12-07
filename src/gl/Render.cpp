@@ -217,6 +217,33 @@ void Render::unsetTexture2D(GLenum textureUnit) {
 	}
 }
 
+void Render::enableTextures() {
+	_drawSettings.textures = true;
+}
+
+void Render::disableTextures() {
+	_drawSettings.textures = false;
+}
+
+void Render::setUniform(std::shared_ptr<Uniform> uniform) {
+	_uniforms.insert(uniform);
+	_drawSettings.uniformCount++;
+}
+
+void Render::unsetUniform(std::shared_ptr<Uniform> uniform) {
+	if (_uniforms.erase(uniform) > 0) {
+		_drawSettings.uniformCount--;
+	}
+}
+
+void Render::enableUniforms() {
+	_drawSettings.uniforms = true;
+}
+
+void Render::disableUniforms() {
+	_drawSettings.uniforms = false;
+}
+
 void Render::loadModel(std::shared_ptr<Model> model, ModelRenderSettings const& settings) {
 	unsigned int indexBuffer, vertexBuffer, normalBuffer, texCoordBuffer;
 
@@ -279,7 +306,7 @@ void Render::loadModel(std::shared_ptr<Model> model, ModelRenderSettings const& 
 }
 
 void Render::loadMaterial(std::shared_ptr<Material> material, ModelRenderSettings const& settings) {
-	int ambientBuffer, diffuseBuffer, specularBuffer, transmittanceBuffer, emissionBuffer;
+	int ambientLocation, diffuseLocation, specularLocation, transmittanceLocation, emissionLocation;
 	unsigned int ambientTexture, diffuseTexture, specularTexture, normalTexture;
 
 	//Load ambient
@@ -342,14 +369,6 @@ void Render::updateDrawSettings(bool indexedDraw) {
 	_drawSettings.indexedDraw = indexedDraw;
 }
 
-void Render::enableTextures() {
-	_drawSettings.textures = true;
-}
-
-void Render::disableTextures() {
-	_drawSettings.textures = false;
-}
-
 void Render::draw() {
 	//Bind VAO
 	bindVertexArrayObject();
@@ -364,6 +383,16 @@ void Render::draw() {
 				it->second.bindTexture();
 				//Upload active texture to sampler2D
 				glUniform1i(_sampler2Ds[it->first], static_cast<int>(it->first) - static_cast<int>(GL_TEXTURE0));
+			}
+		}
+	}
+
+	//Upload Uniforms
+	if (_drawSettings.uniforms) {
+		if (_drawSettings.uniformCount > 0) {
+			for (auto it = _uniforms.begin(); it != _uniforms.end(); it++) {
+				//Upload uniform data
+				(*it)->update();
 			}
 		}
 	}

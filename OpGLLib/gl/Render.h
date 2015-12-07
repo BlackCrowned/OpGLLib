@@ -17,8 +17,10 @@
 #include <OpGLLib/State.h>
 #include <OpGLLib/Data.h>
 #include <OpGLLib/gl/Texture.h>
+#include <OpGLLib/gl/Uniform.h>
 
 #include <map>
+#include <set>
 #include <utility>
 
 namespace OpGLLib {
@@ -129,6 +131,17 @@ public:
 	void unsetTexture2D(unsigned int textureUnit);
 	void unsetTexture2D(::gl::GLenum textureUnit);
 
+	void enableTextures();
+	void disableTextures();
+
+	//Uniforms
+
+	void setUniform(std::shared_ptr<Uniform> uniform);
+	void unsetUniform(std::shared_ptr<Uniform> uniform);
+
+	void enableUniforms();
+	void disableUniforms();
+
 	//Models
 
 	void loadModel(std::shared_ptr<Model> model, ModelRenderSettings const& settings);
@@ -140,9 +153,6 @@ public:
 	void updateDrawSettings(int first, int count);
 	void updateDrawSettings(int count, ::gl::GLenum type, const void* indicies);
 	void updateDrawSettings(bool indexedDraw);
-
-	void enableTextures();
-	void disableTextures();
 
 	void draw();
 private:
@@ -166,11 +176,16 @@ private:
 
 		bool textures = true;
 		int texture2DCount = 0;
+
+		bool uniforms = true;
+		int uniformCount = 0;
 	};
 	DrawSettings _drawSettings;
 
 	std::map<unsigned int, Texture2D> _texture2Ds;
 	std::map<unsigned int, int> _sampler2Ds;
+
+	std::set<std::shared_ptr<Uniform>> _uniforms;
 };
 }
 
