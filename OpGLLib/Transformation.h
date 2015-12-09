@@ -81,6 +81,8 @@ private:
 	glm::mat4 transformationMatrix;
 
 	std::stack<glm::mat4> matrixStack;
+
+	glm::mat4 uniformMatrix;
 };
 }
 

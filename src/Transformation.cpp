@@ -13,6 +13,7 @@ namespace OpGLLib {
 Transformation::Transformation() :
 		Matrices(), Camera(), Perspective() {
 	transformationMatrix = glm::mat4(1.0f);
+	uniformMatrix = glm::mat4(1.0f);
 }
 
 Transformation::~Transformation() {
@@ -73,7 +74,8 @@ glm::mat4 Transformation::getTransformationMatrix(bool noCameraTransform, bool n
 }
 
 void Transformation::updateTransformationMatrixUniform(std::shared_ptr<gl::Uniform> uniform, bool noCameraTransform, bool noPerspectiveTransform, bool noOrientationTransform) {
-	static_pointer_cast<gl::UniformMatrix<4, 4, float>>(uniform)->setData(glm::value_ptr(getTransformationMatrix(noCameraTransform, noPerspectiveTransform, noOrientationTransform)));
+	uniformMatrix = getTransformationMatrix(noCameraTransform, noPerspectiveTransform, noOrientationTransform);
+	static_pointer_cast<gl::UniformMatrix<4, 4, float>>(uniform)->setData(glm::value_ptr(uniformMatrix));
 }
 
 void Transformation::loadIdentityMatrix() {
