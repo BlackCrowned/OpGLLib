@@ -5,7 +5,7 @@
  *      Author: Michael
  */
 
-#include <OpGLLib/Camera.h>
+#include <OpGLLib/gl/Camera.h>
 
 namespace OpGLLib {
 namespace gl {
