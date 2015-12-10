@@ -5,7 +5,7 @@
  *      Author: Michael
  */
 
-#include <OpGLLib/Perspective.h>
+#include <OpGLLib/gl/Perspective.h>
 
 namespace OpGLLib {
 namespace gl {
