@@ -5,7 +5,7 @@
  *      Author: Michael
  */
 
-#include <OpGLLib/gl/Matrices.h>
+#include <OpGLLib/Matrices.h>
 
 namespace OpGLLib {
 namespace gl {
