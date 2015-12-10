@@ -13,7 +13,6 @@
 #include <stack>
 
 namespace OpGLLib {
-namespace gl {
 
 class Perspective {
 public:
@@ -59,7 +58,6 @@ private:
 
 	std::stack<Data> _stateStack;
 };
-}
 }
 
 

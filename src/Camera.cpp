@@ -8,7 +8,6 @@
 #include <OpGLLib/Camera.h>
 
 namespace OpGLLib {
-namespace gl {
 Camera::Camera() : _data({glm::mat4(), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f)}), _stateStack() {
 	lookAt(_data.center, _data.up, _data.cameraPos);
 }
@@ -119,7 +118,6 @@ void Camera::popState() {
 
 void Camera::seekState() {
 	_data = _stateStack.top();
-}
 }
 }
 

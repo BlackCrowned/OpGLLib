@@ -8,7 +8,6 @@
 #include <OpGLLib/Matrices.h>
 
 namespace OpGLLib {
-namespace gl {
 
 void Matrices::setTranslationMatrix(glm::mat4 translationMatrix) {
 	_data.translationMatrix = translationMatrix;
@@ -271,6 +270,5 @@ void Matrices::popState() {
 
 void Matrices::seekState() {
 	_data = _stateStack.top();
-}
 }
 }

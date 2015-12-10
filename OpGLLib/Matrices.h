@@ -15,7 +15,6 @@
 #include <memory>
 
 namespace OpGLLib {
-namespace gl {
 class Matrices {
 public:
 	Matrices() = default;
@@ -109,6 +108,5 @@ private:
 };
 }
 
-}
 
 #endif /* OPGLLIB_MATRICES_H_ */

@@ -8,7 +8,6 @@
 #include <OpGLLib/Perspective.h>
 
 namespace OpGLLib {
-namespace gl {
 Perspective::Perspective() : _data({glm::mat4(0), 45.0f, 1.0f, glm::vec2(1.0f, 1.0f), 1.0f, 500.0f, false}), _stateStack() {
 	updatePerspectiveMatrix();
 }
@@ -112,7 +111,6 @@ void Perspective::popState() {
 
 void Perspective::seekState() {
 	_data = _stateStack.top();
-}
 }
 }
 

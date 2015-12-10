@@ -14,7 +14,6 @@
 #include <stack>
 
 namespace OpGLLib {
-namespace gl {
 class Camera {
 public:
 	Camera();
@@ -58,7 +57,6 @@ private:
 
 	std::stack<Data> _stateStack;
 };
-}
 }
 
 #endif /* OPGLLIB_CAMERA_H_ */
