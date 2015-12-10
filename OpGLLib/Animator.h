@@ -99,7 +99,7 @@ public:
 	}
 	;
 	void addCallback(AnimationCallbackEvents event, AnimationObject& animationObject) {
-		callbacks.addCallback<void, Animator*&, glm::mat4*&, AnimationObject&>(event, detail::addCallback, std::ref(animator),
+		callbacks.addCallback<void, Animator*&, glm::mat4*&, AnimationObject&>(event, std::function<void(Animator*&, glm::mat4*&, AnimationObject&)>(detail::addCallback), std::ref(animator),
 				std::ref(matrix), std::ref(animationObject),
 				((event == onUpdate) || (event == onRestart) || (event == onReverse)) ? 0 : removeWhenFinished);
 	}
