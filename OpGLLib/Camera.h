@@ -14,11 +14,12 @@
 #include <stack>
 
 namespace OpGLLib {
+namespace gl {
 class Camera {
 public:
 	Camera();
 	Camera(glm::vec3 center, glm::vec3 up, glm::vec3 cameraPos);
-	~Camera();
+	~Camera() = default;
 
 	void resetCameraMatrix();
 
@@ -45,12 +46,19 @@ public:
 	void seekState();
 
 private:
-	glm::mat4 cameraMatrix;
+	struct Data {
+		glm::mat4 cameraMatrix;
 
-	glm::vec3 center, up, cameraPos;
+		glm::vec3 center;
+		glm::vec3 up;
+		glm::vec3 cameraPos;
+	};
 
-	std::stack<Camera> stateStack;
+	Data _data;
+
+	std::stack<Data> _stateStack;
 };
+}
 }
 
 #endif /* OPGLLIB_CAMERA_H_ */
