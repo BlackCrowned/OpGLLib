@@ -16,6 +16,7 @@
 #include <stdexcept>
 #include <limits>
 #include <type_traits>
+#include <string>
 
 namespace OpGLLib {
 
