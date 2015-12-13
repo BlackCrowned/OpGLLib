@@ -30,7 +30,7 @@ ImageManager::ImageManager(OpGLLibBase const* pointer) :
 }
 
 Image<unsigned char> ImageManager::loadPng(std::string const& file, bool cache) const {
-	//Check wether image is cached
+	//Check whether image is cached
 	if (cache && checkImageCache(file)) {
 		return getCachedImage<unsigned char>(file);
 	}
@@ -40,7 +40,7 @@ Image<unsigned char> ImageManager::loadPng(std::string const& file, bool cache) 
 
 	//Cache image if requested
 	if (cache) {
-		_imageCache[file] = std::experimental::any(image);
+		_imageCache[file] = image;
 	}
 
 	return image;

@@ -15,7 +15,6 @@
 
 #include <string>
 #include <map>
-#include <experimental/any>
 
 namespace OpGLLib {
 
@@ -49,7 +48,7 @@ private:
 
 	template<class T> Image<T> const& getCachedImage(std::string const& file) const;
 
-	mutable std::map<std::string, std::experimental::any> _imageCache;
+	mutable std::map<std::string, Image<unsigned char>> _imageCache;
 };
 
 class NullImageManager : public ImageManagerBase {
