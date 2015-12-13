@@ -17,20 +17,9 @@ template<class T> Image<T>::Image(Dimensions dimensions, std::vector<dataType>&&
 
 }
 
-template<class T> template<class U> Image<T>::Image(Image<U> const& other) :
-		_dimensions(other._dimensions), _data(other._data) {
-
-}
-
-template<class T> template<class U> Image<T>::Image(Image<U>&& other) :
-		_dimensions(std::move(other._dimensions)), _data(std::move(other._data)) {
-
-}
-
-template<class T> template<class U> Image<T>& Image<T>::operator =(Image<U> other) {
+template<class T> Image<T>& Image<T>::operator =(Image<T> other) {
 	std::swap(_dimensions, other._dimensions);
 	std::swap(_data, other._data);
-
 	return *this;
 }
 
