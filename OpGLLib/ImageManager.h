@@ -46,10 +46,12 @@ public:
 private:
 	Image<unsigned char> _loadPng(std::string const& file) const;
 
-	template<class T> Image<T> const& getCachedImage(std::string const& file) const;
+	template<class T = unsigned char> Image<T> const& getCachedImage(std::string const& file) const;
+
 
 	mutable std::map<std::string, Image<unsigned char>> _imageCache;
 };
+template<> Image<unsigned char> const& ImageManager::getCachedImage(std::string const& file) const;
 
 class NullImageManager : public ImageManagerBase {
 public:

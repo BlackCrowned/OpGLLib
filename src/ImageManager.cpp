@@ -76,6 +76,10 @@ Image<unsigned char> ImageManager::_loadPng(std::string const& file) const {
 	return Image<unsigned char>( { width, height }, std::move(data));
 }
 
+template<> Image<unsigned char> const& ImageManager::getCachedImage(std::string const& file) const {
+	return _imageCache[file];
+}
+
 NullImageManager::NullImageManager() : ImageManagerBase() {
 
 }

@@ -7,8 +7,6 @@
 
 namespace OpGLLib {
 
-template<> Image<unsigned char> const& ImageManager::getCachedImage(std::string const& file) const {
-	return _imageCache[file];
-}
+
 
 }
