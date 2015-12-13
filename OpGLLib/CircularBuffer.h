@@ -31,7 +31,7 @@ public:
 	typedef T& reference;
 
 	typedef const pointer const_pointer;
-	typedef const reference const_reference;
+	typedef value_type const& const_reference;
 
 	typedef std::input_iterator_tag iterator_category;
 
