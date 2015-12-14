@@ -170,8 +170,6 @@ private:
 	std::map<glm::mat4*, std::deque<AnimationObject> > queue;
 };
 
-template class AnimationAttribute<glm::vec3> ;
-
 using AnimationAttributeV3 = AnimationAttribute<glm::vec3>;
 }
 

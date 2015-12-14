@@ -58,6 +58,9 @@ template<typename Event>
 int Callbacks<Event>::size() {
 	return callbacks.size();
 }
+
+//Explicit instantiation
+template class Callbacks<int>;
 }
 
 

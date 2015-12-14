@@ -398,6 +398,9 @@ float Animator::interpolate(chrono::time_point<chrono::system_clock> startTime, 
 
 	return interpolatedProgress;
 }
+
+//Explicit instatiation
+template class AnimationAttribute<glm::vec3>;
 }
 
 
