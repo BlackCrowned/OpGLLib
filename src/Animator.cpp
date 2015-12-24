@@ -10,7 +10,7 @@
 using namespace std;
 
 namespace OpGLLib{
-void detail::addCallback(Animator*& animator, glm::mat4*& matrix, AnimationObject& animationObject) {
+void detail::addCallback(Animator* animator, glm::mat4* matrix, AnimationObject animationObject) {
 	animator->animate(matrix, animationObject);
 }
 
@@ -117,6 +117,14 @@ void AnimationObject::addAttribute(AnimationAttribute<glm::vec3> attribute) {
 	attributes.push_back(attribute);
 }
 
+void AnimationObject::addCallback(AnimationCallbackEvents event, std::shared_ptr<CallbackBase> callback) {
+	callbackHandler.addCallback(event, callback, ((event == onUpdate) || (event == onRestart) || (event == onReverse)) ? false : true);
+}
+
+void AnimationObject::addCallback(AnimationCallbackEvents event, AnimationObject& animationObject) {
+	callbackHandler.addCallback(event, make_callback(detail::addCallback, animator, matrix, animationObject), ((event == onUpdate) || (event == onRestart) || (event == onReverse)) ? false : true);
+}
+
 void AnimationObject::setStartTime() {
 	setStartTime(chrono::system_clock::now());
 }
@@ -167,45 +175,45 @@ void AnimationObject::reverse() {
 }
 
 void AnimationObject::animationStart() {
-	callbacks.dispatchEvent(AnimationCallbackEvents::onStart);
+	callbackHandler.dispatchEvent(AnimationCallbackEvents::onStart);
 }
 
 void AnimationObject::animationUpdate() {
-	callbacks.dispatchEvent(AnimationCallbackEvents::onUpdate);
+	callbackHandler.dispatchEvent(AnimationCallbackEvents::onUpdate);
 }
 
 void AnimationObject::animationComplete() {
-	callbacks.dispatchEvent(AnimationCallbackEvents::onComplete);
+	callbackHandler.dispatchEvent(AnimationCallbackEvents::onComplete);
 	if (AnimationSettings::restart & settings) {
-		callbacks.dispatchEvent(AnimationCallbackEvents::onRestart);
+		callbackHandler.dispatchEvent(AnimationCallbackEvents::onRestart);
 		setStartTime();
 	}
 	if (AnimationSettings::reverse & settings) {
 		reverse();
-		callbacks.dispatchEvent(AnimationCallbackEvents::onReverse);
+		callbackHandler.dispatchEvent(AnimationCallbackEvents::onReverse);
 		setStartTime();
 	}
 	if (AnimationSettings::repeat & settings) {
-		callbacks.dispatchEvent(AnimationCallbackEvents::onRepeat);
+		callbackHandler.dispatchEvent(AnimationCallbackEvents::onRepeat);
 		setMatrix(matrix);
 		setStartTime();
 	}
 	if (AnimationSettings::restartOnce & settings) {
-		callbacks.dispatchEvent(AnimationCallbackEvents::onRestart);
-		callbacks.removeCallbacks(AnimationCallbackEvents::onRestart);
+		callbackHandler.dispatchEvent(AnimationCallbackEvents::onRestart);
+		callbackHandler.removeCallbacks(AnimationCallbackEvents::onRestart);
 		settings ^= AnimationSettings::restartOnce;
 		setStartTime();
 	}
 	if (AnimationSettings::reverseOnce & settings) {
 		reverse();
-		callbacks.dispatchEvent(AnimationCallbackEvents::onReverse);
-		callbacks.removeCallbacks(AnimationCallbackEvents::onReverse);
+		callbackHandler.dispatchEvent(AnimationCallbackEvents::onReverse);
+		callbackHandler.removeCallbacks(AnimationCallbackEvents::onReverse);
 		settings ^= AnimationSettings::reverseOnce;
 		setStartTime();
 	}
 	if (AnimationSettings::repeatOnce & settings) {
-		callbacks.dispatchEvent(AnimationCallbackEvents::onRepeat);
-		callbacks.removeCallbacks(AnimationCallbackEvents::onRepeat);
+		callbackHandler.dispatchEvent(AnimationCallbackEvents::onRepeat);
+		callbackHandler.removeCallbacks(AnimationCallbackEvents::onRepeat);
 		settings ^= AnimationSettings::repeatOnce;
 		setMatrix(matrix);
 		setStartTime();
