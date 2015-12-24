@@ -3,8 +3,7 @@ namespace OpGLLib {
 template<class Event> void CallbackHandler<Event>::addCallback(Event event, std::shared_ptr<CallbackBase> callback, bool callOnce) {
 	if (!callOnce) {
 		_addCallbackImpl(_container, event, callback);
-	}
-	else {
+	} else {
 		_addCallbackImpl(_containerOneCall, event, callback);
 	}
 }
@@ -79,14 +78,14 @@ template <class T, class ...Args> Callback<T, Args...>::Callback(T&& callable, A
 	_callable(std::forward<T>(callable)), _arguments(std::tuple<Args...>(std::forward<Args>(arguments)...)) {}
 
 template<class T, class ...Args> void Callback<T, Args...>::call() const {
-	_callImpl(std::index_sequence_for<Args...>{} );
+	_callImpl(std::index_sequence_for<Args...>{});
 }
 
-template<class T, class ...Args> template<size_t ...I> void Callback<T, Args...>::_callImpl(std::index_sequence<I...> seq) const{
+template<class T, class ...Args> template<size_t ...I> void Callback<T, Args...>::_callImpl(std::index_sequence<I...> seq) const {
 	_callable(std::forward<typename std::tuple_element<I, decltype(_arguments)>::type>(std::get<I>(_arguments))...);
 };
 
-template<class T, class ...Args> std::shared_ptr<CallbackBase> make_callback(T&& callable, Args&&... args){
+template<class T, class ...Args> std::shared_ptr<CallbackBase> make_callback(T&& callable, Args&&... args) {
 	return std::shared_ptr<CallbackBase>(new Callback<T, Args...>(std::forward<T>(callable), std::forward<Args>(args)...));
 }
 

@@ -18,7 +18,7 @@
 #include <deque>
 
 
-namespace OpGLLib{
+namespace OpGLLib {
 
 class CallbackBase;
 
@@ -57,7 +57,7 @@ public:
 };
 
 template<class T, class ...Args>
-class Callback : public CallbackBase{
+class Callback : public CallbackBase {
 public:
 	Callback(T&& callable, Args&&... arguments);
 	virtual ~Callback() = default;
