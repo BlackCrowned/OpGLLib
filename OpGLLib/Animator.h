@@ -11,8 +11,10 @@
 #define INCLUDE_GLM
 #include <OpGLLib/internal.h>
 
-#include <OpGLLib/Callbacks.h>
+#include <OpGLLib/Callback.h>
 #include <OpGLLib/Transformation.h>
+
+#include <map>
 
 namespace OpGLLib {
 enum AnimationAttributeTypes {
@@ -43,7 +45,7 @@ class Animator;
 class AnimationObject;
 
 namespace detail {
-void addCallback(Animator*& animator, glm::mat4*& matrix, AnimationObject& animationObject);
+void addCallback(Animator* animator, glm::mat4* matrix, AnimationObject animationObject);
 }
 
 template<class T> class AnimationAttribute {
@@ -80,29 +82,10 @@ public:
 
 	void addAttribute(AnimationAttribute<glm::vec3> attribute);
 
-	template<typename R = void, typename ...Args>
-	void addCallback(AnimationCallbackEvents event, std::function<R(Args...)> const& func, Args&& ...args) {
-		callbacks.addCallback<R, Args...>(event, func, args...,
-				((event == onUpdate) || (event == onRestart) || (event == onReverse)) ? 0 : removeWhenFinished);
-	}
-	;
-	template<typename Function, typename ...Args>
-	void addCallback(AnimationCallbackEvents event, Function const& func, Args&& ...args) {
-		callbacks.addCallback<Function, Args...>(event, func, args...,
-				((event == onUpdate) || (event == onRestart) || (event == onReverse)) ? 0 : removeWhenFinished);
-	}
-	;
-	template<typename R = void, typename Function, typename ...Args>
-	void addCallback(AnimationCallbackEvents event, Function const& func, Args&& ...args) {
-		callbacks.addCallback<R, Function, Args...>(event, func, args...,
-				((event == onUpdate) || (event == onRestart) || (event == onReverse)) ? 0 : removeWhenFinished);
-	}
-	;
-	void addCallback(AnimationCallbackEvents event, AnimationObject& animationObject) {
-		callbacks.addCallback<void, Animator*&, glm::mat4*&, AnimationObject&>(event, std::function<void(Animator*&, glm::mat4*&, AnimationObject&)>(detail::addCallback), std::ref(animator),
-				std::ref(matrix), std::ref(animationObject),
-				((event == onUpdate) || (event == onRestart) || (event == onReverse)) ? 0 : removeWhenFinished);
-	}
+	template<class Callable, typename ...Args>
+	void addCallback(AnimationCallbackEvents event, Callable const& callable, Args&& ...args);
+	void addCallback(AnimationCallbackEvents event, std::shared_ptr<CallbackBase> callback);
+	void addCallback(AnimationCallbackEvents event, AnimationObject& animationObject);
 
 	void setStartTime();
 	void setStartTime(std::chrono::time_point<std::chrono::system_clock> start);
@@ -124,7 +107,7 @@ public:
 
 	bool complete();
 private:
-	Callbacks<int> callbacks;
+	CallbackHandler<int> callbackHandler;
 
 	glm::mat4 oldMatrix;
 
@@ -173,6 +156,6 @@ private:
 using AnimationAttributeV3 = AnimationAttribute<glm::vec3>;
 }
 
-
+#include <OpGLLib/Animator.inl>
 
 #endif /* OPGLLIB_ANIMATOR_H_ */
