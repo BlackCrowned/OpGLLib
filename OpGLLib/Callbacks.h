@@ -8,119 +8,66 @@
 #ifndef OPGLLIB_CALLBACKS_H_
 #define OPGLLIB_CALLBACKS_H_
 
-#include <chrono>
-#include <functional>
-#include <iostream>
+#include <OpGLLib/internal.h>
+
+#include <OpGLLib/OpGLLib.h>
+
+#include <tuple>
+#include <memory>
+#include <unordered_map>
 #include <deque>
-#include <queue>
-#include <map>
+#include <stack>
+
 
 namespace OpGLLib{
-enum CallbackSettings {
-	removeWhenFinished = 0x1
+
+class CallbackBase;
+
+struct CallbackOptions {
+
 };
 
-template<typename Event>
-class Callbacks {
+template<class Event>
+class CallbackHandler {
 public:
-	Callbacks();
-	~Callbacks();
+	typedef std::deque<std::shared_ptr<CallbackBase>> eventContainer;
+	CallbackHandler() = default;
+	~CallbackHandler() = default;
 
-//	template<typename R, typename ...Args>
-//	void addCallback(Event event, std::function<R(Args...)> function, Args&& ...args, int settings) {
-//		std::cout << "Using rvalue reference" << std::endl;
-//		this->callbacks.push_back(new Callback<std::function<R(Args...)>, Args...>(event, function, args..., settings));
-//	}
-//	;
-
-	template<typename R = void, typename ...Args>
-	void addCallback(Event event, std::function<R(Args...)> function, Args&& ...args, int settings) {
-		this->callbacks.push_back(
-				new Callback<std::function<R(Args...)>, Args...>(event, function, std::forward_as_tuple(args...), settings));
-	}
-	;
-	template<typename Function, typename ...Args>
-	void addCallback(Event event, Function function, Args&& ...args, int settings) {
-		this->callbacks.push_back(
-				new Callback<std::function<typename Function::result_type(Args...)>, Args...>(event, function,
-						std::forward_as_tuple(args...), settings));
-	}
-	;
-	template<typename R = void, typename Function, typename ...Args>
-	void addCallback(Event event, Function function, Args&& ...args, int settings) {
-		std::function<R(Args...)> func = function;
-		this->callbacks.push_back(new Callback<std::function<R(Args...)>, Args...>(event, func, std::forward_as_tuple(args...), settings));
-	}
-	;
-
+	void addCallback(Event event, std::shared_ptr<CallbackBase> callback);
+	void removeCallback(Event event, std::shared_ptr<CallbackBase> callback);
 	void removeCallbacks(Event event);
-	void removeCallbacks();
+	void removeCallbacks(std::shared_ptr<CallbackBase> callback);
 
-	void dispatchEvent(Event event, bool firstOnly = false);
-
-	int size();
+	void dispatchEvent(Event event);
 
 private:
-	void removeCallback(int i);
-
-	class virtualCallback {
-	public:
-		virtual ~virtualCallback() {
-		}
-		;
-		virtual void call() = 0;
-		virtual Event event() = 0;
-		virtual int settings() = 0;
-	};
-
-	template<typename Function, typename ...Args>
-	class Callback: public virtualCallback {
-	public:
-		Callback(Event event, Function const& func, std::tuple<Args&&...> const& argsT, int settings) :
-				args(argsT) {
-			this->_event = event;
-			this->func = func;
-			this->_settings = settings;
-		}
-		;
-
-		~Callback() {
-			//delete this;
-		}
-
-		void call() {
-			call_func(std::index_sequence_for<Args...> { });
-		}
-		;
-
-		Event event() {
-			return _event;
-		}
-		;
-
-		int settings() {
-			return _settings;
-		}
-		;
-
-		template<size_t ...I>
-		void call_func(std::index_sequence<I...> seq) {
-			func(std::get<I>(args)...);
-		}
-
-	private:
-
-		Event _event;
-		Function func;
-		std::tuple<Args&&...> args;
-		int _settings;
-	};
-
-	std::deque<virtualCallback *> callbacks;
+	std::unordered_map<Event, eventContainer> _container;
 };
 
+class CallbackBase {
+public:
+	CallbackBase() = default;
+	virtual ~CallbackBase() = default;
+
+	virtual void call() const = 0;
+};
+
+template<class T, class ...Args>
+class Callback : public CallbackBase{
+public:
+	Callback(T&& callable, Args&&... arguments);
+	virtual ~Callback() = default;
+
+	virtual void call() const;
+private:
+	template<size_t ...I> constexpr void _callImpl(std::index_sequence<I...> seq);
+
+	T _callable;
+	std::tuple<Args...> _arguments;
+};
 }
 
-
+#include <OpGLLib/Callbacks.inl>
 
 #endif /* OPGLLIB_CALLBACKS_H_ */
