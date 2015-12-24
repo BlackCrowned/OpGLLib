@@ -5,6 +5,6 @@
  *      Author: Michael
  */
 
-#include <OpGLLib/Callbacks.h>
+#include <OpGLLib/Callback.h>
 
 

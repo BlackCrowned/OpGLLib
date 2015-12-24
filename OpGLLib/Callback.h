@@ -68,6 +68,6 @@ private:
 };
 }
 
-#include <OpGLLib/Callbacks.inl>
+#include <OpGLLib/Callback.inl>
 
 #endif /* OPGLLIB_CALLBACKS_H_ */
