@@ -5,8 +5,8 @@
  *      Author: Michael
  */
 
-#ifndef OPGLLIB_CALLBACKS_H_
-#define OPGLLIB_CALLBACKS_H_
+#ifndef OPGLLIB_CALLBACK_H_
+#define OPGLLIB_CALLBACK_H_
 
 #include <OpGLLib/internal.h>
 
@@ -16,7 +16,6 @@
 #include <memory>
 #include <unordered_map>
 #include <deque>
-#include <stack>
 
 
 namespace OpGLLib{
@@ -70,4 +69,4 @@ private:
 
 #include <OpGLLib/Callback.inl>
 
-#endif /* OPGLLIB_CALLBACKS_H_ */
+#endif /* OPGLLIB_CALLBACK_H_ */
