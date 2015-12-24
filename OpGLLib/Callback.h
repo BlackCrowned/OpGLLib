@@ -60,7 +60,7 @@ public:
 
 	virtual void call() const;
 private:
-	template<size_t ...I> constexpr void _callImpl(std::index_sequence<I...> seq);
+	template<size_t ...I> void _callImpl(std::index_sequence<I...> seq) const;
 
 	T _callable;
 	std::tuple<Args...> _arguments;

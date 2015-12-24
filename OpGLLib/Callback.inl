@@ -55,7 +55,7 @@ template<class T, class ...Args> void Callback<T, Args...>::call() const {
 	_callImpl(std::index_sequence_for<decltype(_arguments)>);
 }
 
-template<class T, class ...Args> template<size_t ...I> constexpr void Callback<T, Args...>::_callImpl(std::index_sequence<I...> seq) {
+template<class T, class ...Args> template<size_t ...I> void Callback<T, Args...>::_callImpl(std::index_sequence<I...> seq) const{
 	_callable(std::forward<typename std::tuple_element<I, decltype(_arguments)>::type>(std::get<I>(_arguments))...);
 };
 
