@@ -69,6 +69,8 @@ private:
 	T _callable;
 	std::tuple<Args...> _arguments;
 };
+
+template<class T, class ...Args> std::shared_ptr<CallbackBase> make_callback(T&& callable, Args&&... args);
 }
 
 #include <OpGLLib/Callback.inl>

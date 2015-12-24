@@ -86,4 +86,8 @@ template<class T, class ...Args> template<size_t ...I> void Callback<T, Args...>
 	_callable(std::forward<typename std::tuple_element<I, decltype(_arguments)>::type>(std::get<I>(_arguments))...);
 };
 
+template<class T, class ...Args> std::shared_ptr<CallbackBase> make_callback(T&& callable, Args&&... args){
+	return std::shared_ptr<CallbackBase>(new Callback<T, Args...>(callable, args...));
+}
+
 }
