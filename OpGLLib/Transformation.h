@@ -14,6 +14,7 @@
 #include <OpGLLib/Matrices.h>
 #include <OpGLLib/Perspective.h>
 #include <OpGLLib/Camera.h>
+#include <OpGLLib/gl/Uniform.h>
 
 #include <iostream>
 
@@ -32,6 +33,8 @@ public:
 	void updateTransformationMatrix(MultiplicationOrder = SRT);
 	glm::mat4 getTransformationMatrix(bool noCameraTransform = false, bool noPerspectiveTransform = false, bool noOrientationTransform =
 			false);
+	void updateTransformationMatrixUniform(std::shared_ptr<gl::Uniform> uniform, bool noCameraTransform = false, bool noPerspectiveTransform = false,
+			bool noOrientationTransform = false);
 
 	Matrices & matrices = static_cast<Matrices &>(*this);
 	Camera & camera = static_cast<Camera &>(*this);
@@ -78,6 +81,8 @@ private:
 	glm::mat4 transformationMatrix;
 
 	std::stack<glm::mat4> matrixStack;
+
+	glm::mat4 uniformMatrix;
 };
 }
 

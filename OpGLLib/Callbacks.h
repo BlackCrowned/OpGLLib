@@ -119,7 +119,6 @@ private:
 	std::deque<virtualCallback *> callbacks;
 };
 
-template class Callbacks<int> ;
 }
 
 

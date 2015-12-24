@@ -30,10 +30,8 @@ public:
 	Image(Dimensions dimensions, std::vector<dataType>&& data);
 	Image(Image<dataType> const& other) = default;
 	Image(Image<dataType>&& other) = default;
-	template<class U> Image(Image<U> const& other);
-	template<class U> Image(Image<U>&& other);
 
-	template<class U> Image<T>& operator=(Image<U> other);
+	Image<T>& operator=(Image<T> other);
 
 	std::vector<dataType>& get();
 	Dimensions getDimensions();

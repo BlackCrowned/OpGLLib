@@ -8,136 +8,116 @@
 #include <OpGLLib/Camera.h>
 
 namespace OpGLLib {
-Camera::Camera() {
-	center = glm::vec3(0.0f, 0.0f, -1.0f);
-	up = glm::vec3(0.0f, 1.0f, 0.0f);
-	cameraPos = glm::vec3(0.0f, 0.0f, 0.0f);
-
-	lookAt(center, up, cameraPos);
+Camera::Camera() : _data({glm::mat4(), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f)}), _stateStack() {
+	lookAt(_data.center, _data.up, _data.cameraPos);
 }
 
-Camera::Camera(glm::vec3 center, glm::vec3 up, glm::vec3 cameraPos) {
-	Camera::center = center;
-	Camera::up = up;
-	Camera::cameraPos = cameraPos;
-
+Camera::Camera(glm::vec3 center, glm::vec3 up, glm::vec3 cameraPos) : _data({glm::mat4(), center, up, cameraPos}), _stateStack() {
 	lookAt(center, up, cameraPos);
-}
-
-Camera::~Camera() {
-
 }
 
 void Camera::resetCameraMatrix() {
-	cameraMatrix = glm::mat4(1.0f);
+	_data.cameraMatrix = glm::mat4(1.0f);
 }
 
 void Camera::position(glm::vec3 cameraPos) {
-	Camera::cameraPos = cameraPos;
-	lookAt(center, up, cameraPos);
+	_data.cameraPos = cameraPos;
+	lookAt(_data.center, _data.up, _data.cameraPos);
 }
 
 void Camera::translate(glm::vec3 offset) {
-	cameraPos += offset;
-	lookAt(center, up, cameraPos);
+	_data.cameraPos += offset;
+	lookAt(_data.center, _data.up, _data.cameraPos);
 }
 
 void Camera::translateX(float x) {
-	cameraPos.x += x;
-	lookAt(center, up, cameraPos);
+	_data.cameraPos.x += x;
+	lookAt(_data.center, _data.up, _data.cameraPos);
 }
 
 void Camera::translateY(float y) {
-	cameraPos.y += y;
-	lookAt(center, up, cameraPos);
+	_data.cameraPos.y += y;
+	lookAt(_data.center, _data.up, _data.cameraPos);
 }
 
 void Camera::translateZ(float z) {
-	cameraPos.z += z;
-	lookAt(center, up, cameraPos);
+	_data.cameraPos.z += z;
+	lookAt(_data.center, _data.up, _data.cameraPos);
 }
 
 void Camera::strafe(glm::vec3 offset) {
-	center += offset;
-	cameraPos += offset;
-	lookAt(center, up, cameraPos);
+	_data.center += offset;
+	_data.cameraPos += offset;
+	lookAt(_data.center, _data.up, _data.cameraPos);
 }
 
 void Camera::strafeX(float x) {
-	center.x += x;
-	cameraPos.x += x;
-	lookAt(center, up, cameraPos);
+	_data.center.x += x;
+	_data.cameraPos.x += x;
+	lookAt(_data.center, _data.up, _data.cameraPos);
 }
 
 void Camera::strafeY(float y) {
-	center.y += y;
-	cameraPos.y += y;
-	lookAt(center, up, cameraPos);
+	_data.center.y += y;
+	_data.cameraPos.y += y;
+	lookAt(_data.center, _data.up, _data.cameraPos);
 }
 
 void Camera::strafeZ(float z) {
-	center.z += z;
-	cameraPos.x += z;
-	lookAt(center, up, cameraPos);
+	_data.center.z += z;
+	_data.cameraPos.x += z;
+	lookAt(_data.center, _data.up, _data.cameraPos);
 }
 
 void Camera::lookAt(glm::vec3 center) {
-	Camera::center = center;
-	lookAt(center, up, cameraPos);
+	_data.center = center;
+	lookAt(_data.center, _data.up, _data.cameraPos);
 }
 
 void Camera::lookAt(glm::vec3 center, glm::vec3 up) {
-	Camera::center = center;
-	Camera::up = up;
-	lookAt(center, up, cameraPos);
+	_data.center = center;
+	_data.up = up;
+	lookAt(_data.center, _data.up, _data.cameraPos);
 }
 
 void Camera::lookAt(glm::vec3 center, glm::vec3 up, glm::vec3 cameraPos) {
-	Camera::center = center;
-	Camera::up = up;
-	Camera::cameraPos = cameraPos;
-	glm::vec3 zAxis = glm::normalize(center - cameraPos);
-	glm::vec3 xAxis = glm::normalize(glm::cross(zAxis, up));
+	_data.center = center;
+	_data.up = up;
+	_data.cameraPos = cameraPos;
+	glm::vec3 zAxis = glm::normalize(_data.center - _data.cameraPos);
+	glm::vec3 xAxis = glm::normalize(glm::cross(zAxis, _data.up));
 	glm::vec3 yAxis = glm::cross(xAxis, zAxis);
-	cameraMatrix = glm::mat4(1.0f);
+	_data.cameraMatrix = glm::mat4(1.0f);
 
-	cameraMatrix[0].x = xAxis.x;
-	cameraMatrix[1].x = xAxis.y;
-	cameraMatrix[2].x = xAxis.z;
-	cameraMatrix[0].y = yAxis.x;
-	cameraMatrix[1].y = yAxis.y;
-	cameraMatrix[2].y = yAxis.z;
-	cameraMatrix[0].z = -zAxis.x;
-	cameraMatrix[1].z = -zAxis.y;
-	cameraMatrix[2].z = -zAxis.z;
-	cameraMatrix[3].x = -glm::dot(xAxis, cameraPos);
-	cameraMatrix[3].y = -glm::dot(yAxis, cameraPos);
-	cameraMatrix[3].z = glm::dot(zAxis, cameraPos);
+	_data.cameraMatrix[0].x = xAxis.x;
+	_data.cameraMatrix[1].x = xAxis.y;
+	_data.cameraMatrix[2].x = xAxis.z;
+	_data.cameraMatrix[0].y = yAxis.x;
+	_data.cameraMatrix[1].y = yAxis.y;
+	_data.cameraMatrix[2].y = yAxis.z;
+	_data.cameraMatrix[0].z = -zAxis.x;
+	_data.cameraMatrix[1].z = -zAxis.y;
+	_data.cameraMatrix[2].z = -zAxis.z;
+	_data.cameraMatrix[3].x = -glm::dot(xAxis, _data.cameraPos);
+	_data.cameraMatrix[3].y = -glm::dot(yAxis, _data.cameraPos);
+	_data.cameraMatrix[3].z = glm::dot(zAxis, _data.cameraPos);
 }
 
 const glm::mat4& Camera::getCameraMatrix() {
-	return cameraMatrix;
+	return _data.cameraMatrix;
 }
 
 void Camera::pushState() {
-	stateStack.push(*this);
+	_stateStack.push(_data);
 }
 
 void Camera::popState() {
-	Camera tmp = stateStack.top();
-	stateStack.pop();
-	cameraMatrix = tmp.cameraMatrix;
-	center = tmp.center;
-	up = tmp.up;
-	cameraPos = tmp.cameraPos;
+	_data = _stateStack.top();
+	_stateStack.pop();
 }
 
 void Camera::seekState() {
-	Camera tmp = stateStack.top();
-	cameraMatrix = tmp.cameraMatrix;
-	center = tmp.center;
-	up = tmp.up;
-	cameraPos = tmp.cameraPos;
+	_data = _stateStack.top();
 }
 }
 

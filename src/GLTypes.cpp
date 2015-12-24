@@ -7,6 +7,7 @@
 
 #include <OpGLLib/GLTypes.h>
 
+void getRidOfLNK4221() {};
 
 namespace OpGLLib {
 

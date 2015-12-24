@@ -12,12 +12,13 @@
 #include <OpGLLib/internal.h>
 
 #include <stack>
+#include <memory>
 
 namespace OpGLLib {
 class Matrices {
 public:
-	Matrices();
-	~Matrices();
+	Matrices() = default;
+	~Matrices() = default;
 
 	void setTranslationMatrix(glm::mat4 translationMatrix);
 	void setTranslationMatrix(glm::vec3 offset);
@@ -81,25 +82,31 @@ public:
 	void seekState();
 
 private:
-	glm::mat4 translationMatrix;
-	glm::mat4 scalingMatrix;
-	glm::mat4 rotationMatrix;
-	glm::mat4 rotationXMatrix;
-	glm::mat4 rotationYMatrix;
-	glm::mat4 rotationZMatrix;
-	glm::mat4 orientationMatrix;
-	glm::quat orientationQuat;
-	glm::mat4 yawMatrix;
-	glm::quat yawQuat;
-	glm::mat4 pitchMatrix;
-	glm::quat pitchQuat;
-	glm::mat4 rollMatrix;
-	glm::quat rollQuat;
+	struct Data {
+		glm::mat4 translationMatrix;
+		glm::mat4 scalingMatrix;
+		glm::mat4 rotationMatrix;
+		glm::mat4 rotationXMatrix;
+		glm::mat4 rotationYMatrix;
+		glm::mat4 rotationZMatrix;
+		glm::mat4 orientationMatrix;
+		glm::quat orientationQuat;
+		glm::mat4 yawMatrix;
+		glm::quat yawQuat;
+		glm::mat4 pitchMatrix;
+		glm::quat pitchQuat;
+		glm::mat4 rollMatrix;
+		glm::quat rollQuat;
 
-	glm::vec3 offset, scale, rotation;
+		glm::vec3 offset = glm::vec3(0.0f, 0.0f, 0.0f);
+		glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
+		glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+	};
+	Data _data;
 
-	std::stack<Matrices> stateStack;
+	std::stack<Data> _stateStack;
 };
 }
+
 
 #endif /* OPGLLIB_MATRICES_H_ */

@@ -8,157 +8,109 @@
 #include <OpGLLib/Perspective.h>
 
 namespace OpGLLib {
-Perspective::Perspective() {
-	perspectiveMatrix = glm::mat4(0);
-
-	foV = 45.0f;
-	aspectRatio = 1.0f;
-	frustumScale = glm::vec2(1.0f, 1.0f);
-	zNear = 1.0f;
-	zFar = 500.0f;
-
-	useFoV = false;
-
+Perspective::Perspective() : _data({glm::mat4(0), 45.0f, 1.0f, glm::vec2(1.0f, 1.0f), 1.0f, 500.0f, false}), _stateStack() {
 	updatePerspectiveMatrix();
 }
 
-Perspective::Perspective(float foV, float aspectRatio, float zNear, float zFar) {
-	perspectiveMatrix = glm::mat4(0);
-
-	Perspective::foV = foV;
-	Perspective::aspectRatio = aspectRatio;
-	Perspective::frustumScale = glm::vec2(1.0f, 1.0f);
-	Perspective::zNear = zNear;
-	Perspective::zFar = zFar;
-
-	useFoV = true;
-
+Perspective::Perspective(float foV, float aspectRatio, float zNear, float zFar) : _data({glm::mat4(0), foV, aspectRatio, glm::vec2(1.0f, 1.0f), zNear, zFar, true}), _stateStack() {
 	updatePerspectiveMatrix();
 }
 
-Perspective::Perspective(glm::vec2 frustumScale, float aspectRatio, float zNear, float zFar) {
-	perspectiveMatrix = glm::mat4(0);
-
-	Perspective::foV = 45.0f;
-	Perspective::aspectRatio = aspectRatio;
-	Perspective::frustumScale = frustumScale;
-	Perspective::zNear = zNear;
-	Perspective::zFar = zFar;
-
-	useFoV = false;
-
+Perspective::Perspective(glm::vec2 frustumScale, float aspectRatio, float zNear, float zFar) : _data({glm::mat4(0), 45.0f, aspectRatio, frustumScale, zNear, zFar, false}), _stateStack() {
 	updatePerspectiveMatrix();
-}
-
-Perspective::~Perspective() {
-
 }
 
 glm::vec2 Perspective::calcFrustumScale(float foV) {
-	Perspective::foV = foV;
+	_data.foV = foV;
 	float foVRad = glm::radians(foV);
 	return glm::vec2(1.0f / glm::tan(foVRad / 2.0f), 1.0f / glm::tan(foVRad / 2.0f));
 }
 
 glm::vec2 Perspective::calcFrustumScale(float foV, float aspectRatio) {
-	Perspective::foV = foV;
-	Perspective::aspectRatio = aspectRatio;
+	_data.foV = foV;
+	_data.aspectRatio = aspectRatio;
 	float foVRad = glm::radians(foV);
 	return glm::vec2(1.0f / glm::tan(foVRad / 2.0f) / aspectRatio, 1.0f / glm::tan(foVRad / 2.0f));
 }
 
 void Perspective::setPerspectiveMatrix(glm::mat4 perspectiveMatrix) {
-	Perspective::perspectiveMatrix = perspectiveMatrix;
+	_data.perspectiveMatrix = perspectiveMatrix;
 }
 
 void Perspective::setPerspectiveMatrix(float foV, float zNear, float zFar) {
 	setPerspectiveMatrix(calcFrustumScale(foV), zNear, zFar);
-	useFoV = true;
+	_data.useFoV = true;
 }
 
 void Perspective::setPerspectiveMatrix(float foV, float aspectRatio, float zNear, float zFar) {
 	setPerspectiveMatrix(calcFrustumScale(foV, aspectRatio), zNear, zFar);
-	useFoV = true;
+	_data.useFoV = true;
 }
 
 void Perspective::setPerspectiveMatrix(glm::vec2 frustumScale, float zNear, float zFar) {
-	Perspective::frustumScale = frustumScale;
-	Perspective::zNear = zNear;
-	Perspective::zFar = zFar;
-	Perspective::useFoV = false;
-	perspectiveMatrix[0].x = frustumScale.x;
-	perspectiveMatrix[1].y = frustumScale.y;
-	perspectiveMatrix[2].z = (zFar + zNear) / (zNear - zFar);
-	perspectiveMatrix[3].z = (2 * zFar * zNear) / (zNear - zFar);
-	perspectiveMatrix[2].w = -1.0f;
+	_data.frustumScale = frustumScale;
+	_data.zNear = zNear;
+	_data.zFar = zFar;
+	_data.useFoV = false;
+	_data.perspectiveMatrix[0].x = frustumScale.x;
+	_data.perspectiveMatrix[1].y = frustumScale.y;
+	_data.perspectiveMatrix[2].z = (zFar + zNear) / (zNear - zFar);
+	_data.perspectiveMatrix[3].z = (2 * zFar * zNear) / (zNear - zFar);
+	_data.perspectiveMatrix[2].w = -1.0f;
 }
 
 void Perspective::updatePerspectiveMatrix() {
 	glm::vec2 frustumScale;
-	if (useFoV) {
-		frustumScale = calcFrustumScale(foV, aspectRatio);
+	if (_data.useFoV) {
+		frustumScale = calcFrustumScale(_data.foV, _data.aspectRatio);
 	} else {
-		frustumScale = Perspective::frustumScale;
-		frustumScale.x /= aspectRatio;
+		frustumScale = _data.frustumScale;
+		frustumScale.x /= _data.aspectRatio;
 	}
-	perspectiveMatrix[0].x = frustumScale.x;
-	perspectiveMatrix[1].y = frustumScale.y;
-	perspectiveMatrix[2].z = (zFar + zNear) / (zNear - zFar);
-	perspectiveMatrix[3].z = (2 * zFar * zNear) / (zNear - zFar);
-	perspectiveMatrix[2].w = -1.0f;
+	_data.perspectiveMatrix[0].x = frustumScale.x;
+	_data.perspectiveMatrix[1].y = frustumScale.y;
+	_data.perspectiveMatrix[2].z = (_data.zFar + _data.zNear) / (_data.zNear - _data.zFar);
+	_data.perspectiveMatrix[3].z = (2 * _data.zFar * _data.zNear) / (_data.zNear - _data.zFar);
+	_data.perspectiveMatrix[2].w = -1.0f;
 }
 
 glm::mat4 Perspective::getPerspectiveMatrix() {
-	return perspectiveMatrix;
+	return _data.perspectiveMatrix;
 }
 
 void Perspective::setAspectRatio(float aspectRatio) {
-	Perspective::aspectRatio = aspectRatio;
+	_data.aspectRatio = aspectRatio;
 }
 
 void Perspective::setFoV(float foV) {
-	Perspective::foV = foV;
-	useFoV = true;
+	_data.foV = foV;
+	_data.useFoV = true;
 }
 
 void Perspective::setFrustumScale(glm::vec2 frustumScale) {
-	Perspective::frustumScale = frustumScale;
-	useFoV = false;
+	_data.frustumScale = frustumScale;
+	_data.useFoV = false;
 }
 
 void Perspective::setZNear(float zNear) {
-	Perspective::zNear = zNear;
+	_data.zNear = zNear;
 }
 
 void Perspective::setZFar(float zFar) {
-	Perspective::zFar = zFar;
+	_data.zFar = zFar;
 }
 
 void Perspective::pushState() {
-	stateStack.push(*this);
+	_stateStack.push(_data);
 }
 
 void Perspective::popState() {
-	Perspective tmp = stateStack.top();
-	stateStack.pop();
-	perspectiveMatrix = tmp.perspectiveMatrix;
-	foV = tmp.foV;
-	aspectRatio = tmp.aspectRatio;
-	frustumScale = tmp.frustumScale;
-	zNear = tmp.zNear;
-	zFar = tmp.zFar;
-	useFoV = tmp.useFoV;
+	_data = _stateStack.top();
+	_stateStack.pop();
 }
 
 void Perspective::seekState() {
-	Perspective tmp = stateStack.top();
-	perspectiveMatrix = tmp.perspectiveMatrix;
-	foV = tmp.foV;
-	aspectRatio = tmp.aspectRatio;
-	frustumScale = tmp.frustumScale;
-	zNear = tmp.zNear;
-	zFar = tmp.zFar;
-	useFoV = tmp.useFoV;
+	_data = _stateStack.top();
 }
 }
 

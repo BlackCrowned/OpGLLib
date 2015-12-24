@@ -11,6 +11,11 @@ Doxyfile
 .cproject
 .settings
 
+# Visual Studio project files
+*.sdf
+*.vcxproj
+*.vcxproj.filters
+
 # Compiled Object files
 *.slo
 *.lo

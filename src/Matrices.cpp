@@ -8,146 +8,137 @@
 #include <OpGLLib/Matrices.h>
 
 namespace OpGLLib {
-Matrices::Matrices() {
-	offset = glm::vec3(0.0f, 0.0f, 0.0f);
-	scale = glm::vec3(1.0f, 1.0f, 1.0f);
-	rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-}
-
-Matrices::~Matrices() {
-
-}
 
 void Matrices::setTranslationMatrix(glm::mat4 translationMatrix) {
-	Matrices::translationMatrix = translationMatrix;
+	_data.translationMatrix = translationMatrix;
 }
 
 void Matrices::setTranslationMatrix(glm::vec3 offset) {
-	Matrices::offset = offset;
-	translationMatrix[3].x = offset.x;
-	translationMatrix[3].y = offset.y;
-	translationMatrix[3].z = offset.z;
+	_data.offset = offset;
+	_data.translationMatrix[3].x = offset.x;
+	_data.translationMatrix[3].y = offset.y;
+	_data.translationMatrix[3].z = offset.z;
 }
 
 void Matrices::resetTranslationMatrix() {
-	offset = glm::vec3(0, 0, 0);
-	translationMatrix = glm::mat4(1.0f);
+	_data.offset = glm::vec3(0, 0, 0);
+	_data.translationMatrix = glm::mat4(1.0f);
 }
 
 void Matrices::setTranslationMatrixX(float x) {
-	offset.x = x;
-	translationMatrix[3].x = x;
+	_data.offset.x = x;
+	_data.translationMatrix[3].x = x;
 }
 
 void Matrices::setTranslationMatrixY(float y) {
-	offset.y = y;
-	translationMatrix[3].y = y;
+	_data.offset.y = y;
+	_data.translationMatrix[3].y = y;
 }
 
 void Matrices::setTranslationMatrixZ(float z) {
-	offset.z = z;
-	translationMatrix[3].z = z;
+	_data.offset.z = z;
+	_data.translationMatrix[3].z = z;
 }
 
 void Matrices::setScalingMatrix(glm::mat4 scalingMatrix) {
-	Matrices::scalingMatrix = scalingMatrix;
+	_data.scalingMatrix = scalingMatrix;
 }
 
 void Matrices::setScalingMatrix(glm::vec3 scale) {
-	Matrices::scale = scale;
-	scalingMatrix[0].x = scale.x;
-	scalingMatrix[1].y = scale.y;
-	scalingMatrix[2].z = scale.z;
+	_data.scale = scale;
+	_data.scalingMatrix[0].x = scale.x;
+	_data.scalingMatrix[1].y = scale.y;
+	_data.scalingMatrix[2].z = scale.z;
 }
 
 void Matrices::resetScalingMatrix() {
-	scale = glm::vec3(1.0f, 1.0f, 1.0f);
-	scalingMatrix = glm::mat4(1.0f);
+	_data.scale = glm::vec3(1.0f, 1.0f, 1.0f);
+	_data.scalingMatrix = glm::mat4(1.0f);
 }
 
 void Matrices::setScalingMatrixX(float x) {
-	scale.x = x;
-	scalingMatrix[0].x = x;
+	_data.scale.x = x;
+	_data.scalingMatrix[0].x = x;
 }
 
 void Matrices::setScalingMatrixY(float y) {
-	scale.y = y;
-	scalingMatrix[1].y = y;
+	_data.scale.y = y;
+	_data.scalingMatrix[1].y = y;
 }
 
 void Matrices::setScalingMatrixZ(float z) {
-	scale.z = z;
-	scalingMatrix[2].z = z;
+	_data.scale.z = z;
+	_data.scalingMatrix[2].z = z;
 }
 
 void Matrices::setRotationMatrix(glm::mat4 rotationMatrix) {
-	Matrices::rotationMatrix = rotationMatrix;
+	_data.rotationMatrix = rotationMatrix;
 }
 
 void Matrices::setRotationMatrix(glm::vec3 rotation) {
-	Matrices::rotation = rotation;
+	_data.rotation = rotation;
 	setRotationXMatrix(rotation.x);
 	setRotationYMatrix(rotation.y);
 	setRotationZMatrix(rotation.z);
-	rotationMatrix = rotationXMatrix * rotationYMatrix * rotationZMatrix;
+	_data.rotationMatrix = _data.rotationXMatrix * _data.rotationYMatrix * _data.rotationZMatrix;
 }
 
 void Matrices::resetRotationMatrix() {
-	rotation = glm::vec3(0, 0, 0);
-	rotationMatrix = glm::mat4(1.0f);
+	_data.rotation = glm::vec3(0, 0, 0);
+	_data.rotationMatrix = glm::mat4(1.0f);
 }
 
 void Matrices::setRotationMatrixX(float x) {
-	rotation.x = x;
+	_data.rotation.x = x;
 	setRotationXMatrix(x);
-	rotationMatrix = rotationXMatrix * rotationYMatrix * rotationZMatrix;
+	_data.rotationMatrix = _data.rotationXMatrix * _data.rotationYMatrix * _data.rotationZMatrix;
 }
 
 void Matrices::setRotationMatrixY(float y) {
-	rotation.y = y;
+	_data.rotation.y = y;
 	setRotationYMatrix(y);
-	rotationMatrix = rotationXMatrix * rotationYMatrix * rotationZMatrix;
+	_data.rotationMatrix = _data.rotationXMatrix * _data.rotationYMatrix * _data.rotationZMatrix;
 }
 
 void Matrices::setRotationMatrixZ(float z) {
-	rotation.z = z;
+	_data.rotation.z = z;
 	setRotationZMatrix(z);
-	rotationMatrix = rotationXMatrix * rotationYMatrix * rotationZMatrix;
+	_data.rotationMatrix = _data.rotationXMatrix * _data.rotationYMatrix * _data.rotationZMatrix;
 }
 
 void Matrices::updateRotationMatrix() {
-	rotationMatrix = rotationXMatrix * rotationYMatrix * rotationZMatrix;
+	_data.rotationMatrix = _data.rotationXMatrix * _data.rotationYMatrix * _data.rotationZMatrix;
 }
 
 void Matrices::setRotationXMatrix(float x) {
-	rotationXMatrix = glm::mat4(1.0f);
-	rotation.x = x;
-	rotationXMatrix[1].y = cos(x);
-	rotationXMatrix[2].y = -sin(x);
-	rotationXMatrix[1].z = sin(x);
-	rotationXMatrix[2].z = cos(x);
+	_data.rotationXMatrix = glm::mat4(1.0f);
+	_data.rotation.x = x;
+	_data.rotationXMatrix[1].y = cos(x);
+	_data.rotationXMatrix[2].y = -sin(x);
+	_data.rotationXMatrix[1].z = sin(x);
+	_data.rotationXMatrix[2].z = cos(x);
 }
 
 void Matrices::setRotationYMatrix(float y) {
-	rotationYMatrix = glm::mat4(1.0f);
-	rotation.y = y;
-	rotationYMatrix[0].x = cos(y);
-	rotationYMatrix[2].x = sin(y);
-	rotationYMatrix[0].z = -sin(y);
-	rotationYMatrix[2].z = cos(y);
+	_data.rotationYMatrix = glm::mat4(1.0f);
+	_data.rotation.y = y;
+	_data.rotationYMatrix[0].x = cos(y);
+	_data.rotationYMatrix[2].x = sin(y);
+	_data.rotationYMatrix[0].z = -sin(y);
+	_data.rotationYMatrix[2].z = cos(y);
 }
 
 void Matrices::setRotationZMatrix(float z) {
-	rotationZMatrix = glm::mat4(1.0f);
-	rotation.z = z;
-	rotationZMatrix[0].x = cos(z);
-	rotationZMatrix[1].x = -sin(z);
-	rotationZMatrix[0].y = sin(z);
-	rotationZMatrix[1].y = cos(z);
+	_data.rotationZMatrix = glm::mat4(1.0f);
+	_data.rotation.z = z;
+	_data.rotationZMatrix[0].x = cos(z);
+	_data.rotationZMatrix[1].x = -sin(z);
+	_data.rotationZMatrix[0].y = sin(z);
+	_data.rotationZMatrix[1].y = cos(z);
 }
 
 void Matrices::setOrientationMatrix(glm::mat4 orientationMatrix) {
-	Matrices::orientationQuat = glm::quat_cast(orientationMatrix);
+	_data.orientationQuat = glm::quat_cast(orientationMatrix);
 }
 
 void Matrices::setOrientationMatrix(glm::mat3 axes, glm::vec3 rotations) {
@@ -160,7 +151,7 @@ void Matrices::setOrientationMatrix(glm::vec3 axis, float rotation) {
 	axis = axis * glm::sin(rotation / 2.0f);
 	float scalar = glm::cos(rotation / 2.0f);
 	glm::quat offset(scalar, axis);
-	orientationQuat = glm::normalize(offset);
+	_data.orientationQuat = glm::normalize(offset);
 }
 
 void Matrices::setOrientationMatrix(float yaw, float pitch, float roll) {
@@ -184,8 +175,8 @@ void Matrices::multOrientationMatrix(glm::vec3 axis, float rotation) {
 	axis = axis * glm::sin(rotation / 2.0f);
 	float scalar = glm::cos(rotation / 2.0f);
 	glm::quat offset(scalar, axis);
-	orientationQuat = orientationQuat * offset;
-	orientationQuat = glm::normalize(orientationQuat);
+	_data.orientationQuat = _data.orientationQuat * offset;
+	_data.orientationQuat = glm::normalize(_data.orientationQuat);
 }
 
 void Matrices::multOrientationMatrix(float yaw, float pitch, float roll) {
@@ -196,92 +187,88 @@ void Matrices::multOrientationMatrix(float yaw, float pitch, float roll) {
 
 void Matrices::setOrientationMatrixYaw(float yaw) {
 	setOrientationYawMatrix(yaw);
-	orientationQuat = yawQuat;
+	_data.orientationQuat = _data.yawQuat;
 }
 
 void Matrices::setOrientationMatrixPitch(float pitch) {
 	setOrientationPitchMatrix(pitch);
-	orientationQuat = pitchQuat;
+	_data.orientationQuat = _data.pitchQuat;
 }
 
 void Matrices::setOrientationMatrixRoll(float roll) {
 	setOrientationRollMatrix(roll);
-	orientationQuat = rollQuat;
+	_data.orientationQuat = _data.rollQuat;
 }
 
 void Matrices::multOrientationMatrixYaw(float yaw) {
 	setOrientationYawMatrix(yaw);
-	orientationQuat = glm::normalize(orientationQuat * yawQuat);
+	_data.orientationQuat = glm::normalize(_data.orientationQuat * _data.yawQuat);
 }
 
 void Matrices::multOrientationMatrixPitch(float pitch) {
 	setOrientationPitchMatrix(pitch);
-	orientationQuat = glm::normalize(orientationQuat * pitchQuat);
+	_data.orientationQuat = glm::normalize(_data.orientationQuat * _data.pitchQuat);
 }
 
 void Matrices::multOrientationMatrixRoll(float roll) {
 	setOrientationRollMatrix(roll);
-	orientationQuat = glm::normalize(orientationQuat * rollQuat);
+	_data.orientationQuat = glm::normalize(_data.orientationQuat * _data.rollQuat);
 }
 
 void Matrices::setOrientationYawMatrix(float yaw) {
-	yawQuat = glm::normalize(glm::quat(glm::cos(yaw / 2.0f), glm::vec3(1.0f, 0.0f, 0.0f) * glm::sin(yaw / 2.0f)));
+	_data.yawQuat = glm::normalize(glm::quat(glm::cos(yaw / 2.0f), glm::vec3(1.0f, 0.0f, 0.0f) * glm::sin(yaw / 2.0f)));
 }
 
 void Matrices::setOrientationPitchMatrix(float pitch) {
-	pitchQuat = glm::normalize(glm::quat(glm::cos(pitch / 2.0f), glm::vec3(0.0f, 1.0f, 0.0f) * glm::sin(pitch / 2.0f)));
+	_data.pitchQuat = glm::normalize(glm::quat(glm::cos(pitch / 2.0f), glm::vec3(0.0f, 1.0f, 0.0f) * glm::sin(pitch / 2.0f)));
 }
 
 void Matrices::setOrientationRollMatrix(float roll) {
-	rollQuat = glm::normalize(glm::quat(glm::cos(roll / 2.0f), glm::vec3(0.0f, 0.0f, -1.0f) * glm::sin(roll / 2.0f)));
+	_data.rollQuat = glm::normalize(glm::quat(glm::cos(roll / 2.0f), glm::vec3(0.0f, 0.0f, -1.0f) * glm::sin(roll / 2.0f)));
 }
 
 const glm::mat4& Matrices::getTranslationMatrix() {
-	return translationMatrix;
+	return _data.translationMatrix;
 }
 
 const glm::mat4& Matrices::getScalingMatrix() {
-	return scalingMatrix;
+	return _data.scalingMatrix;
 }
 
 const glm::mat4& Matrices::getRotationMatrix() {
-	return rotationMatrix;
+	return _data.rotationMatrix;
 }
 
 const glm::mat4& Matrices::getOrientationMatrix() {
-	orientationMatrix = glm::mat4_cast(orientationQuat);
-	return orientationMatrix;
+	_data.orientationMatrix = glm::mat4_cast(_data.orientationQuat);
+	return _data.orientationMatrix;
 }
 
 const glm::mat4 &Matrices::getYawMatrix() {
-	yawMatrix = glm::mat4_cast(yawQuat);
-	return yawMatrix;
+	_data.yawMatrix = glm::mat4_cast(_data.yawQuat);
+	return _data.yawMatrix;
 }
 
 const glm::mat4 &Matrices::getPitchMatrix() {
-	pitchMatrix = glm::mat4_cast(pitchQuat);
-	return pitchMatrix;
+	_data.pitchMatrix = glm::mat4_cast(_data.pitchQuat);
+	return _data.pitchMatrix;
 }
 
 const glm::mat4 &Matrices::getRollMatrix() {
-	rollMatrix = glm::mat4_cast(rollQuat);
-	return rollMatrix;
+	_data.rollMatrix = glm::mat4_cast(_data.rollQuat);
+	return _data.rollMatrix;
 }
 
 void Matrices::pushState() {
-	stateStack.push(*this);
+	_stateStack.push(_data);
 }
 
 void Matrices::popState() {
-	Matrices tmp = stateStack.top();
-	stateStack.pop();
-	*this = tmp;
+	_data = _stateStack.top();
+	_stateStack.pop();
 }
 
 void Matrices::seekState() {
-	Matrices tmp = stateStack.top();
-	tmp.stateStack = stateStack;
-	*this = tmp;
+	_data = _stateStack.top();
 }
 }
-
