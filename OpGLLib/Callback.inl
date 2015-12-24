@@ -1,49 +1,76 @@
 namespace OpGLLib {
 
-template<class Event> void CallbackHandler<Event>::addCallback(Event event, std::shared_ptr<CallbackBase> callback) {
-	_container[event].push_back(std::move(callback));
+template<class Event> void CallbackHandler<Event>::addCallback(Event event, std::shared_ptr<CallbackBase> callback, bool callOnce) {
+	if (!callOnce) {
+		_addCallbackImpl(_container, event, callback);
+	}
+	else {
+		_addCallbackImpl(_containerOneCall, event, callback);
+	}
 }
 
 template <class Event> void CallbackHandler<Event>::removeCallback(Event event, std::shared_ptr<CallbackBase> callback) {
-	//Prevent unnecessary instantiation of event-container
-	if (_container.count(event) == 0) {
-		return;
-	}
-	//Delete all instances
-	for (auto i = std::count(_container[event].begin(), _container[event].end(), callback); i > 0; i--) {
-		//Find and delete callback
-		auto it = std::find(_container[event].begin(), _container[event].end(), callback);
-		_container[event].erase(it);
-	}
-
-
+	_removeCallbackImpl(_container, event, callback);
+	_removeCallbackImpl(_containerOneCall, event, callback);
 }
 
 template<class Event> void CallbackHandler<Event>::removeCallbacks(Event event) {
+	_removeCallbacksImpl(_container, event);
+	_removeCallbacksImpl(_containerOneCall, event);
+}
+
+template<class Event> void CallbackHandler<Event>::removeCallbacks(std::shared_ptr<CallbackBase> callback) {
+	_removeCallbacksImpl(_container, callback);
+	_removeCallbacksImpl(_containerOneCall, callback);
+}
+
+template<class Event> void CallbackHandler<Event>::dispatchEvent(Event event) {
+	_dispatchEventImpl(_container, event);
+	_dispatchEventImpl(_containerOneCall, event);
+}
+
+template<class Event> void CallbackHandler<Event>::_addCallbackImpl(std::unordered_map<Event, eventContainer>& container, Event& event, std::shared_ptr<CallbackBase>& callback) {
+	container[event].push_back(std::move(callback));
+}
+
+template<class Event> void CallbackHandler<Event>::_removeCallbackImpl(std::unordered_map<Event, eventContainer>& container, Event& event, std::shared_ptr<CallbackBase>& callback) {
 	//Prevent unnecessary instantiation of event-container
-	if (_container.count(event) == 0) {
+	if (container.count(event) == 0) {
+		return;
+	}
+	//Delete all instances
+	for (auto i = std::count(container[event].begin(), container[event].end(), callback); i > 0; i--) {
+		//Find and delete callback
+		auto it = std::find(container[event].begin(), container[event].end(), callback);
+		container[event].erase(it);
+	}
+}
+
+template<class Event> void CallbackHandler<Event>::_removeCallbacksImpl(std::unordered_map<Event, eventContainer>& container, Event& event) {
+	//Prevent unnecessary instantiation of event-container
+	if (container.count(event) == 0) {
 		return;
 	}
 
 	//Erase event
-	_container.erase(event);
+	container.erase(event);
 }
 
-template<class Event> void CallbackHandler<Event>::removeCallbacks(std::shared_ptr<CallbackBase> callback) {
+template<class Event> void CallbackHandler<Event>::_removeCallbacksImpl(std::unordered_map<Event, eventContainer>& container, std::shared_ptr<CallbackBase>& callback) {
 	//Check all event-containers
-	for (auto i : _container) {
+	for (auto i : container) {
 		//Remove all instances
-		removeCallback(i->first, callback);
+		_removeCallbackImpl(container, i->first, callback);
 	}
 }
 
-template<class Event> void CallbackHandler<Event>::dispatchEvent(Event event) {
+template<class Event> void CallbackHandler<Event>::_dispatchEventImpl(std::unordered_map<Event, eventContainer>& container, Event& event) {
 	//Prevent unnecessary instantiation of event-container
-	if (_container.count() == 0) {
+	if (container.count() == 0) {
 		return;
 	}
 	//Call all callbacks listening to this event
-	for (auto it = _container[event].begin(); it != _container[event].end(); it++) {
+	for (auto it = container[event].begin(); it != container[event].end(); it++) {
 		it->call();
 	}
 }

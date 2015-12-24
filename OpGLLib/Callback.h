@@ -22,18 +22,15 @@ namespace OpGLLib{
 
 class CallbackBase;
 
-struct CallbackOptions {
-
-};
-
 template<class Event>
 class CallbackHandler {
 public:
 	typedef std::deque<std::shared_ptr<CallbackBase>> eventContainer;
+
 	CallbackHandler() = default;
 	~CallbackHandler() = default;
 
-	void addCallback(Event event, std::shared_ptr<CallbackBase> callback);
+	void addCallback(Event event, std::shared_ptr<CallbackBase> callback, bool callOnce = false);
 	void removeCallback(Event event, std::shared_ptr<CallbackBase> callback);
 	void removeCallbacks(Event event);
 	void removeCallbacks(std::shared_ptr<CallbackBase> callback);
@@ -41,7 +38,14 @@ public:
 	void dispatchEvent(Event event);
 
 private:
+	static void _addCallbackImpl(std::unordered_map<Event, eventContainer>& container, Event& event, std::shared_ptr<CallbackBase>& callback);
+	static void _removeCallbackImpl(std::unordered_map<Event, eventContainer>& container, Event& event, std::shared_ptr<CallbackBase>& callback);
+	static void _removeCallbacksImpl(std::unordered_map<Event, eventContainer>& container, Event& event);
+	static void _removeCallbacksImpl(std::unordered_map<Event, eventContainer>& container, std::shared_ptr<CallbackBase>& callback);
+	static void _dispatchEventImpl(std::unordered_map<Event, eventContainer>& container, Event& event);
+
 	std::unordered_map<Event, eventContainer> _container;
+	std::unordered_map<Event, eventContainer> _containerOneCall;
 };
 
 class CallbackBase {
