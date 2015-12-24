@@ -66,20 +66,20 @@ template<class Event> void CallbackHandler<Event>::_removeCallbacksImpl(std::uno
 
 template<class Event> void CallbackHandler<Event>::_dispatchEventImpl(std::unordered_map<Event, eventContainer>& container, Event& event) {
 	//Prevent unnecessary instantiation of event-container
-	if (container.count() == 0) {
+	if (container.count(event) == 0) {
 		return;
 	}
 	//Call all callbacks listening to this event
 	for (auto it = container[event].begin(); it != container[event].end(); it++) {
-		it->call();
+		(*it)->call();
 	}
 }
 
 template <class T, class ...Args> Callback<T, Args...>::Callback(T&& callable, Args&&... arguments) :
-	_callable(callable), _arguments(std::make_tuple(std::forward<Args...>(arguments...))) {}
+	_callable(std::forward<T>(callable)), _arguments(std::tuple<Args...>(std::forward<Args>(arguments)...)) {}
 
 template<class T, class ...Args> void Callback<T, Args...>::call() const {
-	_callImpl(std::index_sequence_for<decltype(_arguments)>);
+	_callImpl(std::index_sequence_for<Args...>{} );
 }
 
 template<class T, class ...Args> template<size_t ...I> void Callback<T, Args...>::_callImpl(std::index_sequence<I...> seq) const{
@@ -87,7 +87,7 @@ template<class T, class ...Args> template<size_t ...I> void Callback<T, Args...>
 };
 
 template<class T, class ...Args> std::shared_ptr<CallbackBase> make_callback(T&& callable, Args&&... args){
-	return std::shared_ptr<CallbackBase>(new Callback<T, Args...>(callable, args...));
+	return std::shared_ptr<CallbackBase>(new Callback<T, Args...>(std::forward<T>(callable), std::forward<Args>(args)...));
 }
 
 }
